@@ -25,6 +25,11 @@ const initialAnnotations = [
         y: 10,
         width: 100,
         height: 100,
+        ulx:10,
+        uly:10,
+        brx:110,
+        bry:110,
+        name:"title",
         id: uuidv1()
     },
     {
@@ -32,6 +37,11 @@ const initialAnnotations = [
         y: 150,
         width: 100,
         height: 100,
+        ulx:150,
+        uly:150,
+        brx:250,
+        bry:250,
+        name:"subject",
         id: uuidv1()
     }
 ];
@@ -41,6 +51,7 @@ const MainCanvas = () => {
 
     const [annotations, setAnnotations] = useState(initialAnnotations);
     const [newAnnotation, setNewAnnotation] = useState([]);
+    const [text, setText] = useState('');
     const [selectedId, selectAnnotation] = useState(null);
     const [canvasMeasures, setCanvasMeasures] = useState({
         width: window.innerWidth,
@@ -51,15 +62,19 @@ const MainCanvas = () => {
 
     const handleClose = () => {
         setNewAnnotation([]);
-        alert(JSON.stringify(annotations));
-        setShow(false)
+        alert(JSON.stringify(newAnnotation));
+        setShow(false);
+        setText('');
     };
     const handleCheck = () => {
+        newAnnotation[0].name = text;
+        alert(JSON.stringify(newAnnotation));
         annotations.push(...newAnnotation);
         setAnnotations(annotations);
         setNewAnnotation([]);
         alert(JSON.stringify(annotations));
-        setShow(false)
+        setShow(false);
+        setText('');
     };
     const handleShow = () => setShow(true);
 
@@ -78,13 +93,20 @@ const MainCanvas = () => {
             const sy = newAnnotation[0].y;
             const { x, y } = event.target.getStage().getPointerPosition();
             const id = uuidv1();
+            const name = '';
             setNewAnnotation([
                 {
                     x: sx,
                     y: sy,
                     width: x - sx,
                     height: y - sy,
-                    id
+                    //計算
+                    ulx:sx,
+                    uly:sy,
+                    brx:x,
+                    bry:y,
+                    id,
+                    name
                 }
             ]);
         }
@@ -110,6 +132,11 @@ const MainCanvas = () => {
             }
         }
     };
+
+    const handleTextChange = (event) => {
+        const value = event.target.value;
+        setText(value);
+    }
 
     const annotationsToDraw = [...annotations, ...newAnnotation];
 
@@ -177,6 +204,7 @@ const MainCanvas = () => {
                         controlId="floatingTextarea"
                         label="輸入標記名稱..."
                         className="mb-3"
+                        onChange={handleTextChange}
                     >
                         <Form.Control as="textarea" placeholder="Leave a comment here" />
                     </FloatingLabel></Modal.Body>
