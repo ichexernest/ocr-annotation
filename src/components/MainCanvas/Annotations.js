@@ -33,33 +33,49 @@ const Annotation = ({ shapeProps, isSelected, onSelect, onChange }) => {
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
                 onDragEnd={event => {
+                    console.log(`onchangeB` + JSON.stringify(shapeProps));
+                    const ox = shapeProps.x;
+                    const oy = shapeProps.y;
+                    const ulx = shapeProps.ulx;
+                    const uly = shapeProps.uly;
+                    const brx = shapeProps.brx;
+                    const bry = shapeProps.bry;
                     onChange({
                         ...shapeProps,
                         x: event.target.x(),
-                        y: event.target.y()
+                        y: event.target.y(),
+                        ulx: ulx + (event.target.x() - ox),
+                        uly: uly + (event.target.y() - oy),
+                        brx: brx + (event.target.x() - ox),
+                        bry: bry + (event.target.y() - oy),
                     });
                 }}
-                onTransformEnd={event => {
-                    // transformer is changing scale of the node
-                    // and NOT its width or height
-                    // but in the store we have only width and height
-                    // to match the data better we will reset scale on transform end
-                    const node = shapeRef.current;
-                    const scaleX = node.scaleX();
-                    const scaleY = node.scaleY();
-
-                    // we will reset it back
-                    node.scaleX(1);
-                    node.scaleY(1);
-                    onChange({
-                        ...shapeProps,
-                        x: node.x(),
-                        y: node.y(),
-                        // set minimal value
-                        width: Math.max(5, node.width() * scaleX),
-                        height: Math.max(node.height() * scaleY)
-                    });
-                }}
+            onTransformEnd={event => {
+                // transformer is changing scale of the node
+                // and NOT its width or height
+                // but in the store we have only width and height
+                // to match the data better we will reset scale on transform end
+                console.log(`onTransformEnd => onchangeB: ` + JSON.stringify(shapeProps));
+                const node = shapeRef.current;
+                const scaleX = node.scaleX();
+                const scaleY = node.scaleY();
+                const ulx = shapeProps.ulx;
+                const uly = shapeProps.uly;
+                const brx = shapeProps.brx;
+                const bry = shapeProps.bry;
+                //console.log(`node`+node)
+                // we will reset it back
+                node.scaleX(1);
+                node.scaleY(1);
+                onChange({
+                    ...shapeProps,
+                    x: Math.round(node.x()),
+                    y: Math.round(node.y()),
+                    // set minimal value
+                    width: Math.max(5, Math.round(node.width() * scaleX)),
+                    height: Math.max(5, Math.round(node.height() * scaleY))
+                });
+            }}
             />
             {isSelected && <Transformer ref={transformRef} rotateEnabled={false} />}
         </>
