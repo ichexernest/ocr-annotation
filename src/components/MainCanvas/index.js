@@ -48,7 +48,6 @@ const MainCanvas = () => {
     });
 
     const [show, setShow] = useState(false);
-    const layerRef = React.useRef();
     const handleClose = () => {
         setNewAnnotation([]);
         alert(JSON.stringify(newAnnotation));
@@ -94,7 +93,6 @@ const MainCanvas = () => {
             const name = '';
             const brx = ulx+Math.abs(width);
             const bry = uly+Math.abs(height);
-            var transform = layerRef.current.getAbsoluteTransform().copy();
             setNewAnnotation([
                 {
                     x: sx,
@@ -170,7 +168,7 @@ const MainCanvas = () => {
                         onMouseMove={handleMouseMove}
                         onMouseUp={handleMouseUp}
                     >
-                        <Layer ref={layerRef}>
+                        <Layer>
                             <ImageFromUrl
                                 setCanvasMeasures={setCanvasMeasures}
                                 imageUrl={currentImg}
