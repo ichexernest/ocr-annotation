@@ -25,7 +25,7 @@ const Annotation = ({ shapeProps, isSelected, onSelect, onChange }) => {
         <>
             <Rect
                 fill="transparent"
-                stroke="red"
+                stroke={isSelected?"lightgreen":"red"}
                 onMouseDown={onSelect}
                 ref={shapeRef}
                 {...shapeProps}
@@ -42,12 +42,12 @@ const Annotation = ({ shapeProps, isSelected, onSelect, onChange }) => {
                     const bry = shapeProps.bry;
                     onChange({
                         ...shapeProps,
-                        x: event.target.x(),
-                        y: event.target.y(),
-                        ulx: ulx + (event.target.x() - ox),
-                        uly: uly + (event.target.y() - oy),
-                        brx: brx + (event.target.x() - ox),
-                        bry: bry + (event.target.y() - oy),
+                        x: Math.round(event.target.x()),
+                        y: Math.round(event.target.y()),
+                        ulx: ulx + (Math.round(event.target.x()) - ox),
+                        uly: uly + (Math.round(event.target.y()) - oy),
+                        brx: brx + (Math.round(event.target.x()) - ox),
+                        bry: bry + (Math.round(event.target.y()) - oy),
                     });
                 }}
                 onTransformEnd={event => {
@@ -59,29 +59,35 @@ const Annotation = ({ shapeProps, isSelected, onSelect, onChange }) => {
                     const node = shapeRef.current;
                     const scaleX = node.scaleX();
                     const scaleY = node.scaleY();
+                    const x = Math.round(node.width() * scaleX) <0 ? Math.round(node.x()) + Math.round(node.width() * scaleX) : Math.round(node.x());
+                    const y = Math.round(node.height() * scaleY) <0 ? Math.round(node.y()) + Math.round(node.height() * scaleY) : Math.round(node.y());
                     const ulx = shapeProps.ulx;
                     const uly = shapeProps.uly;
                     const brx = shapeProps.brx;
                     const bry = shapeProps.bry;
                     //console.log(`node`+node)
                     // we will reset it back
+                    console.log(`S: `+scaleX);
+                    console.log(`S: `+node.scaleX());
                     node.scaleX(1);
                     node.scaleY(1);
+                    console.log(`E: `+scaleX);
+                    console.log(`E: `+node.scaleX());
                     onChange({
                         ...shapeProps,
-                        x: Math.round(node.x()),
-                        y: Math.round(node.y()),
+                        x: x,
+                        y: y,
                         // set minimal value
                         width: Math.max(5, Math.round(node.width() * scaleX)),
-                        height: Math.max(Math.round(node.height() * scaleY)),
-                        ulx: Math.round(node.x()),
-                        uly: Math.round(node.y()),
-                        brx: Math.round(node.x()) + Math.max(5, Math.round(node.width() * scaleX)),
-                        bry: Math.round(node.y()) + Math.max(5, Math.round(node.height() * scaleY))
+                        height: Math.max(5, Math.round(node.height() * scaleY)),
+                        ulx: x,
+                        uly: y,
+                        brx: x + Math.max(5, Math.round(node.width() * scaleX)),
+                        bry: y + Math.max(5, Math.round(node.height() * scaleY))
                     });
                 }}
             />
-            {isSelected && <Transformer ref={transformRef} rotateEnabled={false} />}
+            {isSelected && <Transformer ref={transformRef} rotateEnabled={false} resizeEnabled={false}/>}
         </>
     );
 };
