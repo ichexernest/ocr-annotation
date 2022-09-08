@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
-import styled from "styled-components";
+
+import { Stage, Layer } from 'react-konva';
+import { v1 as uuidv1 } from "uuid";
+
 import ThemeProvider from 'react-bootstrap/ThemeProvider';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
-import { } from './MainCanvas.styles';
-import { Stage, Layer } from 'react-konva';
-import { v1 as uuidv1 } from "uuid";
-import ImageFromUrl from "./ImageFormUrl";
-import Annotation from "./Annotations";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
+
+import ImageFromUrl from "../ImageFormUrl";
+import Annotation from "../Annotation";
+
 import { Wrapper, AnnotationItem, AnnotationItemA } from './MainCanvas.styles';
 
 const initialAnnotations = [
@@ -64,11 +66,11 @@ const MainCanvas = () => {
     };
     const handleShow = () => setShow(true);
 
-    const handleImage = () => {
-        let imgArr = ["https://0.academia-photos.com/attachment_thumbnails/69872342/mini_magick20210918-2483-14kvsq6.png?1632019048", 'https://images.hindustantimes.com/tech/img/2021/12/27/960x540/housing-new-3_1640576691563_1640576720861.jpg']
-        setCurrentImg(currentImg === imgArr[1] ? imgArr[0] : imgArr[1]);
-        setAnnotations([]);
-    }
+    // const handleImage = () => {
+    //     let imgArr = ["https://0.academia-photos.com/attachment_thumbnails/69872342/mini_magick20210918-2483-14kvsq6.png?1632019048", 'https://images.hindustantimes.com/tech/img/2021/12/27/960x540/housing-new-3_1640576691563_1640576720861.jpg']
+    //     setCurrentImg(currentImg === imgArr[1] ? imgArr[0] : imgArr[1]);
+    //     setAnnotations([]);
+    // }
 
     const handleNewImage = e => {
         const file = e.target.files[0];
@@ -91,6 +93,8 @@ const MainCanvas = () => {
             const sx = newAnnotation[0].x;
             const sy = newAnnotation[0].y;
             const { x, y } = event.target.getStage().getPointerPosition();
+            Math.max(x,canvasMeasures.width);
+            Math.max(y,canvasMeasures.height);
             const id = uuidv1();
             const width = x - sx;
             const height = y - sy;
@@ -159,12 +163,11 @@ const MainCanvas = () => {
                 <Container>
                     <Navbar.Brand href="#home">OCR-Annotation</Navbar.Brand>
                     <Nav className="me-auto">
-                        <Nav.Link >Clear</Nav.Link>
                         <input name="newImage" type="file" onChange={handleNewImage} />
                     </Nav>
                 </Container>
             </Navbar>
-            <Wrapper>
+            <Wrapper fluid>
                 <Row>
                     <Col sm={8} className="main">
                         <div tabIndex={1} onKeyDown={handleKeyDown}>
@@ -249,10 +252,10 @@ const MainCanvas = () => {
                     </FloatingLabel></Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
-                        Close
+                        取消
                     </Button>
                     <Button variant="primary" onClick={handleCheck}>
-                        Save
+                        儲存
                     </Button>
                 </Modal.Footer>
             </Modal>

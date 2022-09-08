@@ -5,7 +5,7 @@ export const Wrapper = styled(Container)`
 background-color: #aaaaaa;
 border: 2px solid #000000;
 .main{
-    background-color: #ccc; 
+    background-color: #000; 
     height:90vh;
     max-height:90vh;
     overflow:auto;
