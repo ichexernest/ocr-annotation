@@ -3,12 +3,12 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { GlobalStyle } from './GlobalStyle';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import MainCanvas from './components/MainCanvas';
+import AnnotationPage from './components/AnnotationPage';
 
 function App() {
   return (
     <>
-      <MainCanvas />
+      <AnnotationPage />
       <GlobalStyle />
     </>
   );

@@ -25,7 +25,7 @@ const Annotation = ({ shapeProps, isSelected, onSelect, onChange }) => {
         <>
             <Rect
                 fill="transparent"
-                stroke={isSelected?"lightgreen":"red"}
+                stroke={isSelected ? "lightgreen" : "red"}
                 onMouseDown={onSelect}
                 ref={shapeRef}
                 {...shapeProps}
@@ -36,18 +36,18 @@ const Annotation = ({ shapeProps, isSelected, onSelect, onChange }) => {
                     console.log(`onchangeB` + JSON.stringify(shapeProps));
                     const ox = shapeProps.x;
                     const oy = shapeProps.y;
-                    const ulx = shapeProps.ulx;
-                    const uly = shapeProps.uly;
-                    const brx = shapeProps.brx;
-                    const bry = shapeProps.bry;
+                    const ux = shapeProps.ux;
+                    const uy = shapeProps.uy;
+                    const lx = shapeProps.lx;
+                    const ly = shapeProps.ly;
                     onChange({
                         ...shapeProps,
                         x: Math.round(event.target.x()),
                         y: Math.round(event.target.y()),
-                        ulx: ulx + (Math.round(event.target.x()) - ox),
-                        uly: uly + (Math.round(event.target.y()) - oy),
-                        brx: brx + (Math.round(event.target.x()) - ox),
-                        bry: bry + (Math.round(event.target.y()) - oy),
+                        ux: ux + (Math.round(event.target.x()) - ox),
+                        uy: uy + (Math.round(event.target.y()) - oy),
+                        lx: lx + (Math.round(event.target.x()) - ox),
+                        ly: ly + (Math.round(event.target.y()) - oy),
                     });
                 }}
                 onTransformEnd={event => {
@@ -55,39 +55,24 @@ const Annotation = ({ shapeProps, isSelected, onSelect, onChange }) => {
                     // and NOT its width or height
                     // but in the store we have only width and height
                     // to match the data better we will reset scale on transform end
-                    console.log(`onTransformEnd => onchangeB: ` + JSON.stringify(shapeProps));
                     const node = shapeRef.current;
                     const scaleX = node.scaleX();
                     const scaleY = node.scaleY();
-                    const x = Math.round(node.width() * scaleX) <0 ? Math.round(node.x()) + Math.round(node.width() * scaleX) : Math.round(node.x());
-                    const y = Math.round(node.height() * scaleY) <0 ? Math.round(node.y()) + Math.round(node.height() * scaleY) : Math.round(node.y());
-                    const ulx = shapeProps.ulx;
-                    const uly = shapeProps.uly;
-                    const brx = shapeProps.brx;
-                    const bry = shapeProps.bry;
-                    //console.log(`node`+node)
+
                     // we will reset it back
-                    console.log(`S: `+scaleX);
-                    console.log(`S: `+node.scaleX());
                     node.scaleX(1);
                     node.scaleY(1);
-                    console.log(`E: `+scaleX);
-                    console.log(`E: `+node.scaleX());
                     onChange({
                         ...shapeProps,
-                        x: x,
-                        y: y,
+                        x: node.x(),
+                        y: node.y(),
                         // set minimal value
-                        width: Math.max(5, Math.round(node.width() * scaleX)),
-                        height: Math.max(5, Math.round(node.height() * scaleY)),
-                        ulx: x,
-                        uly: y,
-                        brx: x + Math.max(5, Math.round(node.width() * scaleX)),
-                        bry: y + Math.max(5, Math.round(node.height() * scaleY))
+                        width: Math.max(5, node.width() * scaleX),
+                        height: Math.max(node.height() * scaleY)
                     });
                 }}
             />
-            {isSelected && <Transformer ref={transformRef} rotateEnabled={false} resizeEnabled={false}/>}
+            {isSelected && <Transformer ref={transformRef} rotateEnabled={false} resizeEnabled={false} />}
         </>
     );
 };
