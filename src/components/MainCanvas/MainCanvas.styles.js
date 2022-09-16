@@ -14,6 +14,7 @@ background-color:#FFF;
     height:93vh;
     max-height:93vh;
     overflow:auto;
+    border:1px solid #ccc;
 }
 `;
 
@@ -24,11 +25,28 @@ padding:10px;
 margin:10px;
 `;
 
-export const SidebarWrapper = styled.div`
-background: #FFF;
+export const PageItem = styled.div`
+border: 1px solid #aaa;
+border-radius: 10px;
+padding:10px;
+margin:10px;
+display: flex;
+flex-direction: column;
+align-items:center;
+justify-content:center;
+img {
+    width: 100px;
+    object-fit: contain;
+    }
+`;
+
+export const SidebarWrapper = styled.ul`
+background: #ccc;
 position: relative;
 display: flex;
 overflow-y: auto;
+border: 1px solid #aaa;
+border-radius: 10px;
 flex-direction: column;
 flex: 1;
 img {

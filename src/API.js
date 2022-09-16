@@ -1,23 +1,6 @@
-//import { getAuthToken } from "./Util";
 import axios from "axios";
 const BASE_URL=process.env.REACT_APP_BASE_URL;
-//const AUTH_URL=process.env.REACT_APP_AUTH_URL;
-const SEC_URL=process.env.REACT_APP_SEC_URL;
-const APP_NAME=process.env.REACT_APP_NAME;
-// const defaultConfig = {
-//   method: 'POST',
-//   headers: {
-//     'Accept': 'application/json',
-//     'Content-Type': 'application/json'
-//   }
-// };
-// const uploadConfig={
-//   method: 'POST',
-//   headers:{
-//     'Accept': 'application/json, application/xml, text/plain, text/html, *.*',
-//     'Content-Type': 'multipart/form-data'
-//   }
-// }
+
 
 const apiSettings = {
   getCase: async (p_szSCrateDTime, p_szECrateDTime) => {
@@ -82,33 +65,6 @@ const apiSettings = {
     });
     return result.data;
   },
-  // authenticate: async (userId, userPassword)=>{
-  //   const url = `${AUTH_URL}/Authenticate`;
-  //   const bodyData = {
-  //     'p_szUserID': userId,
-  //     'p_szUserPassword': userPassword,
-  //   };
-  //   const data = await (
-  //     await fetch(url, {
-  //       ...defaultConfig,
-  //       body: JSON.stringify(bodyData)
-  //     })
-  //   ).json();
-  //   return await data;
-  // },
-  // getUser:async ()=>{
-  //   const url = `${SEC_URL}/GetUser`;
-  //   const token = getAuthToken();
-  //   const data = await (
-  //     await fetch(url, {
-  //       headers: {
-  //         authorization: `Bearer ${token}`,
-  //       },
-  //     })
-  //   ).json().catch(err=>console.log(err));
-  //   return await data;
-  // },
-  
 };
 
 export default apiSettings;

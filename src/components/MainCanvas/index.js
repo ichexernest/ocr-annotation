@@ -14,7 +14,7 @@ import Form from 'react-bootstrap/Form';
 import ImageFromUrl from "../ImageFormUrl";
 import Annotation from "../Annotation";
 
-import { Wrapper, AnnotationItem, SidebarWrapper } from './MainCanvas.styles';
+import { Wrapper, AnnotationItem, SidebarWrapper, PageItem } from './MainCanvas.styles';
 
 const MainCanvas = ({ annotations, setAnnotations, currentImg }) => {
     const [selectedId, selectAnnotation] = useState(null);
@@ -24,9 +24,7 @@ const MainCanvas = ({ annotations, setAnnotations, currentImg }) => {
     });
 
     const [show, setShow] = useState(false);
-    const [text, setText] = useState('');
     const [newAnnotation, setNewAnnotation] = useState([]);
-    const [validated, setValidated] = useState(false);
     const [inputs, setInputs] = useState({
         areaName: '',
         areaDesc: '',
@@ -76,12 +74,11 @@ const MainCanvas = ({ annotations, setAnnotations, currentImg }) => {
             ]);
         }
     };
-    const handleShow = () => setShow(true);
 
     const handleMouseUp = () => {
         if (selectedId === null && newAnnotation.length === 1) {
             // alert(JSON.stringify(newAnnotation));
-            handleShow();
+            setShow(true);
         } else {
             //改變已存在之標註
             //            alert(`exsssssiiiiiiiit` +JSON.stringify(annotations));
@@ -119,7 +116,15 @@ const MainCanvas = ({ annotations, setAnnotations, currentImg }) => {
         setNewAnnotation([]);
         //alert(JSON.stringify(newAnnotation));
         setShow(false);
-        setText('');
+        setInputs({
+            areaName: '',
+            areaDesc: '',
+            title: '',
+            titleContent: '',
+            wordCount: '',
+            isOneLine: '',
+            isEng: '',
+        })
     };
     // const handleCheck = (event) => {
     //     const form = event.currentTarget;
@@ -158,20 +163,27 @@ const MainCanvas = ({ annotations, setAnnotations, currentImg }) => {
             alert(`未填寫標籤內容`);
             return;
         }
-        newAnnotation[0].areaName = submitData.areaName;
-        newAnnotation[0].areaDesc = submitData.areaDesc;
-        newAnnotation[0].title = submitData.title;
-        newAnnotation[0].titleContent = submitData.titleContent;
-        newAnnotation[0].wordCount = submitData.wordCount;
-        newAnnotation[0].isOneLine = submitData.isOneLine == "on" ? "Y" : "N";
-        newAnnotation[0].isEng = submitData.isEng == "on" ? "Y" : "N";
+        submitData.pageNum = 1;
+        submitData.specID = "testSpec001";
+        submitData.areaID = "testArea001";
+        submitData.isOneLine = submitData.isOneLine == "on" ? "Y" : "N";
+        submitData.isEng = submitData.isEng == "on" ? "Y" : "N";
+        newAnnotation[0] = {...newAnnotation[0],...submitData};
         alert(JSON.stringify(newAnnotation));
         annotations.push(...newAnnotation);
         setAnnotations(annotations);
         setNewAnnotation([]);
         //alert(JSON.stringify(annotations));
         setShow(false);
-        setText('');
+        setInputs({
+            areaName: '',
+            areaDesc: '',
+            title: '',
+            titleContent: '',
+            wordCount: '',
+            isOneLine: '',
+            isEng: '',
+        })
     }
 
     const annotationsToDraw = [...annotations, ...newAnnotation];
@@ -229,15 +241,18 @@ const MainCanvas = ({ annotations, setAnnotations, currentImg }) => {
                                 });
                                 return (
                                     <AnnotationItem key={i} className={itemClasses}>
+                                        <span>pageNum: {annotation.pageNum}</span><br />
+                                        <span>specID: {annotation.specID}</span><br />
+                                        <span>areaID: {annotation.areaID}</span><br />
                                         <span>id={annotation.id}</span><br />
-                                        <span>區域名稱: {annotation.areaName}</span><br />
-                                        <span>區域說明: {annotation.areaDesc}</span><br />
-                                        <span>標籤名稱: {annotation.title}</span><br />
-                                        <span>標籤內容: {annotation.titleContent}</span><br />
                                         <span>ux: {annotation.ux}</span><br />
                                         <span>uy: {annotation.uy}</span><br />
                                         <span>lx: {annotation.lx}</span><br />
                                         <span>ly: {annotation.ly}</span><br />
+                                        <span>區域名稱: {annotation.areaName}</span><br />
+                                        <span>區域說明: {annotation.areaDesc}</span><br />
+                                        <span>標籤名稱: {annotation.title}</span><br />
+                                        <span>標籤內容: {annotation.titleContent}</span><br />
                                         <span>是否為單行: {annotation.isOneLine}</span><br />
                                         <span>是否為英數字: {annotation.isEng}</span><br />
                                         <span>字數: {annotation.wordCount}</span><br />
@@ -327,11 +342,20 @@ const Sidebar = ({ currentImg }) => {
     // }
     //console.log(`getRotateList: ` + rotateList)
     return (
-        <SidebarWrapper>
-            <li>
+        <ul>
+            <PageItem>
                 <img src={currentImg} /> 頁數: 1
-            </li>
-        </SidebarWrapper>
+            </PageItem>
+            <PageItem>
+                <img src={currentImg} /> 頁數: 1
+            </PageItem>
+            <PageItem>
+                <img src={currentImg} /> 頁數: 1
+            </PageItem>
+            <PageItem>
+                <img src={currentImg} /> 頁數: 1
+            </PageItem>
+        </ul>
     );
 }
 
