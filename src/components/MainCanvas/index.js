@@ -14,7 +14,7 @@ import Form from 'react-bootstrap/Form';
 import ImageFromUrl from "../ImageFormUrl";
 import Annotation from "../Annotation";
 
-import { Wrapper, AnnotationItem, SidebarWrapper, PageItem } from './MainCanvas.styles';
+import { Wrapper, AnnotationItem, PageItem } from './MainCanvas.styles';
 
 const MainCanvas = ({ annotations, setAnnotations, currentImg }) => {
     const [selectedId, selectAnnotation] = useState(null);
@@ -240,7 +240,7 @@ const MainCanvas = ({ annotations, setAnnotations, currentImg }) => {
                                     'active': (annotation.id === selectedId) ? true : false,
                                 });
                                 return (
-                                    <AnnotationItem key={i} className={itemClasses}>
+                                    <AnnotationItem key={i} className={itemClasses} onClick={()=>selectAnnotation(annotation.id)}>
                                         <span>pageNum: {annotation.pageNum}</span><br />
                                         <span>specID: {annotation.specID}</span><br />
                                         <span>areaID: {annotation.areaID}</span><br />
@@ -256,6 +256,8 @@ const MainCanvas = ({ annotations, setAnnotations, currentImg }) => {
                                         <span>是否為單行: {annotation.isOneLine}</span><br />
                                         <span>是否為英數字: {annotation.isEng}</span><br />
                                         <span>字數: {annotation.wordCount}</span><br />
+                                        <button>編輯資訊</button>
+                                        <button>刪除</button>
                                     </AnnotationItem>
                                 );
                             })}
