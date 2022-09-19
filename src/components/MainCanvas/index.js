@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Stage, Layer } from 'react-konva';
 import { v1 as uuidv1 } from "uuid";
 import classNames from 'classnames';
+import { PanZoom } from 'react-easy-panzoom'
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -34,6 +35,25 @@ const MainCanvas = ({ annotations, setAnnotations, currentImg }) => {
         isOneLine: '',
         isEng: '',
     });
+    const [annoType, setAnnoType] = useState('area');
+    const zoomRef = React.useRef();
+    const preventPan = (e, x, y) => {
+        // if the target is the content container then prevent panning
+        if (e.target === zoomRef) {
+            return true;
+        }
+
+        const contentRect = zoomRef.getBoundingClientRect()
+
+        const x1 = contentRect.left
+        const x2 = contentRect.right
+        const y1 = contentRect.top
+        const y2 = contentRect.bottom
+
+        return (x >= x1 && x <= x2) && (y >= y1 && y <= y2)
+
+    }
+
     const handleMouseDown = event => {
         if (selectedId === null && newAnnotation.length === 0) {
             const { x, y } = event.target.getStage().getPointerPosition();
@@ -49,8 +69,8 @@ const MainCanvas = ({ annotations, setAnnotations, currentImg }) => {
             const { x, y } = event.target.getStage().getPointerPosition();
             Math.max(x, canvasMeasures.width);
             Math.max(y, canvasMeasures.height);
-            const width = x - sx;
-            const height = y - sy;
+            const width = Math.round(x - sx);
+            const height = Math.round(y - sy);
             const ux = x < sx ? sx + width : sx;
             const uy = y < sy ? sy + height : sy;
             const lx = ux + Math.abs(width);
@@ -100,11 +120,6 @@ const MainCanvas = ({ annotations, setAnnotations, currentImg }) => {
         }
     };
 
-    // const handleTextChange = (event) => {
-    //     const value = event.target.value;
-    //     setText(value);
-    // };
-
     const handleTextChange = (event) => {
         const name = event.target.id;
         const value = event.target.value;
@@ -125,24 +140,12 @@ const MainCanvas = ({ annotations, setAnnotations, currentImg }) => {
             isOneLine: '',
             isEng: '',
         })
+        setAnnoType("area")
     };
-    // const handleCheck = (event) => {
-    //     const form = event.currentTarget;
-    //     if (form.checkValidity() === false) {
-    //         event.preventDefault();
-    //         event.stopPropagation();
-    //     } else {
-    //         newAnnotation[0].name = text;
-    //         //alert(JSON.stringify(newAnnotation));
-    //         annotations.push(...newAnnotation);
-    //         setAnnotations(annotations);
-    //         setNewAnnotation([]);
-    //         //alert(JSON.stringify(annotations));
-    //         setShow(false);
-    //         setText('');
-    //     }
-    //     setValidated(true);
-    // };
+
+    const handleSelectType = (e) => {
+        setAnnoType(e.target.value);
+    }
 
     const handleCheck = (e) => {
         e.preventDefault()
@@ -163,12 +166,13 @@ const MainCanvas = ({ annotations, setAnnotations, currentImg }) => {
             alert(`未填寫標籤內容`);
             return;
         }
+        submitData.type = annoType;
         submitData.pageNum = 1;
         submitData.specID = "testSpec001";
         submitData.areaID = "testArea001";
         submitData.isOneLine = submitData.isOneLine == "on" ? "Y" : "N";
         submitData.isEng = submitData.isEng == "on" ? "Y" : "N";
-        newAnnotation[0] = {...newAnnotation[0],...submitData};
+        newAnnotation[0] = { ...newAnnotation[0], ...submitData };
         alert(JSON.stringify(newAnnotation));
         annotations.push(...newAnnotation);
         setAnnotations(annotations);
@@ -184,6 +188,7 @@ const MainCanvas = ({ annotations, setAnnotations, currentImg }) => {
             isOneLine: '',
             isEng: '',
         })
+        setAnnoType("area")
     }
 
     const annotationsToDraw = [...annotations, ...newAnnotation];
@@ -195,44 +200,48 @@ const MainCanvas = ({ annotations, setAnnotations, currentImg }) => {
                         <Sidebar currentImg={currentImg} />
                     </Col>
                     <Col sm={7} className="main">
-                        <div tabIndex={1} onKeyDown={handleKeyDown}>
-                            <Stage
-                                width={canvasMeasures.width}
-                                height={canvasMeasures.height}
-                                onMouseEnter={handleMouseEnter}
-                                onMouseDown={handleMouseDown}
-                                onMouseMove={handleMouseMove}
-                                onMouseUp={handleMouseUp}
-                            >
-                                <Layer>
-                                    <ImageFromUrl
-                                        setCanvasMeasures={setCanvasMeasures}
-                                        imageUrl={currentImg}
-                                        onMouseDown={() => {
-                                            // deselect when clicked on empty area
-                                            selectAnnotation(null);
-                                        }}
-                                    />
-                                    {annotationsToDraw.map((annotation, i) => {
-                                        return (
-                                            <Annotation
-                                                key={i}
-                                                shapeProps={annotation}
-                                                isSelected={annotation.id === selectedId}
-                                                onSelect={() => {
-                                                    selectAnnotation(annotation.id);
-                                                }}
-                                                onChange={newAttrs => {
-                                                    const rects = annotations.slice();
-                                                    rects[i] = newAttrs;
-                                                    setAnnotations(rects);
-                                                }}
-                                            />
-                                        );
-                                    })}
-                                </Layer>
-                            </Stage>
-                        </div></Col>
+                        <PanZoom preventPan={preventPan}>
+                            <div tabIndex={1} onKeyDown={handleKeyDown} ref={zoomRef}>
+                                <Stage
+                                    width={canvasMeasures.width}
+                                    height={canvasMeasures.height}
+                                    onMouseEnter={handleMouseEnter}
+                                    onMouseDown={handleMouseDown}
+                                    onMouseMove={handleMouseMove}
+                                    onMouseUp={handleMouseUp}
+                                >
+                                    <Layer>
+                                        <ImageFromUrl
+                                            setCanvasMeasures={setCanvasMeasures}
+                                            imageUrl={currentImg}
+                                            onMouseDown={() => {
+                                                // deselect when clicked on empty area
+                                                selectAnnotation(null);
+                                            }}
+                                        />
+                                        {annotationsToDraw.map((annotation, i) => {
+                                            return (
+                                                <Annotation
+                                                    key={i}
+                                                    shapeProps={annotation}
+                                                    isSelected={annotation.id === selectedId}
+                                                    annoType={annotation.type}
+                                                    onSelect={() => {
+                                                        selectAnnotation(annotation.id);
+                                                    }}
+                                                    onChange={newAttrs => {
+                                                        const rects = annotations.slice();
+                                                        rects[i] = newAttrs;
+                                                        setAnnotations(rects);
+                                                    }}
+                                                />
+                                            );
+                                        })}
+                                    </Layer>
+                                </Stage>
+                            </div>
+                        </PanZoom>
+                    </Col>
                     <Col sm={3} className="side">
                         <ul>
                             {annotations.map((annotation, i) => {
@@ -240,7 +249,8 @@ const MainCanvas = ({ annotations, setAnnotations, currentImg }) => {
                                     'active': (annotation.id === selectedId) ? true : false,
                                 });
                                 return (
-                                    <AnnotationItem key={i} className={itemClasses} onClick={()=>selectAnnotation(annotation.id)}>
+                                    <AnnotationItem key={i} className={itemClasses} onClick={() => selectAnnotation(annotation.id)}>
+                                        <span>type: {annotation.type}</span><br />
                                         <span>pageNum: {annotation.pageNum}</span><br />
                                         <span>specID: {annotation.specID}</span><br />
                                         <span>areaID: {annotation.areaID}</span><br />
@@ -270,7 +280,17 @@ const MainCanvas = ({ annotations, setAnnotations, currentImg }) => {
                     <Modal.Title>新增標註</Modal.Title>
                 </Modal.Header>
                 <Form onSubmit={handleCheck}>
-                    <Modal.Body>
+                    <Modal.Body className={annoType === "area" ? "bg-light" : "bg-secondary"}>
+                        <FloatingLabel
+                            controlId="type"
+                            label="選擇標註類型"
+                            className="mb-3"
+                            onChange={handleSelectType}>
+                            <Form.Select>
+                                <option value="area">area</option>
+                                <option value="title">title</option>
+                            </Form.Select>
+                        </FloatingLabel>
                         <FloatingLabel
                             controlId="areaName"
                             label="區域名稱*"
@@ -337,12 +357,6 @@ const MainCanvas = ({ annotations, setAnnotations, currentImg }) => {
 }
 
 const Sidebar = ({ currentImg }) => {
-    // const { rotateList } = useAPI();
-
-    // const handleSelectTarget = (i) => {
-    //     setActivePageId(i);
-    // }
-    //console.log(`getRotateList: ` + rotateList)
     return (
         <ul>
             <PageItem>

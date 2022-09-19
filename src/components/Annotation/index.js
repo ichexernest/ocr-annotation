@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Rect, Transformer } from "react-konva";
 
-const Annotation = ({ shapeProps, isSelected, onSelect, onChange }) => {
+const Annotation = ({ shapeProps, isSelected, onSelect, onChange,annoType }) => {
     const shapeRef = React.useRef();
     const transformRef = React.useRef();
 
@@ -25,7 +25,7 @@ const Annotation = ({ shapeProps, isSelected, onSelect, onChange }) => {
         <>
             <Rect
                 fill="transparent"
-                stroke={isSelected ? "lightgreen" : "red"}
+                stroke={isSelected ? "lightgreen" : annoType==="area"?"red":annoType==="title"?"#800010":"lightgreen"}
                 onMouseDown={onSelect}
                 ref={shapeRef}
                 {...shapeProps}
