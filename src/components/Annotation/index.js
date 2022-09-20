@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Rect, Transformer } from "react-konva";
 
-const Annotation = ({ shapeProps, isSelected, onSelect, onChange,annoType }) => {
+const Annotation = ({ shapeProps, isSelected, annoType, onSelect, onChange }) => {
     const shapeRef = React.useRef();
     const transformRef = React.useRef();
 
@@ -50,27 +50,27 @@ const Annotation = ({ shapeProps, isSelected, onSelect, onChange,annoType }) => 
                         ly: ly + (Math.round(event.target.y()) - oy),
                     });
                 }}
-                onTransformEnd={event => {
-                    // transformer is changing scale of the node
-                    // and NOT its width or height
-                    // but in the store we have only width and height
-                    // to match the data better we will reset scale on transform end
-                    const node = shapeRef.current;
-                    const scaleX = node.scaleX();
-                    const scaleY = node.scaleY();
+                // onTransformEnd={event => {
+                //     // transformer is changing scale of the node
+                //     // and NOT its width or height
+                //     // but in the store we have only width and height
+                //     // to match the data better we will reset scale on transform end
+                //     const node = shapeRef.current;
+                //     const scaleX = node.scaleX();
+                //     const scaleY = node.scaleY();
 
-                    // we will reset it back
-                    node.scaleX(1);
-                    node.scaleY(1);
-                    onChange({
-                        ...shapeProps,
-                        x: node.x(),
-                        y: node.y(),
-                        // set minimal value
-                        width: Math.max(5, node.width() * scaleX),
-                        height: Math.max(node.height() * scaleY)
-                    });
-                }}
+                //     // we will reset it back
+                //     node.scaleX(1);
+                //     node.scaleY(1);
+                //     onChange({
+                //         ...shapeProps,
+                //         x: node.x(),
+                //         y: node.y(),
+                //         // set minimal value
+                //         width: Math.max(5, node.width() * scaleX),
+                //         height: Math.max(node.height() * scaleY)
+                //     });
+                // }}
             />
             {isSelected && <Transformer ref={transformRef} rotateEnabled={false} resizeEnabled={false} />}
         </>
