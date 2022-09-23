@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Stage, Layer } from 'react-konva';
 import { v1 as uuidv1 } from "uuid";
 import classNames from 'classnames';
-import { PanZoom } from 'react-easy-panzoom'
+import { PanZoom } from 'react-easy-panzoom';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -14,7 +14,8 @@ import AnnoInfoModal from '../AnnoInfoModal';
 
 import { AnnotationItem } from './MainCanvas.styles';
 
-const MainCanvas = ({ annotations, setAnnotations, currentImg }) => {
+const MainCanvas = ({ currentImg }) => {
+    const [annotations, setAnnotations] = useState([]);
     const [selectedId, selectAnnotation] = useState(null);
     const [canvasMeasures, setCanvasMeasures] = useState({
         width: window.innerWidth,

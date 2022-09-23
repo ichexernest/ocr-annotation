@@ -77,7 +77,7 @@ body{
         text-overflow: ellipsis;  
         background-color: var(--bgColor);
         :hover{
-            background-color: var(--listActionColor);
+            background-color: #eee;
             -webkit-user-select:none;
             -moz-user-select:none;
             -o-user-select:none;
