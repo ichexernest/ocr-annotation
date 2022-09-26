@@ -21,6 +21,11 @@ const Annotation = ({ shapeProps, isSelected, annoType, onSelect, onChange }) =>
         event.target.getStage().container().style.cursor = "crosshair";
     };
 
+    // shapeProps.x = shapeProps.UX;
+    // shapeProps.y = shapeProps.UY;
+    // shapeProps.width = shapeProps.LX-shapeProps.UX;
+    // shapeProps.height = shapeProps.LY-shapeProps.UY;
+
     return (
         <>
             <Rect
@@ -36,18 +41,18 @@ const Annotation = ({ shapeProps, isSelected, annoType, onSelect, onChange }) =>
                     console.log(`onchangeB` + JSON.stringify(shapeProps));
                     const ox = shapeProps.x;
                     const oy = shapeProps.y;
-                    const ux = shapeProps.ux;
-                    const uy = shapeProps.uy;
-                    const lx = shapeProps.lx;
-                    const ly = shapeProps.ly;
+                    const ux = shapeProps.UX;
+                    const uy = shapeProps.UY;
+                    const lx = shapeProps.LX;
+                    const ly = shapeProps.lY;
                     onChange({
                         ...shapeProps,
                         x: Math.round(event.target.x()),
                         y: Math.round(event.target.y()),
-                        ux: ux + (Math.round(event.target.x()) - ox),
-                        uy: uy + (Math.round(event.target.y()) - oy),
-                        lx: lx + (Math.round(event.target.x()) - ox),
-                        ly: ly + (Math.round(event.target.y()) - oy),
+                        UX: ux + (Math.round(event.target.x()) - ox),
+                        UY: uy + (Math.round(event.target.y()) - oy),
+                        LX: lx + (Math.round(event.target.x()) - ox),
+                        LY: ly + (Math.round(event.target.y()) - oy),
                     });
                 }}
                 // onTransformEnd={event => {

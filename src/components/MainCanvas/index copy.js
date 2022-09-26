@@ -19,9 +19,8 @@ import { AnnotationItem } from './MainCanvas.styles';
 const MainCanvas = ({ currentImg, activePageId }) => {
 
     const { annotation } = useAPI();
-    const annotationTitleList = annotation.PageSet[activePageId].SpecTitleSet;
-    const annotationAreaList = annotation.PageSet[activePageId].SpecAreaSet;
-    const [annotations, setAnnotations] = useState([]);
+
+    const [annotations, setAnnotations] = useState(annotation.PageSet[activePageId].SpecTitleSet);
     const [selectedId, selectAnnotation] = useState(null);
     const [canvasMeasures, setCanvasMeasures] = useState({
         width: window.innerWidth,
@@ -100,11 +99,10 @@ const MainCanvas = ({ currentImg, activePageId }) => {
     const handleKeyDown = event => {
         if (event.keyCode === 8 || event.keyCode === 46) {
             if (selectedId !== null) {
-                const newAnnotations = annotations.filter(
+                const newAnnotations = annotation.filter(
                     annotation => annotation.id !== selectedId
                 );
                 setAnnotations(newAnnotations);
-                console.log(`hanfle key down`+JSON.stringify(newAnnotations))
             }
         }
     };

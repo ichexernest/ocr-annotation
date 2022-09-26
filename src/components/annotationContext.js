@@ -15,6 +15,7 @@ const initialState = {
                 PageNum: 0,
                 SpecTitleSet: [
                     {
+                        id:"",
                         TitleID: "",
                         AreaName: "",
                         AreaDesc: "",
@@ -23,15 +24,16 @@ const initialState = {
                         PageNum: 0,
                         UX: 0,
                         UY: 0,
-                        LX: 0,
-                        LY: 0,
+                        LX: 100,
+                        LY: 100,
                         WordCount: 0,
                         IsOneLine: "",
                         IsEng: "",
                     }
                 ],
                 SpecAreaSet: [
-                    {
+                    {                       
+                        id:"",
                         AreaID: "",
                         AreaName: "",
                         AreaDesc: "",

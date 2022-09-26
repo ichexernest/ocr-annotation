@@ -20,14 +20,14 @@ const Wrapper = styled(Container)`
 background-color:#FFF;
 .main{
     background-color: #ccc; 
-    height:93vh;
-    max-height:93vh;
+    height:91vh;
+    max-height:91vh;
     overflow:auto;
 }
 .side{
     background-color: #FFF; 
-    height:93vh;
-    max-height:93vh;
+    height:91vh;
+    max-height:91vh;
     overflow:auto;
     border:1px solid #ccc;
 }
@@ -79,6 +79,7 @@ const AnnotationPage = () => {
                     </Col>
                     <Col sm={10} className="main">
                         <MainCanvas
+                            activePageId={activePageId}
                             currentImg={annotation.PageSet[activePageId].FilePath} />
                     </Col>
                 </Row>
