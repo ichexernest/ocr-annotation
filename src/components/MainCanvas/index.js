@@ -18,10 +18,13 @@ import { AnnotationItem } from './MainCanvas.styles';
 
 const MainCanvas = ({ currentImg, activePageId }) => {
 
-    const { annotation } = useAPI();
-    const annotationTitleList = annotation.PageSet[activePageId].SpecTitleSet;
-    const annotationAreaList = annotation.PageSet[activePageId].SpecAreaSet;
-    const [annotations, setAnnotations] = useState([]);
+    const {setDispatch, annotation } = useAPI();
+
+    const titleList = annotation.PageSet[activePageId].SpecTitleSet;
+    const areaList = annotation.PageSet[activePageId].SpecAreaSet;
+    const drawList = annotation.PageSet[activePageId].SpecAreaSet.concat(annotation.PageSet[activePageId].SpecTitleSet)
+
+    const [annotations, setAnnotations] = useState();
     const [selectedId, selectAnnotation] = useState(null);
     const [canvasMeasures, setCanvasMeasures] = useState({
         width: window.innerWidth,
@@ -100,24 +103,20 @@ const MainCanvas = ({ currentImg, activePageId }) => {
     const handleKeyDown = event => {
         if (event.keyCode === 8 || event.keyCode === 46) {
             if (selectedId !== null) {
-                const newAnnotations = annotations.filter(
+                const annotationsAfterDelete = drawList.filter(
                     annotation => annotation.id !== selectedId
                 );
-                setAnnotations(newAnnotations);
-                console.log(`hanfle key down`+JSON.stringify(newAnnotations))
+                //setAnnotations(newAnnotations);
+                setDispatch({ type: 'edit_annotations', newAnnotationList: annotationsAfterDelete ,activePageId:activePageId})
             }
         }
     };
 
-    const annotationsToDraw = [...annotations, ...newAnnotation];
+    const annotationsToDraw = [...drawList, ...newAnnotation];
 
     return (
         <>
             <Row>
-                <div className='bg-white p-2'>
-                    <Button className="mx-1 btn-light">AREA</Button>
-                    <Button className="mx-1 btn-light">TITLE</Button>
-                </div>
                 <Col sm={9} className="main">
                     <PanZoom preventPan={preventPan}>
                         <div tabIndex={1} onKeyDown={handleKeyDown} ref={zoomRef}>
@@ -138,24 +137,21 @@ const MainCanvas = ({ currentImg, activePageId }) => {
                                             selectAnnotation(null);
                                         }}
                                     />
-                                    {annotationsToDraw.map((annotation, i) => {
-                                        // annotation.x = annotation.UX;
-                                        // annotation.y = annotation.UY;
-                                        // annotation.width = annotation.LX - annotation.UX;
-                                        // annotation.height = annotation.LY - annotation.UY;
+                                    {annotationsToDraw.map((item, i) => {
                                         return (
                                             <Annotation
                                                 key={i}
-                                                shapeProps={annotation}
-                                                isSelected={annotation.id === selectedId}
-                                                annoType={annotation.type}
+                                                shapeProps={item}
+                                                isSelected={item.id === selectedId}
+                                                annoType={item.type}
                                                 onSelect={() => {
-                                                    selectAnnotation(annotation.id);
+                                                    selectAnnotation(item.id);
                                                 }}
                                                 onChange={newAttrs => {
-                                                    const rects = annotations.slice();
+                                                    const rects = drawList.slice();
                                                     rects[i] = newAttrs;
-                                                    setAnnotations(rects);
+                                                    //setAnnotations(rects);
+                                                    setDispatch({ type: 'edit_annotations', newAnnotations: rects, activePageId:activePageId })
                                                 }}
                                             />
                                         );
@@ -167,28 +163,27 @@ const MainCanvas = ({ currentImg, activePageId }) => {
                 </Col>
                 <Col sm={3} className="side">
                     <ul>
-                        {annotations.map((annotation, i) => {
+                        {drawList.map((item, i) => {
                             let itemClasses = classNames({
-                                'active': (annotation.id === selectedId) ? true : false,
+                                'active': (item.id === selectedId) ? true : false,
                             });
                             return (
-                                <AnnotationItem key={i} className={itemClasses} onClick={() => selectAnnotation(annotation.id)}>
-                                    <span>type: {annotation.type}</span><br />
-                                    <span>pageNum: {annotation.pageNum}</span><br />
-                                    <span>specID: {annotation.specID}</span><br />
-                                    <span>areaID: {annotation.areaID}</span><br />
-                                    <span>id={annotation.id}</span><br />
-                                    <span>UX: {annotation.UX}</span><br />
-                                    <span>UY: {annotation.UY}</span><br />
-                                    <span>LX: {annotation.LX}</span><br />
-                                    <span>LY: {annotation.LY}</span><br />
-                                    <span>區域名稱: {annotation.areaName}</span><br />
-                                    <span>區域說明: {annotation.areaDesc}</span><br />
-                                    <span>標籤名稱: {annotation.title}</span><br />
-                                    <span>標籤內容: {annotation.titleContent}</span><br />
-                                    <span>是否為單行: {annotation.isOneLine}</span><br />
-                                    <span>是否為英數字: {annotation.isEng}</span><br />
-                                    <span>字數: {annotation.wordCount}</span><br />
+                                <AnnotationItem key={i} className={itemClasses} onClick={() => selectAnnotation(item.id)}>
+                                    <span>type: {item.type}</span><br />
+                                    <span>pageNum: {item.pageNum}</span><br />
+                                    <span>areaID: {item.AreaID}</span><br />
+                                    <span>id={item.id}</span><br />
+                                    <span>UX: {item.UX}</span><br />
+                                    <span>UY: {item.UY}</span><br />
+                                    <span>LX: {item.LX}</span><br />
+                                    <span>LY: {item.LY}</span><br />
+                                    <span>區域名稱: {item.AreaName}</span><br />
+                                    <span>區域說明: {item.AreaDesc}</span><br />
+                                    <span>標籤名稱: {item.Title}</span><br />
+                                    <span>標籤內容: {item.TitleContent}</span><br />
+                                    <span>是否為單行: {item.IsOneLine}</span><br />
+                                    <span>是否為英數字: {item.IsEng}</span><br />
+                                    <span>字數: {item.WordCount}</span><br />
                                     <button>編輯資訊</button>
                                     <button>刪除</button>
                                 </AnnotationItem>
@@ -202,8 +197,9 @@ const MainCanvas = ({ currentImg, activePageId }) => {
                 setShow={setShow}
                 newAnnotation={newAnnotation}
                 setNewAnnotation={setNewAnnotation}
-                annotations={annotations}
-                setAnnotations={setAnnotations}
+                activePageId={activePageId}
+                //annotations={annotations}
+                //setAnnotations={setAnnotations}
             />
         </>
 

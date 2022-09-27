@@ -56,6 +56,7 @@ const AnnotationPage = () => {
     const [showEdit, setShowEdit] = useState(false);
 
     const { annotation } = useAPI();
+    console.log(`ANNOTATIONPAGE: `+JSON.stringify(annotation))
 
     useEffect(() => {
         setActivePageId(0)

@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 const AnnotationContext = createContext();
 const initialState = {
     OCR_SpecSet: {
-        SpecID: "",
+        SpecID: "S1",
         SpecName: "",
         SpecDesc: "",
         OCRModel: "",
@@ -12,41 +12,51 @@ const initialState = {
         PageSet: [
             {
                 FilePath: "https://picsum.photos/200/300?random=3",
-                PageNum: 0,
+                PageNum: 1,
                 SpecTitleSet: [
                     {
-                        id:"",
-                        TitleID: "",
-                        AreaName: "",
-                        AreaDesc: "",
-                        Title: "",
-                        TitleContent: "",
-                        PageNum: 0,
+                        id: "specTitleInitId01",
+                        TitleID: "specTitleId01",
+                        AreaName: "specAreaName01",
+                        AreaDesc: "specAreaDesc01",
+                        Title: "specTitle01",
+                        TitleContent: "specTitleContent01",
+                        PageNum: 1,
+                        x: 0,
+                        y: 0,
+                        width: 40,
+                        height: 40,
+                        type: "title",
                         UX: 0,
                         UY: 0,
-                        LX: 100,
-                        LY: 100,
+                        LX: 40,
+                        LY: 40,
                         WordCount: 0,
-                        IsOneLine: "",
-                        IsEng: "",
+                        IsOneLine: "N",
+                        IsEng: "N",
                     }
                 ],
                 SpecAreaSet: [
-                    {                       
-                        id:"",
-                        AreaID: "",
-                        AreaName: "",
-                        AreaDesc: "",
-                        Title: "",
-                        TitleContent: "",
-                        PageNum: 0,
-                        UX: 0,
-                        UY: 0,
-                        LX: 0,
-                        LY: 0,
+                    {
+                        id: "specAreaInitId01",
+                        AreaID: "specAreaId01",
+                        AreaName: "specAreaName01",
+                        AreaDesc: "specAreaDesc01",
+                        Title: "specAreaTitle01",
+                        TitleContent: "specAreaTitleContent01",
+                        PageNum: 1,
+                        x: 50,
+                        y: 50,
+                        width: 100,
+                        height: 100,
+                        type: "area",
+                        UX: 50,
+                        UY: 50,
+                        LX: 100,
+                        LY: 100,
                         WordCount: 0,
-                        IsOneLine: "",
-                        IsEng: "",
+                        IsOneLine: "N",
+                        IsEng: "Y",
                     }
                 ],
             }
@@ -80,6 +90,32 @@ const reducer = (state, action) => {
             }
             console.log(`REDUCER new_specInfo : ${JSON.stringify(newSpecSet)}`);
             return { OCR_SpecSet: newSpecSet };
+        case "edit_annotations":
+            console.log(`REDUCER edit_annotations : ${JSON.stringify(action.newAnnotationList)}`);
+            let editedState = Object.assign({}, state.OCR_SpecSet);
+            console.log(`REDUCER state edit_annotations : ${JSON.stringify(editedState.PageSet[action.activePageId])}`);
+            editedState.PageSet[action.activePageId].SpecTitleSet = [];
+            editedState.PageSet[action.activePageId].SpecAreaSet = [];
+            action.newAnnotationList.forEach(item => {
+                if(item.type === "area"){
+                    editedState.PageSet[action.activePageId].SpecAreaSet.push(item);
+                }
+                else if(item.type ==="title"){
+                    editedState.PageSet[action.activePageId].SpecTitleSet.push(item);
+                }
+            });
+            console.log(`REDUCER_END edit_annotations : ${JSON.stringify(editedState)}`);
+            return {
+                OCR_SpecSet: editedState,
+            };
+            case "add_new_annotation":
+                console.log(`REDUCER add_new_annotation : ${JSON.stringify(action.newAnnotation)}`);
+                let newState = Object.assign({}, state.OCR_SpecSet);
+                if(action.newAnnotation.type ==="area")
+                    newState.PageSet[action.activePageId].SpecAreaSet.push(action.newAnnotation);
+                else if(action.newAnnotation.type ==="title")
+                    newState.PageSet[action.activePageId].SpecTitleSet.push(action.newAnnotation);
+                return state;
         default:
             return state;
     }

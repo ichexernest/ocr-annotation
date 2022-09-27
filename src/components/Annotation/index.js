@@ -44,7 +44,7 @@ const Annotation = ({ shapeProps, isSelected, annoType, onSelect, onChange }) =>
                     const ux = shapeProps.UX;
                     const uy = shapeProps.UY;
                     const lx = shapeProps.LX;
-                    const ly = shapeProps.lY;
+                    const ly = shapeProps.LY;
                     onChange({
                         ...shapeProps,
                         x: Math.round(event.target.x()),

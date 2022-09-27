@@ -20,7 +20,7 @@ const MainCanvas = ({ currentImg, activePageId }) => {
 
     const { annotation } = useAPI();
 
-    const [annotations, setAnnotations] = useState(annotation.PageSet[activePageId].SpecTitleSet);
+    const [annotations, setAnnotations] = useState(annotation.PageSet[activePageId].SpecTitleSet.concat(annotation.PageSet[activePageId].SpecAreaSet));
     const [selectedId, selectAnnotation] = useState(null);
     const [canvasMeasures, setCanvasMeasures] = useState({
         width: window.innerWidth,
@@ -112,10 +112,6 @@ const MainCanvas = ({ currentImg, activePageId }) => {
     return (
         <>
             <Row>
-                <div className='bg-white p-2'>
-                    <Button className="mx-1 btn-light">AREA</Button>
-                    <Button className="mx-1 btn-light">TITLE</Button>
-                </div>
                 <Col sm={9} className="main">
                     <PanZoom preventPan={preventPan}>
                         <div tabIndex={1} onKeyDown={handleKeyDown} ref={zoomRef}>
@@ -136,19 +132,15 @@ const MainCanvas = ({ currentImg, activePageId }) => {
                                             selectAnnotation(null);
                                         }}
                                     />
-                                    {annotationsToDraw.map((annotation, i) => {
-                                        // annotation.x = annotation.UX;
-                                        // annotation.y = annotation.UY;
-                                        // annotation.width = annotation.LX - annotation.UX;
-                                        // annotation.height = annotation.LY - annotation.UY;
+                                    {annotationsToDraw.map((item, i) => {
                                         return (
                                             <Annotation
                                                 key={i}
-                                                shapeProps={annotation}
-                                                isSelected={annotation.id === selectedId}
-                                                annoType={annotation.type}
+                                                shapeProps={item}
+                                                isSelected={item.id === selectedId}
+                                                annoType={item.type}
                                                 onSelect={() => {
-                                                    selectAnnotation(annotation.id);
+                                                    selectAnnotation(item.id);
                                                 }}
                                                 onChange={newAttrs => {
                                                     const rects = annotations.slice();
@@ -165,28 +157,27 @@ const MainCanvas = ({ currentImg, activePageId }) => {
                 </Col>
                 <Col sm={3} className="side">
                     <ul>
-                        {annotations.map((annotation, i) => {
+                        {annotations.map((item, i) => {
                             let itemClasses = classNames({
-                                'active': (annotation.id === selectedId) ? true : false,
+                                'active': (item.id === selectedId) ? true : false,
                             });
                             return (
-                                <AnnotationItem key={i} className={itemClasses} onClick={() => selectAnnotation(annotation.id)}>
-                                    <span>type: {annotation.type}</span><br />
-                                    <span>pageNum: {annotation.pageNum}</span><br />
-                                    <span>specID: {annotation.specID}</span><br />
-                                    <span>areaID: {annotation.areaID}</span><br />
-                                    <span>id={annotation.id}</span><br />
-                                    <span>UX: {annotation.UX}</span><br />
-                                    <span>UY: {annotation.UY}</span><br />
-                                    <span>LX: {annotation.LX}</span><br />
-                                    <span>LY: {annotation.LY}</span><br />
-                                    <span>區域名稱: {annotation.areaName}</span><br />
-                                    <span>區域說明: {annotation.areaDesc}</span><br />
-                                    <span>標籤名稱: {annotation.title}</span><br />
-                                    <span>標籤內容: {annotation.titleContent}</span><br />
-                                    <span>是否為單行: {annotation.isOneLine}</span><br />
-                                    <span>是否為英數字: {annotation.isEng}</span><br />
-                                    <span>字數: {annotation.wordCount}</span><br />
+                                <AnnotationItem key={i} className={itemClasses} onClick={() => selectAnnotation(item.id)}>
+                                    <span>type: {item.type}</span><br />
+                                    <span>pageNum: {item.pageNum}</span><br />
+                                    <span>areaID: {item.AreaID}</span><br />
+                                    <span>id={item.id}</span><br />
+                                    <span>UX: {item.UX}</span><br />
+                                    <span>UY: {item.UY}</span><br />
+                                    <span>LX: {item.LX}</span><br />
+                                    <span>LY: {item.LY}</span><br />
+                                    <span>區域名稱: {item.AreaName}</span><br />
+                                    <span>區域說明: {item.AreaDesc}</span><br />
+                                    <span>標籤名稱: {item.Title}</span><br />
+                                    <span>標籤內容: {item.TitleContent}</span><br />
+                                    <span>是否為單行: {item.IsOneLine}</span><br />
+                                    <span>是否為英數字: {item.IsEng}</span><br />
+                                    <span>字數: {item.WordCount}</span><br />
                                     <button>編輯資訊</button>
                                     <button>刪除</button>
                                 </AnnotationItem>

@@ -5,7 +5,11 @@ import Modal from 'react-bootstrap/Modal';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 
-const AnnoInfoModal = ({show,setShow,newAnnotation,setNewAnnotation,annotations,setAnnotations}) => {
+import { useAPI } from "../annotationContext";
+
+const AnnoInfoModal = ({show,setShow,newAnnotation,setNewAnnotation,annotations,setAnnotations,activePageId}) => {
+    const {setDispatch} = useAPI();
+    
     const [inputs, setInputs] = useState({
         areaName: '',
         areaDesc: '',
@@ -28,13 +32,13 @@ const AnnoInfoModal = ({show,setShow,newAnnotation,setNewAnnotation,annotations,
         //alert(JSON.stringify(newAnnotation));
         setShow(false);
         setInputs({
-            areaName: '',
-            areaDesc: '',
-            title: '',
-            titleContent: '',
-            wordCount: '',
-            isOneLine: '',
-            isEng: '',
+            AreaName: '',
+            AreaDesc: '',
+            Title: '',
+            TitleContent: '',
+            WordCount: '',
+            IsOneLine: '',
+            IsEng: '',
         })
         setAnnoType("area")
     };
@@ -46,43 +50,45 @@ const AnnoInfoModal = ({show,setShow,newAnnotation,setNewAnnotation,annotations,
     const handleCheck = (e) => {
         e.preventDefault()
         let submitData = inputs;
-        if (submitData.areaName === '') {
+        if (submitData.AreaName === '') {
             alert(`未填寫區域名稱`);
             return;
         }
-        if (submitData.areaDesc === '') {
+        if (submitData.AreaDesc === '') {
             alert(`未填寫區域說明`);
             return;
         }
-        if (submitData.title === '') {
+        if (submitData.Title === '') {
             alert(`未填寫標籤欄位`);
             return;
         }
-        if (submitData.titleContent === '') {
+        if (submitData.TitleContent === '') {
             alert(`未填寫標籤內容`);
             return;
         }
         submitData.type = annoType;
-        submitData.pageNum = 1;
-        submitData.specID = "testSpec001";
-        submitData.areaID = "testArea001";
-        submitData.isOneLine = submitData.isOneLine == "on" ? "Y" : "N";
-        submitData.isEng = submitData.isEng == "on" ? "Y" : "N";
+        submitData.PageNum = 1;
+        //submitData.specID = "testSpec001";
+        submitData.AreaID = "manualID";
+        submitData.IsOneLine = submitData.IsOneLine == "on" ? "Y" : "N";
+        submitData.IsEng = submitData.IsEng == "on" ? "Y" : "N";
         newAnnotation[0] = { ...newAnnotation[0], ...submitData };
         alert(JSON.stringify(newAnnotation));
-        annotations.push(...newAnnotation);
-        setAnnotations(annotations);
+        // annotations.push(...newAnnotation);
+        // setAnnotations(annotations);
+        setDispatch({ type: 'add_new_annotation', newAnnotation: newAnnotation[0], activePageId:activePageId})
+
         setNewAnnotation([]);
         //alert(JSON.stringify(annotations));
         setShow(false);
         setInputs({
-            areaName: '',
-            areaDesc: '',
-            title: '',
-            titleContent: '',
-            wordCount: '',
-            isOneLine: '',
-            isEng: '',
+            AreaName: '',
+            AreaDesc: '',
+            Title: '',
+            TitleContent: '',
+            WordCount: '',
+            IsOneLine: '',
+            IsEng: '',
         })
         setAnnoType("area")
     }
@@ -105,35 +111,35 @@ const AnnoInfoModal = ({show,setShow,newAnnotation,setNewAnnotation,annotations,
                     </Form.Select>
                 </FloatingLabel>
                 <FloatingLabel
-                    controlId="areaName"
+                    controlId="AreaName"
                     label="區域名稱*"
                     className="mb-3"
                     onChange={handleTextChange}>
                     <Form.Control type="text" placeholder="type areaName" />
                 </FloatingLabel>
                 <FloatingLabel
-                    controlId="areaDesc"
+                    controlId="AreaDesc"
                     label="區域說明*"
                     className="mb-3"
                     onChange={handleTextChange}>
                     <Form.Control type="text" placeholder="type areaDesc" />
                 </FloatingLabel>
                 <FloatingLabel
-                    controlId="title"
+                    controlId="Title"
                     label="標籤名稱*"
                     className="mb-3"
                     onChange={handleTextChange}>
                     <Form.Control type="text" placeholder="type title" />
                 </FloatingLabel>
                 <FloatingLabel
-                    controlId="titleContent"
+                    controlId="TitleContent"
                     label="標籤內容*"
                     className="mb-3"
                     onChange={handleTextChange}>
                     <Form.Control type="text" placeholder="type titleContent" />
                 </FloatingLabel>
                 <FloatingLabel
-                    controlId="wordCount"
+                    controlId="WordCount"
                     label="字數"
                     className="mb-3"
                     onChange={handleTextChange}>
@@ -141,14 +147,14 @@ const AnnoInfoModal = ({show,setShow,newAnnotation,setNewAnnotation,annotations,
                 </FloatingLabel>
                 <Form.Group className="mb-3">
                     <Form.Check
-                        id="isOneLine"
+                        id="IsOneLine"
                         label="是否為單行"
                         onChange={handleTextChange}
                     />
                 </Form.Group>
                 <Form.Group className="mb-3">
                     <Form.Check
-                        id="isEng"
+                        id="IsEng"
                         label="是否為英數字"
                         onChange={handleTextChange}
                     />
