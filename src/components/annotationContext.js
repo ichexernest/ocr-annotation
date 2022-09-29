@@ -100,7 +100,7 @@ const reducer = (state, action) => {
             return state;
         case "edit_annotations":
             console.log(`REDUCER edit_annotations : ${JSON.stringify(action.newAnnotationList)}`);
-            let editedState = Object.assign({}, state.OCR_SpecSet);
+            let editedState = Object.assign({}, state);
             console.log(`REDUCER state edit_annotations : ${JSON.stringify(editedState.PageSet[action.activePageId])}`);
             editedState.PageSet[action.activePageId].SpecTitleSet = [];
             editedState.PageSet[action.activePageId].SpecAreaSet = [];
@@ -113,12 +113,10 @@ const reducer = (state, action) => {
                 }
             });
             console.log(`REDUCER_END edit_annotations : ${JSON.stringify(editedState)}`);
-            return {
-                OCR_SpecSet: editedState,
-            };
+            return  editedState;
             case "add_new_annotation":
                 console.log(`REDUCER add_new_annotation : ${JSON.stringify(action.newAnnotation)}`);
-                let newState = Object.assign({}, state.OCR_SpecSet);
+                let newState = Object.assign({}, state);
                 console.log(`REDUCER begin add_new_annotation : ${JSON.stringify(newState)}`);
                 if(action.newAnnotation.type ==="area")
                     newState.PageSet[action.activePageId].SpecAreaSet.push(action.newAnnotation);
@@ -126,9 +124,7 @@ const reducer = (state, action) => {
                     newState.PageSet[action.activePageId].SpecTitleSet.push(action.newAnnotation);
                 
                 console.log(`REDUCER DONE add_new_annotation : ${JSON.stringify(newState)}`);
-                return{
-                    OCR_SpecSet: newState,
-                };
+                return newState;
         default:
             return state;
     }

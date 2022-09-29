@@ -18,14 +18,17 @@ import { AnnotationItem, WorkArea } from './MainCanvas.styles';
 
 const MainCanvas = ({ activePageId }) => {
 
-    const { annotation } = useAPI();
+    const { setDispatch, annotation } = useAPI();
+    const alfa =annotation.PageSet[activePageId].SpecAreaSet.concat(annotation.PageSet[activePageId].SpecTitleSet);
     //console.log(`MAINCANVA :::`+JSON.stringify(annotation));
     console.log(`MAINCANVA activePageId :::`+ annotation.PageSet[activePageId].PageNum);
     useEffect(() => {
-        setAnnotations(annotation.PageSet[activePageId].SpecAreaSet.concat(annotation.PageSet[activePageId].SpecTitleSet))
+        //setAnnotations(annotation.PageSet[activePageId].SpecAreaSet.concat(annotation.PageSet[activePageId].SpecTitleSet));
+        //alfa =annotation.PageSet[activePageId].SpecAreaSet.concat(annotation.PageSet[activePageId].SpecTitleSet);
+        console.log(JSON.stringify(alfa))
     }, [activePageId]);
 
-    const [annotations, setAnnotations] = useState([]);
+    //const [annotations, setAnnotations] = useState([]);
     const [selectedId, selectAnnotation] = useState(null);
     const [canvasMeasures, setCanvasMeasures] = useState({
         width: window.innerWidth,
@@ -35,11 +38,12 @@ const MainCanvas = ({ activePageId }) => {
     const [newAnnotation, setNewAnnotation] = useState([]);
     const zoomRef = React.useRef();
 
+    const annotationsToDraw = [...alfa, ...newAnnotation];
+
     const preventPan = (e, x, y) => {        // if the target is the content container then prevent panning
             return true;
         
     }
-
     const handleMouseDown = event => {
         if (selectedId === null && newAnnotation.length === 0) {
             const { x, y } = event.target.getStage().getPointerPosition();
@@ -49,7 +53,6 @@ const MainCanvas = ({ activePageId }) => {
             setNewAnnotation([]);
         }
     };
-
     const handleMouseMove = event => {
         if (selectedId === null && newAnnotation.length === 1) {
             const sx = newAnnotation[0].x;
@@ -80,7 +83,6 @@ const MainCanvas = ({ activePageId }) => {
             return;
         }
     };
-
     const handleMouseUp = () => {
         if (selectedId === null && newAnnotation.length === 1) {
             // alert(JSON.stringify(newAnnotation));
@@ -89,24 +91,20 @@ const MainCanvas = ({ activePageId }) => {
             //改變已存在之標註
         }
     };
-
     const handleMouseEnter = event => {
         event.target.getStage().container().style.cursor = "crosshair";
     };
-
     const handleKeyDown = event => {
         if (event.keyCode === 8 || event.keyCode === 46) {
             if (selectedId !== null) {
-                const annotationsAfterDelete = annotations.filter(
+                const annotationsAfterDelete = alfa.filter(
                     annotation => annotation.id !== selectedId
                 );
-                setAnnotations(annotationsAfterDelete);
-                //setDispatch({ type: 'edit_annotations', newAnnotationList: annotationsAfterDelete ,activePageId:activePageId})
+                //setAnnotations(annotationsAfterDelete);
+                setDispatch({ type: 'edit_annotations', newAnnotationList: annotationsAfterDelete ,activePageId:activePageId})
             }
         }
     };
-
-    const annotationsToDraw = [...annotations, ...newAnnotation];
 
     return (
         <>
@@ -143,10 +141,10 @@ const MainCanvas = ({ activePageId }) => {
                                                     selectAnnotation(item.id);
                                                 }}
                                                 onChange={newAttrs => {
-                                                    const rects = annotations.slice();
+                                                    const rects = alfa.slice();
                                                     rects[i] = newAttrs;
-                                                    setAnnotations(rects);
-                                                    //setDispatch({ type: 'edit_annotations', newAnnotations: rects, activePageId:activePageId })
+                                                    //setAnnotations(rects);
+                                                    setDispatch({ type: 'edit_annotations', newAnnotations: rects, activePageId:activePageId })
                                                 }}
                                             />
                                         );
@@ -158,7 +156,7 @@ const MainCanvas = ({ activePageId }) => {
                 </Col>
                 <Col sm={3} className="side">
                     <ul>
-                        {annotations.map((item, i) => {
+                        {alfa.map((item, i) => {
                             let itemClasses = classNames({
                                 'active': (item.id === selectedId) ? true : false,
                             });
@@ -193,8 +191,8 @@ const MainCanvas = ({ activePageId }) => {
                 newAnnotation={newAnnotation}
                 setNewAnnotation={setNewAnnotation}
                 activePageId={activePageId}
-                annotations={annotations}
-                setAnnotations={setAnnotations}
+                //annotations={annotations}
+                //setAnnotations={setAnnotations}
             />
         </>
 
