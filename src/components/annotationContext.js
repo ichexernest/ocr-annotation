@@ -3,77 +3,83 @@ import { useNavigate, useParams } from 'react-router-dom';
 //import API from '../API';
 const AnnotationContext = createContext();
 const initialState = {
-    OCR_SpecSet: {
-        SpecID: "S1",
+        SpecID: "",
         SpecName: "",
         SpecDesc: "",
         OCRModel: "",
         RpaAPID: "",
         PageSet: [
             {
-                FilePath: "https://picsum.photos/200/300?random=3",
+                FilePath: "https://t4.ftcdn.net/jpg/02/61/49/05/360_F_261490536_nJ5LSRAVZA0CK9Nvt2E1fXJVUfpiqvhT.jpg",
                 PageNum: 1,
                 SpecTitleSet: [
+                ],
+                SpecAreaSet: [
                     {
-                        id: "specTitleInitId01",
-                        TitleID: "specTitleId01",
-                        AreaName: "specAreaName01",
-                        AreaDesc: "specAreaDesc01",
-                        Title: "specTitle01",
-                        TitleContent: "specTitleContent01",
+                        id: "",
+                        TitleID: "",
+                        AreaName: "",
+                        AreaDesc: "",
+                        Title: "",
+                        TitleContent: "",
                         PageNum: 1,
                         x: 0,
                         y: 0,
-                        width: 40,
-                        height: 40,
-                        type: "title",
+                        width: 0,
+                        height: 0,
+                        type: "",
                         UX: 0,
                         UY: 0,
-                        LX: 40,
-                        LY: 40,
+                        LX: 0,
+                        LY: 0,
                         WordCount: 0,
                         IsOneLine: "N",
                         IsEng: "N",
                     }
                 ],
+            },
+            {
+                FilePath: "https://t4.ftcdn.net/jpg/02/61/49/05/360_F_261490536_nJ5LSRAVZA0CK9Nvt2E1fXJVUfpiqvhT.jpg",
+                PageNum: 2,
+                SpecTitleSet: [
+                ],
                 SpecAreaSet: [
                     {
-                        id: "specAreaInitId01",
-                        AreaID: "specAreaId01",
-                        AreaName: "specAreaName01",
-                        AreaDesc: "specAreaDesc01",
-                        Title: "specAreaTitle01",
-                        TitleContent: "specAreaTitleContent01",
+                        id: "",
+                        TitleID: "",
+                        AreaName: "",
+                        AreaDesc: "",
+                        Title: "",
+                        TitleContent: "",
                         PageNum: 1,
-                        x: 50,
-                        y: 50,
-                        width: 100,
-                        height: 100,
-                        type: "area",
-                        UX: 50,
-                        UY: 50,
-                        LX: 100,
-                        LY: 100,
+                        x: 0,
+                        y: 0,
+                        width: 0,
+                        height: 0,
+                        type: "",
+                        UX: 0,
+                        UY: 5,
+                        LX: 0,
+                        LY: 0,
                         WordCount: 0,
                         IsOneLine: "N",
-                        IsEng: "Y",
+                        IsEng: "N",
                     }
                 ],
             }
         ]
-    }
 };
 const reducer = (state, action) => {
     switch (action.type) {
         case 'fetch_success':
             console.log(`REDUCER fetch_success : ${JSON.stringify(action.OCR_SpecSet)}`);
-            return {
-                OCR_SpecSet: action.OCR_SpecSet,
-            };
+            let result = JSON.stringify(action.OCR_SpecSet);
+            state = JSON.parse(result)
+            return state;
         case 'new_specInfo':
             console.log(`REDUCER new_specInfo : ${JSON.stringify(action.submitData)}`);
             let fileP = URL.createObjectURL(action.submitData.FormFile);
-            let newSpecSet = {
+            let a = {
                 SpecID: "new_SpecSet_Id01",
                 SpecName: action.submitData.SpecName,
                 SpecDesc: action.submitData.SpecDesc,
@@ -88,8 +94,10 @@ const reducer = (state, action) => {
                     }
                 ]
             }
-            console.log(`REDUCER new_specInfo : ${JSON.stringify(newSpecSet)}`);
-            return { OCR_SpecSet: newSpecSet };
+            let aresult = JSON.stringify(a);
+            state=JSON.parse(aresult);
+            console.log(`REDUCER new_specInfo : ${JSON.stringify(state)}`);
+            return state;
         case "edit_annotations":
             console.log(`REDUCER edit_annotations : ${JSON.stringify(action.newAnnotationList)}`);
             let editedState = Object.assign({}, state.OCR_SpecSet);
@@ -111,101 +119,25 @@ const reducer = (state, action) => {
             case "add_new_annotation":
                 console.log(`REDUCER add_new_annotation : ${JSON.stringify(action.newAnnotation)}`);
                 let newState = Object.assign({}, state.OCR_SpecSet);
+                console.log(`REDUCER begin add_new_annotation : ${JSON.stringify(newState)}`);
                 if(action.newAnnotation.type ==="area")
                     newState.PageSet[action.activePageId].SpecAreaSet.push(action.newAnnotation);
                 else if(action.newAnnotation.type ==="title")
                     newState.PageSet[action.activePageId].SpecTitleSet.push(action.newAnnotation);
-                return state;
+                
+                console.log(`REDUCER DONE add_new_annotation : ${JSON.stringify(newState)}`);
+                return{
+                    OCR_SpecSet: newState,
+                };
         default:
             return state;
     }
 }
 export const AnnotationContextProvider = ({ children }) => {
-    // const { SpecID } = useParams();
-    //const navigate = useNavigate();
     const [state, dispatch] = useReducer(reducer, initialState);
-    //const [show, setShow]= useState(false);
-    //const message = "file fetch error !!";
-    useEffect(() => {
-        // let isNew = false;
-        // const back = () => {
-        //     // navigate(-1);
-        // };
-        // const fetchSpecSet = async () => {
-        //     try {
-        //         const resData = {
-        //             SpecID: "Test001",
-        //             SpecName: "測試1",
-        //             SpecDesc: "這是測試用",
-        //             OCRModel: "OCR01EN",
-        //             RpaAPID: "AP001",
-        //             PageSet: [
-        //                 {
-        //                     FilePath: "https://picsum.photos/200/300?random=1",
-        //                     PageNum: 1,
-        //                     SpecTitleSet: [],
-        //                     SpecAreaSet: [
-        //                         {
-        //                             AreaID: "testAreaId01",
-        //                             AreaName: "testAreaName01",
-        //                             AreaDesc: "testAreaDesc01",
-        //                             Title: "testTitle01",
-        //                             TitleContent: "testContent01",
-        //                             PageNum: 1,
-        //                             UX: 10,
-        //                             UY: 10,
-        //                             LX: 50,
-        //                             LY: 50,
-        //                             WordCount: 0,
-        //                             IsOneLine: "N",
-        //                             IsEng: "N",
-        //                         }
-        //                     ],
-        //                 },
-        //                 {
-        //                     FilePath: "https://picsum.photos/200/300?random=2",
-        //                     PageNum: 2,
-        //                     SpecTitleSet: [],
-        //                     SpecAreaSet: [
-        //                         {
-        //                             AreaID: "testAreaId02",
-        //                             AreaName: "testAreaName02",
-        //                             AreaDesc: "testAreaDesc02",
-        //                             Title: "testTitle02",
-        //                             TitleContent: "testContent02",
-        //                             PageNum: 2,
-        //                             UX: 10,
-        //                             UY: 10,
-        //                             LX: 50,
-        //                             LY: 50,
-        //                             WordCount: 0,
-        //                             IsOneLine: "N",
-        //                             IsEng: "N",
-        //                         }
-        //                     ],
-        //                 }
-        //             ]
-        //         };
-        //         //TODO: fetch dataset if exist
-        //         //console.log(`data d parsr ::${pageList.length}::: ${pageList[0].Sets}`);
-        //         if (resData.length === 0 || resData === null) {
-        //             alert("error: no page data");
-        //             back();
-        //         } else {
-        //             //setPages({ caseNo: caseNo, createDTime: createDTime, pageList: pageList });
-        //             dispatch({ type: 'fetch_success', OCR_SpecSet: resData })
-        //         }
-        //     } catch (error) {
-        //         alert(error);
-        //         back();
-        //     }
-        // };
-        // if (!isNew) {
-        //     fetchSpecSet();
-        // }
-    }, []);
+
     return (
-        <AnnotationContext.Provider value={{ annotation: state.OCR_SpecSet, setDispatch: dispatch }}>
+        <AnnotationContext.Provider value={{ annotation: state, setDispatch: dispatch }}>
             {children}
         </AnnotationContext.Provider>
     );

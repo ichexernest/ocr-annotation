@@ -11,13 +11,13 @@ const AnnoInfoModal = ({show,setShow,newAnnotation,setNewAnnotation,annotations,
     const {setDispatch} = useAPI();
     
     const [inputs, setInputs] = useState({
-        areaName: '',
-        areaDesc: '',
-        title: '',
-        titleContent: '',
-        wordCount: '',
-        isOneLine: '',
-        isEng: '',
+        AreaName: '',
+        AreaDesc: '',
+        Title: '',
+        TitleContent: '',
+        WordCount: '',
+        IsOneLine: '',
+        IsEng: '',
     });
     const [annoType, setAnnoType] = useState('area');
     const handleTextChange = (event) => {
@@ -74,9 +74,9 @@ const AnnoInfoModal = ({show,setShow,newAnnotation,setNewAnnotation,annotations,
         submitData.IsEng = submitData.IsEng == "on" ? "Y" : "N";
         newAnnotation[0] = { ...newAnnotation[0], ...submitData };
         alert(JSON.stringify(newAnnotation));
-        // annotations.push(...newAnnotation);
-        // setAnnotations(annotations);
-        setDispatch({ type: 'add_new_annotation', newAnnotation: newAnnotation[0], activePageId:activePageId})
+        annotations.push(...newAnnotation);
+        setAnnotations(annotations);
+        //setDispatch({ type: 'add_new_annotation', newAnnotation: newAnnotation[0], activePageId:activePageId})
 
         setNewAnnotation([]);
         //alert(JSON.stringify(annotations));

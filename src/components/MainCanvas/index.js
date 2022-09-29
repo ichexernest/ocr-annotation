@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 
 import { Stage, Layer } from 'react-konva';
 import { v1 as uuidv1 } from "uuid";
@@ -14,17 +14,18 @@ import Annotation from "../Annotation";
 import AnnoInfoModal from '../AnnoInfoModal';
 import { useAPI } from "../annotationContext";
 
-import { AnnotationItem } from './MainCanvas.styles';
+import { AnnotationItem, WorkArea } from './MainCanvas.styles';
 
-const MainCanvas = ({ currentImg, activePageId }) => {
+const MainCanvas = ({ activePageId }) => {
 
-    const {setDispatch, annotation } = useAPI();
+    const { annotation } = useAPI();
+    //console.log(`MAINCANVA :::`+JSON.stringify(annotation));
+    console.log(`MAINCANVA activePageId :::`+ annotation.PageSet[activePageId].PageNum);
+    useEffect(() => {
+        setAnnotations(annotation.PageSet[activePageId].SpecAreaSet.concat(annotation.PageSet[activePageId].SpecTitleSet))
+    }, [activePageId]);
 
-    const titleList = annotation.PageSet[activePageId].SpecTitleSet;
-    const areaList = annotation.PageSet[activePageId].SpecAreaSet;
-    const drawList = annotation.PageSet[activePageId].SpecAreaSet.concat(annotation.PageSet[activePageId].SpecTitleSet)
-
-    const [annotations, setAnnotations] = useState();
+    const [annotations, setAnnotations] = useState([]);
     const [selectedId, selectAnnotation] = useState(null);
     const [canvasMeasures, setCanvasMeasures] = useState({
         width: window.innerWidth,
@@ -34,25 +35,18 @@ const MainCanvas = ({ currentImg, activePageId }) => {
     const [newAnnotation, setNewAnnotation] = useState([]);
     const zoomRef = React.useRef();
 
-    const preventPan = (e, x, y) => {
-        // if the target is the content container then prevent panning
-        if (e.target === zoomRef) {
+    const preventPan = (e, x, y) => {        // if the target is the content container then prevent panning
             return true;
-        }
-        const contentRect = zoomRef.getBoundingClientRect()
-        const x1 = contentRect.left
-        const x2 = contentRect.right
-        const y1 = contentRect.top
-        const y2 = contentRect.bottom
-
-        return (x >= x1 && x <= x2) && (y >= y1 && y <= y2)
+        
     }
 
     const handleMouseDown = event => {
         if (selectedId === null && newAnnotation.length === 0) {
             const { x, y } = event.target.getStage().getPointerPosition();
             const id = uuidv1();
-            setNewAnnotation([{ x, y, width: 0, height: 0, id }]);
+            setNewAnnotation([{x, y, width: 0, height: 0, id }]);
+        }else{
+            setNewAnnotation([]);
         }
     };
 
@@ -65,25 +59,25 @@ const MainCanvas = ({ currentImg, activePageId }) => {
             Math.max(y, canvasMeasures.height);
             const width = Math.round(x - sx);
             const height = Math.round(y - sy);
-            //const ux = x < sx ? sx + width : sx;
-            //const uy = y < sy ? sy + height : sy;
-            //const lx = ux + Math.abs(width);
-            //const ly = uy + Math.abs(height);
             const id = uuidv1();
-            setNewAnnotation([
-                {
-                    id,
-                    x: sx,
-                    y: sy,
-                    width: Math.abs(width),
-                    height: Math.abs(height),
-                    //計算
-                    UX: sx,
-                    UY: sy,
-                    LX: sx + Math.abs(width),
-                    LY: sy + Math.abs(height),
-                }
-            ]);
+            if(x<canvasMeasures.width ||y<canvasMeasures.height){
+                setNewAnnotation([
+                    {
+                        id,
+                        x: sx,
+                        y: sy,
+                        width: Math.abs(width),
+                        height: Math.abs(height),
+                        //計算
+                        UX: sx,
+                        UY: sy,
+                        LX: sx + Math.abs(width),
+                        LY: sy + Math.abs(height),
+                    }
+                ]);
+            }
+        }else{
+            return;
         }
     };
 
@@ -103,23 +97,23 @@ const MainCanvas = ({ currentImg, activePageId }) => {
     const handleKeyDown = event => {
         if (event.keyCode === 8 || event.keyCode === 46) {
             if (selectedId !== null) {
-                const annotationsAfterDelete = drawList.filter(
+                const annotationsAfterDelete = annotations.filter(
                     annotation => annotation.id !== selectedId
                 );
-                //setAnnotations(newAnnotations);
-                setDispatch({ type: 'edit_annotations', newAnnotationList: annotationsAfterDelete ,activePageId:activePageId})
+                setAnnotations(annotationsAfterDelete);
+                //setDispatch({ type: 'edit_annotations', newAnnotationList: annotationsAfterDelete ,activePageId:activePageId})
             }
         }
     };
 
-    const annotationsToDraw = [...drawList, ...newAnnotation];
+    const annotationsToDraw = [...annotations, ...newAnnotation];
 
     return (
         <>
             <Row>
                 <Col sm={9} className="main">
                     <PanZoom preventPan={preventPan}>
-                        <div tabIndex={1} onKeyDown={handleKeyDown} ref={zoomRef}>
+                        <WorkArea tabIndex={1} onKeyDown={handleKeyDown}>
                             <Stage
                                 width={canvasMeasures.width}
                                 height={canvasMeasures.height}
@@ -127,11 +121,12 @@ const MainCanvas = ({ currentImg, activePageId }) => {
                                 onMouseDown={handleMouseDown}
                                 onMouseMove={handleMouseMove}
                                 onMouseUp={handleMouseUp}
+                                ref={zoomRef}
                             >
                                 <Layer>
                                     <ImageFromUrl
                                         setCanvasMeasures={setCanvasMeasures}
-                                        imageUrl={currentImg}
+                                        imageUrl={annotation.PageSet[activePageId].FilePath}
                                         onMouseDown={() => {
                                             // deselect when clicked on empty area
                                             selectAnnotation(null);
@@ -148,22 +143,22 @@ const MainCanvas = ({ currentImg, activePageId }) => {
                                                     selectAnnotation(item.id);
                                                 }}
                                                 onChange={newAttrs => {
-                                                    const rects = drawList.slice();
+                                                    const rects = annotations.slice();
                                                     rects[i] = newAttrs;
-                                                    //setAnnotations(rects);
-                                                    setDispatch({ type: 'edit_annotations', newAnnotations: rects, activePageId:activePageId })
+                                                    setAnnotations(rects);
+                                                    //setDispatch({ type: 'edit_annotations', newAnnotations: rects, activePageId:activePageId })
                                                 }}
                                             />
                                         );
                                     })}
                                 </Layer>
                             </Stage>
-                        </div>
+                        </WorkArea>
                     </PanZoom>
                 </Col>
                 <Col sm={3} className="side">
                     <ul>
-                        {drawList.map((item, i) => {
+                        {annotations.map((item, i) => {
                             let itemClasses = classNames({
                                 'active': (item.id === selectedId) ? true : false,
                             });
@@ -198,8 +193,8 @@ const MainCanvas = ({ currentImg, activePageId }) => {
                 newAnnotation={newAnnotation}
                 setNewAnnotation={setNewAnnotation}
                 activePageId={activePageId}
-                //annotations={annotations}
-                //setAnnotations={setAnnotations}
+                annotations={annotations}
+                setAnnotations={setAnnotations}
             />
         </>
 

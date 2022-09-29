@@ -37,43 +37,55 @@ const OpenModal = ({ show, setShow,setActivePageId }) => {
                         FilePath: "https://picsum.photos/200/300?random=1",
                         PageNum: 1,
                         SpecTitleSet: [],
-                        SpecAreaSet: [
+                        SpecAreaSet: [],
+                    },
+                    {
+                        FilePath: "https://picsum.photos/200/300?random=2",
+                        PageNum: 2,
+                        SpecTitleSet: [
                             {
-                                AreaID: "testAreaId01",
-                                AreaName: "testAreaName01",
-                                AreaDesc: "testAreaDesc01",
-                                Title: "testTitle01",
-                                TitleContent: "testContent01",
+                                id: "specTitleInitId01",
+                                TitleID: "specTitleId01",
+                                AreaName: "specAreaName01",
+                                AreaDesc: "specAreaDesc01",
+                                Title: "specTitle01",
+                                TitleContent: "specTitleContent01",
                                 PageNum: 1,
-                                UX: 10,
-                                UY: 10,
-                                LX: 50,
-                                LY: 50,
+                                x: 0,
+                                y: 0,
+                                width: 40,
+                                height: 40,
+                                type: "title",
+                                UX: 0,
+                                UY: 0,
+                                LX: 40,
+                                LY: 40,
                                 WordCount: 0,
                                 IsOneLine: "N",
                                 IsEng: "N",
                             }
                         ],
-                    },
-                    {
-                        FilePath: "https://picsum.photos/200/300?random=2",
-                        PageNum: 2,
-                        SpecTitleSet: [],
                         SpecAreaSet: [
                             {
-                                AreaID: "testAreaId02",
-                                AreaName: "testAreaName02",
-                                AreaDesc: "testAreaDesc02",
-                                Title: "testTitle02",
-                                TitleContent: "testContent02",
-                                PageNum: 2,
-                                UX: 10,
-                                UY: 10,
-                                LX: 50,
-                                LY: 50,
+                                id: "specAreaInitId01",
+                                AreaID: "specAreaId01",
+                                AreaName: "specAreaName01",
+                                AreaDesc: "specAreaDesc01",
+                                Title: "specAreaTitle01",
+                                TitleContent: "specAreaTitleContent01",
+                                PageNum: 1,
+                                x: 50,
+                                y: 50,
+                                width: 100,
+                                height: 100,
+                                type: "area",
+                                UX: 50,
+                                UY: 50,
+                                LX: 100,
+                                LY: 100,
                                 WordCount: 0,
                                 IsOneLine: "N",
-                                IsEng: "N",
+                                IsEng: "Y",
                             }
                         ],
                     }
@@ -102,13 +114,13 @@ const OpenModal = ({ show, setShow,setActivePageId }) => {
             <Modal.Body>
                 <ListGroup>
                     <ListGroup.Item action onClick={alertClicked}>
-                        Link 1
+                        proj 1
                     </ListGroup.Item>
                     <ListGroup.Item action onClick={alertClicked}>
-                        Link 2
+                        proj 2
                     </ListGroup.Item>
                     <ListGroup.Item action onClick={alertClicked}>
-                        This one is a button
+                        proj 3
                     </ListGroup.Item>
                 </ListGroup>
             </Modal.Body>
@@ -117,7 +129,7 @@ const OpenModal = ({ show, setShow,setActivePageId }) => {
                     取消
                 </Button>
                 <Button variant="primary" onClick={handleChoose}>
-                    儲存
+                    開啟
                 </Button>
             </Modal.Footer>
         </Modal>

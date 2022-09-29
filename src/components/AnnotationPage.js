@@ -22,7 +22,7 @@ background-color:#FFF;
     background-color: #ccc; 
     height:91vh;
     max-height:91vh;
-    overflow:auto;
+    overflow:hidden;
 }
 .side{
     background-color: #FFF; 
@@ -56,7 +56,7 @@ const AnnotationPage = () => {
     const [showEdit, setShowEdit] = useState(false);
 
     const { annotation } = useAPI();
-    console.log(`ANNOTATIONPAGE: `+JSON.stringify(annotation))
+    //console.log(`ANNOTATIONPAGE: `+JSON.stringify(annotation))
 
     useEffect(() => {
         setActivePageId(0)
@@ -80,8 +80,7 @@ const AnnotationPage = () => {
                     </Col>
                     <Col sm={10} className="main">
                         <MainCanvas
-                            activePageId={activePageId}
-                            currentImg={annotation.PageSet[activePageId].FilePath} />
+                            activePageId={activePageId} />
                     </Col>
                 </Row>
             </Wrapper>
@@ -106,7 +105,7 @@ const Sidebar = ({ setActivePageId, activePageId }) => {
     const handleSelectTarget = (i) => {
         setActivePageId(i);
     }
-    console.log(`Sidebar  get annotation::: ${JSON.stringify(annotation)}`)
+   // console.log(`Sidebar  get annotation::: ${JSON.stringify(annotation)}`)
     return (
         <SidebarWrapper>
             <ul>

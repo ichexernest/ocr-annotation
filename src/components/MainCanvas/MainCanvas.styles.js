@@ -6,3 +6,7 @@ border-radius: 10px;
 padding:10px;
 margin:10px 0;
 `;
+
+export const WorkArea =styled.div`
+width:100%;
+`;
