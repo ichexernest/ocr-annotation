@@ -63,16 +63,19 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, annotat
             alert(`未填寫標籤欄位`);
             return;
         }
-        if (submitData.TitleContent === '') {
+        if (submitData.type==="title" && submitData.TitleContent === '') {
             alert(`未填寫標籤內容`);
             return;
+        }
+        if (submitData.type==="title" && submitData.IsAnchor==="on") {
+            //TODO the only anchor
         }
         submitData.type = annoType;
         submitData.PageNum = 1;
         //submitData.specID = "testSpec001";
         submitData.AreaID = "manualID";
-        submitData.IsOneLine = submitData.IsOneLine == "on" ? "Y" : "N";
-        submitData.IsEng = submitData.IsEng == "on" ? "Y" : "N";
+        submitData.IsOneLine = submitData.IsOneLine == "on" ? true : false;
+        submitData.IsEng = submitData.IsEng == "on" ? true : false;
         newAnnotation[0] = { ...newAnnotation[0], ...submitData };
         alert(JSON.stringify(newAnnotation));
         annotations.push(...newAnnotation);
