@@ -3,71 +3,71 @@ import { useNavigate, useParams } from 'react-router-dom';
 //import API from '../API';
 const AnnotationContext = createContext();
 const initialState = {
-        SpecID: "",
-        SpecName: "",
-        SpecDesc: "",
-        OCRModel: "",
-        RpaAPID: "",
-        PageSet: [
-            {
-                FilePath: "https://t4.ftcdn.net/jpg/02/61/49/05/360_F_261490536_nJ5LSRAVZA0CK9Nvt2E1fXJVUfpiqvhT.jpg",
-                PageNum: 1,
-                SpecTitleSet: [
-                ],
-                SpecAreaSet: [
-                    {
-                        id: "",
-                        TitleID: "",
-                        AreaName: "",
-                        AreaDesc: "",
-                        Title: "",
-                        TitleContent: "",
-                        PageNum: 1,
-                        x: 0,
-                        y: 0,
-                        width: 0,
-                        height: 0,
-                        type: "",
-                        UX: 0,
-                        UY: 0,
-                        LX: 0,
-                        LY: 0,
-                        WordCount: 0,
-                        IsOneLine: "N",
-                        IsEng: "N",
-                    }
-                ],
-            },
-            {
-                FilePath: "https://t4.ftcdn.net/jpg/02/61/49/05/360_F_261490536_nJ5LSRAVZA0CK9Nvt2E1fXJVUfpiqvhT.jpg",
-                PageNum: 2,
-                SpecTitleSet: [
-                ],
-                SpecAreaSet: [
-                    {
-                        id: "",
-                        TitleID: "",
-                        AreaName: "",
-                        AreaDesc: "",
-                        Title: "",
-                        TitleContent: "",
-                        PageNum: 1,
-                        x: 0,
-                        y: 0,
-                        width: 0,
-                        height: 0,
-                        type: "",
-                        UX: 0,
-                        UY: 5,
-                        LX: 0,
-                        LY: 0,
-                        WordCount: 0,
-                        IsOneLine: "N",
-                        IsEng: "N",
-                    }
-                ],
-            }
-        ]
+    SpecID: "",
+    SpecName: "",
+    SpecDesc: "",
+    OCRModel: "",
+    RpaAPID: "",
+    PageSet: [
+        {
+            FilePath: "https://t4.ftcdn.net/jpg/02/61/49/05/360_F_261490536_nJ5LSRAVZA0CK9Nvt2E1fXJVUfpiqvhT.jpg",
+            PageNum: 1,
+            SpecTitleSet: [
+            ],
+            SpecAreaSet: [
+                {
+                    id: "",
+                    TitleID: "",
+                    AreaName: "",
+                    AreaDesc: "",
+                    Title: "",
+                    TitleContent: "",
+                    PageNum: 1,
+                    x: 0,
+                    y: 0,
+                    width: 0,
+                    height: 0,
+                    type: "",
+                    UX: 0,
+                    UY: 0,
+                    LX: 0,
+                    LY: 0,
+                    WordCount: 0,
+                    IsOneLine: "N",
+                    IsEng: "N",
+                }
+            ],
+        },
+        {
+            FilePath: "https://t4.ftcdn.net/jpg/02/61/49/05/360_F_261490536_nJ5LSRAVZA0CK9Nvt2E1fXJVUfpiqvhT.jpg",
+            PageNum: 2,
+            SpecTitleSet: [
+            ],
+            SpecAreaSet: [
+                {
+                    id: "",
+                    TitleID: "",
+                    AreaName: "",
+                    AreaDesc: "",
+                    Title: "",
+                    TitleContent: "",
+                    PageNum: 1,
+                    x: 0,
+                    y: 0,
+                    width: 0,
+                    height: 0,
+                    type: "",
+                    UX: 0,
+                    UY: 5,
+                    LX: 0,
+                    LY: 0,
+                    WordCount: 0,
+                    IsOneLine: "N",
+                    IsEng: "N",
+                }
+            ],
+        }
+    ]
 };
 const reducer = (state, action) => {
     switch (action.type) {
@@ -95,36 +95,35 @@ const reducer = (state, action) => {
                 ]
             }
             let aresult = JSON.stringify(a);
-            state=JSON.parse(aresult);
+            state = JSON.parse(aresult);
             console.log(`REDUCER new_specInfo : ${JSON.stringify(state)}`);
             return state;
         case "edit_annotations":
             console.log(`REDUCER edit_annotations : ${JSON.stringify(action.newAnnotationList)}`);
-            let editedState = Object.assign({}, state);
-            console.log(`REDUCER state edit_annotations : ${JSON.stringify(editedState.PageSet[action.activePageId])}`);
-            editedState.PageSet[action.activePageId].SpecTitleSet = [];
-            editedState.PageSet[action.activePageId].SpecAreaSet = [];
+            console.log(`REDUCER state edit_annotations : ${JSON.stringify(state.PageSet[action.activePageId])}`);
+            state.PageSet[action.activePageId].SpecTitleSet = [];
+            state.PageSet[action.activePageId].SpecAreaSet = [];
             action.newAnnotationList.forEach(item => {
-                if(item.type === "area"){
-                    editedState.PageSet[action.activePageId].SpecAreaSet.push(item);
+                if (item.type === "area") {
+                    state.PageSet[action.activePageId].SpecAreaSet.push(item);
                 }
-                else if(item.type ==="title"){
-                    editedState.PageSet[action.activePageId].SpecTitleSet.push(item);
+                else if (item.type === "title") {
+                    state.PageSet[action.activePageId].SpecTitleSet.push(item);
                 }
             });
-            console.log(`REDUCER_END edit_annotations : ${JSON.stringify(editedState)}`);
-            return  editedState;
-            case "add_new_annotation":
-                console.log(`REDUCER add_new_annotation : ${JSON.stringify(action.newAnnotation)}`);
-                let newState = Object.assign({}, state);
-                console.log(`REDUCER begin add_new_annotation : ${JSON.stringify(newState)}`);
-                if(action.newAnnotation.type ==="area")
-                    newState.PageSet[action.activePageId].SpecAreaSet.push(action.newAnnotation);
-                else if(action.newAnnotation.type ==="title")
-                    newState.PageSet[action.activePageId].SpecTitleSet.push(action.newAnnotation);
-                
-                console.log(`REDUCER DONE add_new_annotation : ${JSON.stringify(newState)}`);
-                return newState;
+            console.log(`REDUCER_END edit_annotations : ${JSON.stringify(state)}`);
+            return state;
+        case "add_new_annotation":
+            console.log(`REDUCER add_new_annotation : ${JSON.stringify(action.newAnnotation)}`);
+            //let newState = Object.assign({}, state);
+            //console.log(`REDUCER begin add_new_annotation : ${JSON.stringify(newState)}`);
+            if (action.newAnnotation.type === "area")
+                state.PageSet[action.activePageId].SpecAreaSet.push(action.newAnnotation);
+            else if (action.newAnnotation.type === "title")
+                state.PageSet[action.activePageId].SpecTitleSet.push(action.newAnnotation);
+
+            console.log(`REDUCER DONE add_new_annotation : ${JSON.stringify(state.PageSet[action.activePageId].SpecAreaSet)}`);
+            return state;
         default:
             return state;
     }

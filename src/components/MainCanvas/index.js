@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Stage, Layer } from 'react-konva';
 import { v1 as uuidv1 } from "uuid";
@@ -8,6 +8,8 @@ import { PanZoom } from 'react-easy-panzoom';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import Accordion from 'react-bootstrap/Accordion';
+import Badge from 'react-bootstrap/Badge';
 
 import ImageFromUrl from "../ImageFormUrl";
 import Annotation from "../Annotation";
@@ -19,16 +21,15 @@ import { AnnotationItem, WorkArea } from './MainCanvas.styles';
 const MainCanvas = ({ activePageId }) => {
 
     const { setDispatch, annotation } = useAPI();
-    const alfa =annotation.PageSet[activePageId].SpecAreaSet.concat(annotation.PageSet[activePageId].SpecTitleSet);
+    //const alfa =annotation.PageSet[activePageId].SpecAreaSet.concat(annotation.PageSet[activePageId].SpecTitleSet);
     //console.log(`MAINCANVA :::`+JSON.stringify(annotation));
-    console.log(`MAINCANVA activePageId :::`+ annotation.PageSet[activePageId].PageNum);
+    console.log(`MAINCANVA activePageId :::` + annotation.PageSet[activePageId].PageNum);
     useEffect(() => {
-        //setAnnotations(annotation.PageSet[activePageId].SpecAreaSet.concat(annotation.PageSet[activePageId].SpecTitleSet));
-        //alfa =annotation.PageSet[activePageId].SpecAreaSet.concat(annotation.PageSet[activePageId].SpecTitleSet);
-        console.log(JSON.stringify(alfa))
+        setAnnotations(annotation.PageSet[activePageId].SpecAreaSet.concat(annotation.PageSet[activePageId].SpecTitleSet));
+        //console.log(JSON.stringify(alfa))
     }, [activePageId]);
 
-    //const [annotations, setAnnotations] = useState([]);
+    const [annotations, setAnnotations] = useState([]);
     const [selectedId, selectAnnotation] = useState(null);
     const [canvasMeasures, setCanvasMeasures] = useState({
         width: window.innerWidth,
@@ -38,18 +39,18 @@ const MainCanvas = ({ activePageId }) => {
     const [newAnnotation, setNewAnnotation] = useState([]);
     const zoomRef = React.useRef();
 
-    const annotationsToDraw = [...alfa, ...newAnnotation];
+    const annotationsToDraw = [...annotations, ...newAnnotation];
 
     const preventPan = (e, x, y) => {        // if the target is the content container then prevent panning
-            return true;
-        
+        return true;
+
     }
     const handleMouseDown = event => {
         if (selectedId === null && newAnnotation.length === 0) {
             const { x, y } = event.target.getStage().getPointerPosition();
             const id = uuidv1();
-            setNewAnnotation([{x, y, width: 0, height: 0, id }]);
-        }else{
+            setNewAnnotation([{ x, y, width: 0, height: 0, id }]);
+        } else {
             setNewAnnotation([]);
         }
     };
@@ -63,7 +64,7 @@ const MainCanvas = ({ activePageId }) => {
             const width = Math.round(x - sx);
             const height = Math.round(y - sy);
             const id = uuidv1();
-            if(x<canvasMeasures.width ||y<canvasMeasures.height){
+            if (x < canvasMeasures.width || y < canvasMeasures.height) {
                 setNewAnnotation([
                     {
                         id,
@@ -79,7 +80,7 @@ const MainCanvas = ({ activePageId }) => {
                     }
                 ]);
             }
-        }else{
+        } else {
             return;
         }
     };
@@ -97,11 +98,11 @@ const MainCanvas = ({ activePageId }) => {
     const handleKeyDown = event => {
         if (event.keyCode === 8 || event.keyCode === 46) {
             if (selectedId !== null) {
-                const annotationsAfterDelete = alfa.filter(
+                const annotationsAfterDelete = annotations.filter(
                     annotation => annotation.id !== selectedId
                 );
-                //setAnnotations(annotationsAfterDelete);
-                setDispatch({ type: 'edit_annotations', newAnnotationList: annotationsAfterDelete ,activePageId:activePageId})
+                setAnnotations(annotationsAfterDelete);
+                //setDispatch({ type: 'edit_annotations', newAnnotationList: annotationsAfterDelete ,activePageId:activePageId})
             }
         }
     };
@@ -141,10 +142,11 @@ const MainCanvas = ({ activePageId }) => {
                                                     selectAnnotation(item.id);
                                                 }}
                                                 onChange={newAttrs => {
-                                                    const rects = alfa.slice();
+                                                    const rects = annotations.slice();
                                                     rects[i] = newAttrs;
-                                                    //setAnnotations(rects);
-                                                    setDispatch({ type: 'edit_annotations', newAnnotations: rects, activePageId:activePageId })
+                                                    console.log(`RECT::: ` + JSON.stringify(rects))
+                                                    setAnnotations(rects);
+                                                    //setDispatch({ type: 'edit_annotations', newAnnotationList: rects, activePageId:activePageId })
                                                 }}
                                             />
                                         );
@@ -155,14 +157,14 @@ const MainCanvas = ({ activePageId }) => {
                     </PanZoom>
                 </Col>
                 <Col sm={3} className="side">
-                    <ul>
-                        {alfa.map((item, i) => {
+                    {/* <ul>
+                        {annotations.map((item, i) => {
                             let itemClasses = classNames({
                                 'active': (item.id === selectedId) ? true : false,
                             });
                             return (
                                 <AnnotationItem key={i} className={itemClasses} onClick={() => selectAnnotation(item.id)}>
-                                    <span>type: {item.type}</span><br />
+                                    <h3>{item.type}</h3><br />
                                     <span>pageNum: {item.pageNum}</span><br />
                                     <span>areaID: {item.AreaID}</span><br />
                                     <span>id={item.id}</span><br />
@@ -182,7 +184,65 @@ const MainCanvas = ({ activePageId }) => {
                                 </AnnotationItem>
                             );
                         })}
-                    </ul>
+                    </ul> */}
+                    <Accordion defaultActiveKey="0" flush activeKey={selectedId}>
+                    {annotations.map((item, i) => {
+                        // let itemClasses = classNames({
+                        //     'active': (item.id === selectedId) ? true : false,
+                        // });
+                        if(item.type==="area"){
+                            return (
+                                <Accordion.Item eventKey={item.id} onClick={() => selectAnnotation(item.id)}>
+                                    <Accordion.Header><Badge bg="secondary" className='me-2'>{item.type}</Badge>{item.AreaName}</Accordion.Header>
+                                    <Accordion.Body>
+                                        <span>pageNum: {item.pageNum}</span><br />
+                                        <span>areaID: {item.AreaID}</span><br />
+                                        <span>區域說明: {item.AreaDesc}</span><br />
+                                        <span>標籤名稱: {item.Title}</span><br />
+                                        <span>標籤內容: {item.TitleContent}</span><br />
+                                        <span>是否為單行: {item.IsOneLine}</span><br />
+                                        <span>是否為英數字: {item.IsEng}</span><br />
+                                        <span>字數: {item.WordCount}</span><br />
+                                        <span>id={item.id}</span><br />
+                                        <span>UX: {item.UX}</span><br />
+                                        <span>UY: {item.UY}</span><br />
+                                        <span>LX: {item.LX}</span><br />
+                                        <span>LY: {item.LY}</span><br />
+                                        <div className="d-flex justify-content-end">
+                                        <Button className="mx-1 btn-light">編輯</Button>
+                                        <Button className="mx-1 btn-light">刪除</Button>
+                                        </div>
+                                    </Accordion.Body>
+                                </Accordion.Item>
+                            );
+                        }else{
+                            return (
+                                <Accordion.Item eventKey={item.id} onClick={() => selectAnnotation(item.id)}>
+                                    <Accordion.Header><Badge bg="danger" className='me-2'>{item.type}</Badge>{item.AreaName}</Accordion.Header>
+                                    <Accordion.Body className='fs-6'>
+                                        <span>pageNum: {item.pageNum}</span><br />
+                                        <span>areaID: {item.AreaID}</span><br />
+                                        <span>區域說明: {item.AreaDesc}</span><br />
+                                        <span>標籤名稱: {item.Title}</span><br />
+                                        <span>標籤內容: {item.TitleContent}</span><br />
+                                        <span>是否為單行: {item.IsOneLine}</span><br />
+                                        <span>是否為英數字: {item.IsEng}</span><br />
+                                        <span>字數: {item.WordCount}</span><br />
+                                        <span>id={item.id}</span><br />
+                                        <span>UX: {item.UX}</span><br />
+                                        <span>UY: {item.UY}</span><br />
+                                        <span>LX: {item.LX}</span><br />
+                                        <span>LY: {item.LY}</span><br />
+                                        <div className="d-flex justify-content-end">
+                                        <Button className="mx-1 btn-light">編輯</Button>
+                                        <Button className="mx-1 btn-light">刪除</Button>
+                                        </div>
+                                    </Accordion.Body>
+                                </Accordion.Item>
+                            );
+                        }
+                    })}
+                    </Accordion>
                 </Col>
             </Row>
             <AnnoInfoModal
@@ -191,8 +251,8 @@ const MainCanvas = ({ activePageId }) => {
                 newAnnotation={newAnnotation}
                 setNewAnnotation={setNewAnnotation}
                 activePageId={activePageId}
-                //annotations={annotations}
-                //setAnnotations={setAnnotations}
+                annotations={annotations}
+                setAnnotations={setAnnotations}
             />
         </>
 
