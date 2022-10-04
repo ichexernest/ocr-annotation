@@ -7,9 +7,10 @@ import Form from 'react-bootstrap/Form';
 
 import { useAPI } from "../annotationContext";
 
-const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, annotations, setAnnotations, activePageId }) => {
+const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, annotations, setAnnotations, activePageId ,editItem}) => {
     const { setDispatch } = useAPI();
     //let editAnnoList = JSON.parse(JSON.stringify(annotations));
+    //alert(JSON.stringify(editItem))
 
     const [inputs, setInputs] = useState({
         AreaName: '',
@@ -20,7 +21,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, annotat
         IsOneLine: '',
         IsEng: '',
     });
-    const [annoType, setAnnoType] = useState('area');
+    const [annoType, setAnnoType] = useState(editItem.type?editItem.type:'area');
     const handleTextChange = (event) => {
         const name = event.target.id;
         const value = event.target.value;
@@ -126,30 +127,34 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, annotat
                         controlId="AreaName"
                         label="區域名稱*"
                         className="mb-3"
-                        onChange={handleTextChange}>
-                        <Form.Control type="text" placeholder="type areaName" />
+                        onChange={handleTextChange}
+                        >
+                        <Form.Control type="text" placeholder="type areaName" value={editItem.AreaName} />
                     </FloatingLabel>
                     <FloatingLabel
                         controlId="AreaDesc"
                         label="區域說明*"
                         className="mb-3"
-                        onChange={handleTextChange}>
-                        <Form.Control type="text" placeholder="type areaDesc" />
+                        onChange={handleTextChange}
+                        >
+                        <Form.Control type="text" placeholder="type areaDesc" value={editItem.AreaDesc}/>
                     </FloatingLabel>
                     <FloatingLabel
                         controlId="Title"
                         label="標籤名稱*"
                         className="mb-3"
-                        onChange={handleTextChange}>
-                        <Form.Control type="text" placeholder="type title" />
+                        onChange={handleTextChange}
+                        >
+                        <Form.Control type="text" placeholder="type title" value={editItem.Title}/>
                     </FloatingLabel>
                     {annoType === "title" &&
                         < FloatingLabel
                             controlId="TitleContent"
                             label="標籤內容*"
                             className="mb-3"
-                            onChange={handleTextChange}>
-                            <Form.Control type="text" placeholder="type titleContent" />
+                            onChange={handleTextChange}
+                            >
+                            <Form.Control type="text" placeholder="type titleContent" value={editItem.TitleContent}/>
                         </FloatingLabel>
                     }
                     <FloatingLabel
@@ -157,11 +162,12 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, annotat
                         label="字數"
                         className="mb-3"
                         onChange={handleTextChange}>
-                        <Form.Control type="text" placeholder="type wordCount" />
+                        <Form.Control type="text" placeholder="type wordCount" value={editItem.WordCount} />
                     </FloatingLabel>
                     {annoType === "title" &&
                         <Form.Group className="mb-3">
                             <Form.Check
+                                defaultChecked={editItem.IsAnchor==1}
                                 id="IsAnchor"
                                 label="是否為錨點(anchor)(勾選此項會將此設為本頁唯一錨點)"
                                 onChange={handleTextChange}
@@ -170,6 +176,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, annotat
                     }
                     <Form.Group className="mb-3">
                         <Form.Check
+                            defaultChecked={editItem.IsOneLine==1}
                             id="IsOneLine"
                             label="是否為單行"
                             onChange={handleTextChange}
@@ -177,6 +184,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, annotat
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Check
+                            defaultChecked={editItem.IsEng==1}
                             id="IsEng"
                             label="是否為英數字"
                             onChange={handleTextChange}

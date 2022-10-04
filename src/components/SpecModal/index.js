@@ -7,7 +7,7 @@ import Form from 'react-bootstrap/Form';
 
 import { useAPI } from '../annotationContext';
 
-const SpecModal = ({ show, setShow,setActivePageId}) => {
+const SpecModal = ({ show, setShow, setActivePageId}) => {
     const { setDispatch } = useAPI();
     const [inputs, setInputs] = useState({
         OCRModel: '',

@@ -10,61 +10,32 @@ const initialState = {
     RpaAPID: "",
     PageSet: [
         {
-            FilePath: "https://t4.ftcdn.net/jpg/02/61/49/05/360_F_261490536_nJ5LSRAVZA0CK9Nvt2E1fXJVUfpiqvhT.jpg",
+            FilePath: "",
             PageNum: 1,
             SpecTitleSet: [
             ],
             SpecAreaSet: [
-                {
-                    id: "",
-                    TitleID: "",
-                    AreaName: "",
-                    AreaDesc: "",
-                    Title: "",
-                    TitleContent: "",
-                    PageNum: 1,
-                    x: 0,
-                    y: 0,
-                    width: 0,
-                    height: 0,
-                    type: "",
-                    UX: 0,
-                    UY: 0,
-                    LX: 0,
-                    LY: 0,
-                    WordCount: 0,
-                    IsOneLine: "N",
-                    IsEng: "N",
-                }
-            ],
-        },
-        {
-            FilePath: "https://t4.ftcdn.net/jpg/02/61/49/05/360_F_261490536_nJ5LSRAVZA0CK9Nvt2E1fXJVUfpiqvhT.jpg",
-            PageNum: 2,
-            SpecTitleSet: [
-            ],
-            SpecAreaSet: [
-                {
-                    id: "",
-                    TitleID: "",
-                    AreaName: "",
-                    AreaDesc: "",
-                    Title: "",
-                    TitleContent: "",
-                    PageNum: 1,
-                    x: 0,
-                    y: 0,
-                    width: 0,
-                    height: 0,
-                    type: "",
-                    UX: 0,
-                    UY: 5,
-                    LX: 0,
-                    LY: 0,
-                    WordCount: 0,
-                    IsOneLine: "N",
-                    IsEng: "N",
-                }
+                // {
+                //     id: "",
+                //     TitleID: "",
+                //     AreaName: "",
+                //     AreaDesc: "",
+                //     Title: "",
+                //     TitleContent: "",
+                //     PageNum: 1,
+                //     x: 0,
+                //     y: 0,
+                //     width: 0,
+                //     height: 0,
+                //     type: "",
+                //     UX: 0,
+                //     UY: 0,
+                //     LX: 0,
+                //     LY: 0,
+                //     WordCount: 0,
+                //     IsOneLine: "N",
+                //     IsEng: "N",
+                // }
             ],
         }
     ]
