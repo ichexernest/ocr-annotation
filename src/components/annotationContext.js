@@ -17,24 +17,27 @@ const initialState = {
             SpecAreaSet: [
                 // {
                 //     id: "",
-                //     TitleID: "",
-                //     AreaName: "",
-                //     AreaDesc: "",
-                //     Title: "",
-                //     TitleContent: "",
-                //     PageNum: 1,
                 //     x: 0,
                 //     y: 0,
                 //     width: 0,
                 //     height: 0,
                 //     type: "",
+
+                //     AreaID:"",
+                //     TitleID: "",
+
+                //     AreaName: "",
+                //     AreaDesc: "",
+                //     Title: "",
+                //     TitleContent: "",
                 //     UX: 0,
                 //     UY: 0,
                 //     LX: 0,
                 //     LY: 0,
                 //     WordCount: 0,
-                //     IsOneLine: "N",
-                //     IsEng: "N",
+                //     IsOneLine: 0,
+                //     IsEng: 0,
+                //     IsAnchor:0
                 // }
             ],
         }
@@ -47,6 +50,7 @@ const reducer = (state, action) => {
             let result = JSON.stringify(action.OCR_SpecSet);
             state = JSON.parse(result)
             return state;
+
         case 'new_specInfo':
             console.log(`REDUCER new_specInfo : ${JSON.stringify(action.submitData)}`);
             let fileP = URL.createObjectURL(action.submitData.FormFile);
@@ -69,6 +73,7 @@ const reducer = (state, action) => {
             state = JSON.parse(aresult);
             console.log(`REDUCER new_specInfo : ${JSON.stringify(state)}`);
             return state;
+
         case "edit_annotations":
             //alert(`REDUCER edit_annotations : ${JSON.stringify(action.newAnnotationList)}`);
             let copy = Object.assign({}, state);
@@ -85,6 +90,7 @@ const reducer = (state, action) => {
             });
             console.log(`REDUCER_END edit_annotations : ${JSON.stringify(state)}`);
             return copy;
+
         case "add_new_annotation":
             console.log(`REDUCER add_new_annotation : ${JSON.stringify(action.newAnnotation)}`);
             //let newState = Object.assign({}, state);
@@ -99,9 +105,9 @@ const reducer = (state, action) => {
                 }
                 state.PageSet[action.activePageId].SpecTitleSet.push(action.newAnnotation);
             }
-
             console.log(`REDUCER DONE add_new_annotation : ${JSON.stringify(state.PageSet[action.activePageId].SpecAreaSet)}`);
             return state;
+            
         default:
             return state;
     }

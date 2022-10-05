@@ -87,7 +87,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
             }
         }
         submitData.type = annoType;
-        submitData.PageNum = 1;
+        //submitData.PageNum = 1;
         //submitData.specID = "testSpec001";
         submitData.AreaID = "manualID";
         submitData.IsOneLine = submitData.IsOneLine ? 1 : 0;
