@@ -18,13 +18,15 @@ import Annotation from "../Annotation";
 import AnnoInfoModal from '../AnnoInfoModal';
 import { useAPI } from "../annotationContext";
 
-import { AnnotationItem, WorkArea } from './MainCanvas.styles';
+import { WorkArea } from './MainCanvas.styles';
 
 const MainCanvas = ({ activePageId }) => {
 
     const { setDispatch, annotation } = useAPI();
+    const annoList=annotation.PageSet[activePageId].SpecAreaSet.concat(annotation.PageSet[activePageId].SpecTitleSet);
+
     useEffect(() => {
-        setAnnotations(annotation.PageSet[activePageId].SpecAreaSet.concat(annotation.PageSet[activePageId].SpecTitleSet));
+        //annoList=annotation.PageSet[activePageId].SpecAreaSet.concat(annotation.PageSet[activePageId].SpecTitleSet);
     }, [activePageId]);
 
     const [annotations, setAnnotations] = useState([]);
@@ -34,10 +36,11 @@ const MainCanvas = ({ activePageId }) => {
         height: window.innerHeight
     });
     const [show, setShow] = useState(false);
+    const [eShow, setEShow] = useState(false);
     const [newAnnotation, setNewAnnotation] = useState([]);
     const zoomRef = React.useRef();
     const [editItem, setEditItem] = useState({});
-    const annotationsToDraw = [...annotations, ...newAnnotation];
+    const annotationsToDraw = [...annoList, ...newAnnotation];
 
     const preventPan = (e, x, y) => {        // if the target is the content container then prevent panning
         return true;
@@ -95,34 +98,24 @@ const MainCanvas = ({ activePageId }) => {
     };
     const handleDelete = () => {
         if (selectedId !== null) {
-            const annotationsAfterDelete = annotations.filter(
+            const annotationsAfterDelete = annoList.filter(
                 annotation => annotation.id !== selectedId
             );
-            setAnnotations(annotationsAfterDelete);
-            //setDispatch({ type: 'edit_annotations', newAnnotationList: annotationsAfterDelete ,activePageId:activePageId})
+            //setAnnotations(annotationsAfterDelete);
+            setDispatch({ type: 'edit_annotations', newAnnotationList: annotationsAfterDelete ,activePageId:activePageId})
         }
     };
     const handleEdit = () => {
-        setEditItem(annotations.find(obj => {
+        setEditItem(annoList.find(obj => {
             return obj.id === selectedId;
         }))
-        setShow(true);
+        setEShow(true);
     };
     const handleSave = event => {
 
     };
-    // const handleKeyDown = event => {
-    //     if (event.keyCode === 8 || event.keyCode === 46) {
-    //         if (selectedId !== null) {
-    //             const annotationsAfterDelete = annotations.filter(
-    //                 annotation => annotation.id !== selectedId
-    //             );
-    //             setAnnotations(annotationsAfterDelete);
-    //             //setDispatch({ type: 'edit_annotations', newAnnotationList: annotationsAfterDelete ,activePageId:activePageId})
-    //         }
-    //     }
-    // };
-    console.log(`ANNOTATIONS LIST CHECK:::` + JSON.stringify(annotations));
+
+    console.log(`ANNOTATIONS LIST CHECK:::` + JSON.stringify(annoList));
     return (
         <>
             <Row>
@@ -159,11 +152,11 @@ const MainCanvas = ({ activePageId }) => {
                                                     selectAnnotation(item.id);
                                                 }}
                                                 onChange={newAttrs => {
-                                                    const rects = annotations.slice();
+                                                    const rects = annoList.slice();
                                                     rects[i] = newAttrs;
                                                     console.log(`RECT::: ` + JSON.stringify(rects))
-                                                    setAnnotations(rects);
-                                                    //setDispatch({ type: 'edit_annotations', newAnnotationList: rects, activePageId:activePageId })
+                                                    //setAnnotations(rects);
+                                                    setDispatch({ type: 'edit_annotations', newAnnotationList: rects, activePageId:activePageId })
                                                 }}
                                             />
                                         );
@@ -175,63 +168,33 @@ const MainCanvas = ({ activePageId }) => {
                 </Col>
                 <Col sm={3} className="side">
                     <Accordion flush activeKey={selectedId}>
-                        {annotations.map((item, i) => {
-                            // let itemClasses = classNames({
-                            //     'active': (item.id === selectedId) ? true : false,
-                            // });
-                            if (item.type === "area") {
-                                return (
-                                    <Accordion.Item eventKey={item.id} onClick={() => selectAnnotation(item.id)}>
-                                        <Accordion.Header><Badge bg="primary" className='me-1'>{item.type.toUpperCase()}</Badge>{item.AreaName}</Accordion.Header>
-                                        <Accordion.Body>
-                                            <span>pageNum: {item.pageNum}</span><br />
-                                            <span>areaID: {item.AreaID}</span><br />
-                                            <span>區域說明: {item.AreaDesc}</span><br />
-                                            <span>標籤名稱: {item.Title}</span><br />
-                                            <span>標籤內容: {item.TitleContent}</span><br />
-                                            <span>是否為單行: {item.IsOneLine}</span><br />
-                                            <span>是否為英數字: {item.IsEng}</span><br />
-                                            <span>字數: {item.WordCount}</span><br />
-                                            {/* <span>id={item.id}</span><br /> */}
-                                            <span>UX: {item.UX}</span><br />
-                                            <span>UY: {item.UY}</span><br />
-                                            <span>LX: {item.LX}</span><br />
-                                            <span>LY: {item.LY}</span><br />
-                                            <div className="d-flex justify-content-end">
-                                                <Button className="mx-1 btn-light" type="button" onClick={()=>handleEdit()}>編輯</Button>
-                                                <Button className="mx-1 btn-light" type="button" onClick={() => handleDelete()}>刪除</Button>
-                                            </div>
-                                        </Accordion.Body>
-                                    </Accordion.Item>
-                                );
-                            } else {
-                                return (
-                                    <Accordion.Item eventKey={item.id} onClick={() => selectAnnotation(item.id)}>
-                                        <Accordion.Header><Badge bg="danger" className='me-2'>{item.type.toUpperCase()}</Badge>
-                                            {item.IsAnchor && <FontAwesomeIcon className="icon me-1 text-primary" icon={faAnchor} />}
-                                            {item.AreaName}</Accordion.Header>
-                                        <Accordion.Body className='fs-6'>
-                                            <span>pageNum: {item.pageNum}</span><br />
-                                            <span>areaID: {item.AreaID}</span><br />
-                                            <span>區域說明: {item.AreaDesc}</span><br />
-                                            <span>標籤名稱: {item.Title}</span><br />
-                                            <span>標籤內容: {item.TitleContent}</span><br />
-                                            <span>是否為單行: {item.IsOneLine}</span><br />
-                                            <span>是否為英數字: {item.IsEng}</span><br />
-                                            <span>字數: {item.WordCount}</span><br />
-                                            {/* <span>id={item.id}</span><br /> */}
-                                            <span>UX: {item.UX}</span><br />
-                                            <span>UY: {item.UY}</span><br />
-                                            <span>LX: {item.LX}</span><br />
-                                            <span>LY: {item.LY}</span><br />
-                                            <div className="d-flex justify-content-end">
-                                                <Button className="mx-1 btn-light" type="button" onClick={()=>handleEdit()}>編輯</Button>
-                                                <Button className="mx-1 btn-light" type="button" onClick={() => handleDelete()}>刪除</Button>
-                                            </div>
-                                        </Accordion.Body>
-                                    </Accordion.Item>
-                                );
-                            }
+                        {annoList.map((item, i) => {
+                            return (
+                                <Accordion.Item eventKey={item.id} onClick={() => selectAnnotation(item.id)}>
+                                    <Accordion.Header><Badge bg={item.type==="title"?"danger":"primary"} className='me-2'>{item.type.toUpperCase()}</Badge>
+                                        {item.IsAnchor === 1 && <FontAwesomeIcon className="icon me-1 text-primary" icon={faAnchor} />}
+                                        {item.AreaName}</Accordion.Header>
+                                    <Accordion.Body className='fs-6 d-flex flex-column'>
+                                        <span>pageNum: {item.pageNum}</span>
+                                        <span>areaID: {item.AreaID}</span>
+                                        <span>區域說明: {item.AreaDesc}</span>
+                                        <span>標籤名稱: {item.Title}</span>
+                                        {item.type==="title"&&<span>標籤內容: {item.TitleContent}</span>}
+                                        <span>是否為單行: {item.IsOneLine===1?"是":"否"}</span>
+                                        <span>是否為英數字: {item.IsEng===1?"是":"否"}</span>
+                                        <span>字數: {item.WordCount}</span>
+                                        {/* <span>id={item.id}</span>*/}
+                                        <span>UX: {item.UX}</span>
+                                        <span>UY: {item.UY}</span>
+                                        <span>LX: {item.LX}</span>
+                                        <span>LY: {item.LY}</span>
+                                        <div className="d-flex justify-content-end">
+                                            <Button className="mx-1 btn-light" type="button" onClick={() => handleEdit()}>編輯</Button>
+                                            <Button className="mx-1 btn-light" type="button" onClick={() => handleDelete()}>刪除</Button>
+                                        </div>
+                                    </Accordion.Body>
+                                </Accordion.Item>
+                            );
                         })}
                     </Accordion>
                 </Col>
@@ -242,8 +205,6 @@ const MainCanvas = ({ activePageId }) => {
                 newAnnotation={newAnnotation}
                 setNewAnnotation={setNewAnnotation}
                 activePageId={activePageId}
-                annotations={annotations}
-                setAnnotations={setAnnotations}
                 editItem={editItem}
             />
         </>

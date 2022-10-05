@@ -1,4 +1,4 @@
-import React, { useState ,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 
 import styled from "styled-components";
 import classNames from 'classnames';
@@ -50,6 +50,12 @@ li{
     justify-content:center;
 }
 `;
+const Init = styled.div`
+display:flex;
+align-items:center;
+justify-content:center;
+height:91vh;
+`;
 const AnnotationPage = () => {
     const [activePageId, setActivePageId] = useState(0); //active ocr area
     const [showNew, setShowNew] = useState(false);
@@ -59,7 +65,7 @@ const AnnotationPage = () => {
     //console.log(`ANNOTATIONPAGE: `+JSON.stringify(annotation))
 
     useEffect(() => {
-        setActivePageId(0)
+        //setActivePageId(0)
     }, [annotation]);
 
     return (
@@ -68,21 +74,22 @@ const AnnotationPage = () => {
                 <Container>
                     <Navbar.Brand href="#home">OCR-Annotation</Navbar.Brand>
                     <Nav className="me-auto">
-                        <Button onClick={()=>setShowNew(true)} className="mx-1 btn-light">新增專案</Button>
-                        <Button onClick={()=>setShowEdit(true)} className="mx-1 btn-light">開啟專案</Button>
+                        <Button onClick={() => setShowNew(true)} className="mx-1 btn-light">新增專案</Button>
+                        <Button onClick={() => setShowEdit(true)} className="mx-1 btn-light">開啟專案</Button>
                     </Nav>
                 </Container>
             </Navbar>
             <Wrapper fluid>
-                <Row>
-                    <Col sm={2} className="side">
-                        <Sidebar activePageId={activePageId} setActivePageId={setActivePageId} />
-                    </Col>
-                    <Col sm={10} className="main">
-                        <MainCanvas
-                            activePageId={activePageId} />
-                    </Col>
-                </Row>
+                {annotation.SpecID !== "" ?
+                    <Row>
+                        <Col sm={2} className="side">
+                            <Sidebar activePageId={activePageId} setActivePageId={setActivePageId} />
+                        </Col>
+                        <Col sm={10} className="main">
+                            <MainCanvas
+                                activePageId={activePageId} />
+                        </Col>
+                    </Row> : <Init className='text-secondary text-center'>Welcome to OCR-annotation tool.<br/>Open a spec project or create a new one.</Init>}
             </Wrapper>
             <SpecModal
                 show={showNew}
@@ -105,7 +112,7 @@ const Sidebar = ({ setActivePageId, activePageId }) => {
     const handleSelectTarget = (i) => {
         setActivePageId(i);
     }
-   // console.log(`Sidebar  get annotation::: ${JSON.stringify(annotation)}`)
+    // console.log(`Sidebar  get annotation::: ${JSON.stringify(annotation)}`)
     return (
         <SidebarWrapper>
             <ul>

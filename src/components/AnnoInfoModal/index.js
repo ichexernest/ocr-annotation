@@ -7,23 +7,30 @@ import Form from 'react-bootstrap/Form';
 
 import { useAPI } from "../annotationContext";
 
-const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, annotations, setAnnotations, activePageId }) => {
-    const { setDispatch } = useAPI();
+const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activePageId, selectedId }) => {
+    const { setDispatch, annotation } = useAPI();
     //let editAnnoList = JSON.parse(JSON.stringify(annotations));
-
+    let submitData = {};
     const [inputs, setInputs] = useState({
         AreaName: '',
         AreaDesc: '',
         Title: '',
-        //TitleContent: '',
-        WordCount: '',
-        IsOneLine: '',
-        IsEng: '',
+        TitleContent: '',
+        WordCount: 0,
+        IsAnchor: false,
+        IsOneLine: false,
+        IsEng: false,
     });
     const [annoType, setAnnoType] = useState('area');
     const handleTextChange = (event) => {
-        const name = event.target.id;
-        const value = event.target.value;
+        let name, value;
+        console.log(event)
+        name = event.target.id;
+        if (event.target.type === "checkbox") {
+            value = event.target.checked;
+        } else {
+            value = event.target.value;
+        }
         console.log(name, value, event.target)
         setInputs(values => ({ ...values, [name]: value }))
     }
@@ -37,9 +44,10 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, annotat
             AreaDesc: '',
             Title: '',
             TitleContent: '',
-            WordCount: '',
-            IsOneLine: '',
-            IsEng: '',
+            WordCount: 0,
+            IsAnchor: false,
+            IsOneLine: false,
+            IsEng: false,
         })
         setAnnoType("area")
     };
@@ -50,7 +58,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, annotat
 
     const handleCheck = (e) => {
         e.preventDefault()
-        let submitData = inputs;
+        submitData = inputs;
         //alert(JSON.stringify(submitData));
         if (submitData.AreaName === '') {
             alert(`未填寫區域名稱`);
@@ -69,10 +77,10 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, annotat
                 alert(`未填寫標籤內容`);
                 return;
             }
-            if (submitData.IsAnchor === "on") {
-                annotations.forEach(item => {
-                    item.IsAnchor = 0;
-                })
+            if (submitData.IsAnchor) {
+                // annotations.forEach(item => {
+                //     item.IsAnchor = 0;
+                // })
                 submitData.IsAnchor = 1;
             } else {
                 submitData.isAnchor = 0;
@@ -82,13 +90,13 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, annotat
         submitData.PageNum = 1;
         //submitData.specID = "testSpec001";
         submitData.AreaID = "manualID";
-        submitData.IsOneLine = submitData.IsOneLine == "on" ? 1 : 0;
-        submitData.IsEng = submitData.IsEng == "on" ? 1 : 0;
+        submitData.IsOneLine = submitData.IsOneLine ? 1 : 0;
+        submitData.IsEng = submitData.IsEng ? 1 : 0;
         newAnnotation[0] = { ...newAnnotation[0], ...submitData };
         //alert(`COMPARE::::`+JSON.stringify(annotations)+`:::::::`+JSON.stringify(annotations));
-        annotations.push(...newAnnotation);
-        setAnnotations(annotations);
-        //setDispatch({ type: 'add_new_annotation', newAnnotation: newAnnotation[0], activePageId:activePageId})
+        //annotations.push(...newAnnotation);
+        //setAnnotations(annotations);
+        setDispatch({ type: 'add_new_annotation', newAnnotation: newAnnotation[0], activePageId: activePageId })
 
         setNewAnnotation([]);
         //alert(JSON.stringify(annotations));
@@ -97,10 +105,11 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, annotat
             AreaName: '',
             AreaDesc: '',
             Title: '',
-            //TitleContent: '',
-            WordCount: '',
-            IsOneLine: '',
-            IsEng: '',
+            TitleContent: '',
+            WordCount: 0,
+            IsAnchor: false,
+            IsOneLine: false,
+            IsEng: false,
         })
         setAnnoType("area")
     }

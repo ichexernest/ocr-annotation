@@ -70,28 +70,35 @@ const reducer = (state, action) => {
             console.log(`REDUCER new_specInfo : ${JSON.stringify(state)}`);
             return state;
         case "edit_annotations":
-            console.log(`REDUCER edit_annotations : ${JSON.stringify(action.newAnnotationList)}`);
+            //alert(`REDUCER edit_annotations : ${JSON.stringify(action.newAnnotationList)}`);
+            let copy = Object.assign({}, state);
             console.log(`REDUCER state edit_annotations : ${JSON.stringify(state.PageSet[action.activePageId])}`);
-            state.PageSet[action.activePageId].SpecTitleSet = [];
-            state.PageSet[action.activePageId].SpecAreaSet = [];
+            copy.PageSet[action.activePageId].SpecTitleSet = [];
+            copy.PageSet[action.activePageId].SpecAreaSet = [];
             action.newAnnotationList.forEach(item => {
                 if (item.type === "area") {
-                    state.PageSet[action.activePageId].SpecAreaSet.push(item);
+                    copy.PageSet[action.activePageId].SpecAreaSet.push(item);
                 }
                 else if (item.type === "title") {
-                    state.PageSet[action.activePageId].SpecTitleSet.push(item);
+                    copy.PageSet[action.activePageId].SpecTitleSet.push(item);
                 }
             });
             console.log(`REDUCER_END edit_annotations : ${JSON.stringify(state)}`);
-            return state;
+            return copy;
         case "add_new_annotation":
             console.log(`REDUCER add_new_annotation : ${JSON.stringify(action.newAnnotation)}`);
             //let newState = Object.assign({}, state);
             //console.log(`REDUCER begin add_new_annotation : ${JSON.stringify(newState)}`);
             if (action.newAnnotation.type === "area")
                 state.PageSet[action.activePageId].SpecAreaSet.push(action.newAnnotation);
-            else if (action.newAnnotation.type === "title")
+            else if (action.newAnnotation.type === "title") {
+                if (action.newAnnotation.IsAnchor === 1) {
+                    state.PageSet[action.activePageId].SpecTitleSet.forEach(item => {
+                        item.IsAnchor = 0;
+                    })
+                }
                 state.PageSet[action.activePageId].SpecTitleSet.push(action.newAnnotation);
+            }
 
             console.log(`REDUCER DONE add_new_annotation : ${JSON.stringify(state.PageSet[action.activePageId].SpecAreaSet)}`);
             return state;
