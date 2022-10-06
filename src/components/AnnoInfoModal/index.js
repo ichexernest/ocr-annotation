@@ -7,15 +7,34 @@ import Form from 'react-bootstrap/Form';
 
 import { useAPI } from "../annotationContext";
 
-const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activePageId, selectedId }) => {
+const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activePageId, editItem }) => {
     const { setDispatch, annotation } = useAPI();
     //let editAnnoList = JSON.parse(JSON.stringify(annotations));
-    let submitData = {};
-    const [inputs, setInputs] = useState({
+    let submitData = {
         AreaName: '',
         AreaDesc: '',
         Title: '',
         TitleContent: '',
+        WordCount: 0,
+        IsAnchor: false,
+        IsOneLine: false,
+        IsEng: false,
+    };
+    console.log(`EDITITEM:::` + JSON.stringify(editItem))
+    const [inputs, setInputs] = useState(editItem !== null ? {
+        AreaName: editItem.AreaName,
+        AreaDesc: editItem.AreaDesc,
+        Title: editItem.Title,
+        TitleContent: editItem.TitleContent,
+        WordCount: editItem.WordCount,
+        IsAnchor: editItem.IsAnchor,
+        IsOneLine: editItem.IsOneLine,
+        IsEng: editItem.IsEng,
+    } : {
+        AreaName: "",
+        AreaDesc: "",
+        Title: "",
+        TitleContent: "",
         WordCount: 0,
         IsAnchor: false,
         IsOneLine: false,
@@ -87,19 +106,17 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
             }
         }
         submitData.type = annoType;
-        //submitData.PageNum = 1;
-        //submitData.specID = "testSpec001";
         submitData.AreaID = "manualID";
         submitData.IsOneLine = submitData.IsOneLine ? 1 : 0;
         submitData.IsEng = submitData.IsEng ? 1 : 0;
+
+
         newAnnotation[0] = { ...newAnnotation[0], ...submitData };
-        //alert(`COMPARE::::`+JSON.stringify(annotations)+`:::::::`+JSON.stringify(annotations));
         //annotations.push(...newAnnotation);
         //setAnnotations(annotations);
         setDispatch({ type: 'add_new_annotation', newAnnotation: newAnnotation[0], activePageId: activePageId })
 
         setNewAnnotation([]);
-        //alert(JSON.stringify(annotations));
         setShow(false);
         setInputs({
             AreaName: '',
@@ -136,7 +153,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
                         label="區域名稱*"
                         className="mb-3"
                         onChange={handleTextChange}>
-                        <Form.Control type="text" placeholder="type areaName" />
+                        <Form.Control type="text" placeholder="type areaName" defaultValue={editItem !== null ? editItem.AreaName : ""} />
                     </FloatingLabel>
                     <FloatingLabel
                         controlId="AreaDesc"

@@ -1,103 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect,useCallback } from 'react';
 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import ListGroup from 'react-bootstrap/ListGroup';
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSearch } from '@fortawesome/free-solid-svg-icons'
 import { useAPI } from '../annotationContext';
+import API from '../../API';
 
-const OpenModal = ({ show, setShow,setActivePageId }) => {
+const OpenModal = ({ show, setShow, setActivePageId }) => {
+
+    const [specList, setSpecList] = useState([]);
+    const [filteredList, setFilteredList] = useState([]);
     const { setDispatch } = useAPI();
-    const [active, setActive]= useState(false);
-
+    const [active, setActive] = useState(false);
+    const [selectedId, setSelectedId] = useState(null);
     const handleClose = () => {
         setShow(false);
     };
 
     const handleChoose = () => {
-        fetchSpecSet();
+        fetchSpecSet(selectedId);
         setActivePageId(0);
         setShow(false);
     };
 
-    const alertClicked = () => {
+    const alertClicked = (specID) => {
         setActive(true);
+        setSelectedId(specID);
     };
-    
-    const fetchSpecSet = async () => {
+
+    const fetchSpecSet = async (specID) => {
         try {
-            const resData = {
-                SpecID: "Test001",
-                SpecName: "測試1",
-                SpecDesc: "這是測試用",
-                OCRModel: "OCR01EN",
-                RpaAPID: "AP001",
-                PageSet: [
-                    {
-                        FilePath: "https://picsum.photos/200/300?random=1",
-                        PageNum: 1,
-                        SpecTitleSet: [],
-                        SpecAreaSet: [],
-                    },
-                    {
-                        FilePath: "https://picsum.photos/200/300?random=2",
-                        PageNum: 2,
-                        SpecTitleSet: [
-                            {
-                                id: "specTitleInitId01",
-                                TitleID: "specTitleId01",
-                                AreaName: "specAreaName01",
-                                AreaDesc: "specAreaDesc01",
-                                Title: "specTitle01",
-                                TitleContent: "specTitleContent01",
-                                PageNum: 1,
-                                x: 0,
-                                y: 0,
-                                width: 40,
-                                height: 40,
-                                type: "title",
-                                UX: 0,
-                                UY: 0,
-                                LX: 40,
-                                LY: 40,
-                                WordCount: 0,
-                                IsOneLine: "N",
-                                IsEng: "N",
-                            }
-                        ],
-                        SpecAreaSet: [
-                            {
-                                id: "specAreaInitId01",
-                                AreaID: "specAreaId01",
-                                AreaName: "specAreaName01",
-                                AreaDesc: "specAreaDesc01",
-                                Title: "specAreaTitle01",
-                                TitleContent: "specAreaTitleContent01",
-                                PageNum: 1,
-                                x: 50,
-                                y: 50,
-                                width: 100,
-                                height: 100,
-                                type: "area",
-                                UX: 50,
-                                UY: 50,
-                                LX: 100,
-                                LY: 100,
-                                WordCount: 0,
-                                IsOneLine: "N",
-                                IsEng: "Y",
-                            }
-                        ],
-                    }
-                ]
-            };
-            //TODO: fetch dataset if exist
-            //console.log(`data d parsr ::${pageList.length}::: ${pageList[0].Sets}`);
-            if (resData.length === 0 || resData === null) {
+            const resData = await API.getSpecSet(specID);
+            console.log(resData);
+            if (resData === null) {
                 alert("error: no page data");
                 return;
             } else {
-                //setPages({ caseNo: caseNo, createDTime: createDTime, pageList: pageList });
                 setDispatch({ type: 'fetch_success', OCR_SpecSet: resData })
             }
         } catch (error) {
@@ -106,22 +50,55 @@ const OpenModal = ({ show, setShow,setActivePageId }) => {
         }
     };
 
+    const fetchSpecList = useCallback(async () => {
+        try {
+            const data = await API.getSpecList();
+            console.log(data);
+            setSpecList(data);
+            setFilteredList(data);
+            setSelectedId(null);
+        } catch (error) {
+            console.log(error);
+        }
+    },[]);
+
+    useEffect(() => {
+        fetchSpecList();
+    }, [fetchSpecList])
+
+    const filterBySearch = (event) => {
+        // Access input value
+        const query = event.target.value;
+        // Create copy of item list
+        let updatedList = [...specList];
+        // Include all elements which includes the search query
+        updatedList = updatedList.filter((item) => {
+            return item.SpecName.includes(query);
+        });
+        // Trigger render with updated values
+        setFilteredList(updatedList);
+    };
+
     return (
         <Modal show={show} onHide={handleClose} centered>
             <Modal.Header closeButton>
                 <Modal.Title>開啟專案</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
-                <ListGroup>
-                    <ListGroup.Item action onClick={alertClicked}>
-                        proj 1
-                    </ListGroup.Item>
-                    <ListGroup.Item action onClick={alertClicked}>
-                        proj 2
-                    </ListGroup.Item>
-                    <ListGroup.Item action onClick={alertClicked}>
-                        proj 3
-                    </ListGroup.Item>
+            <Modal.Body className='m-0 p-0'>
+                <Form.Group as={Row} className="m-3" controlId="search-box">
+                    <Form.Label column sm="1">
+                        <FontAwesomeIcon className="icon me-1" icon={faSearch} />
+                    </Form.Label>
+                    <Col sm="11">
+                        <Form.Control type="text" onChange={filterBySearch} />
+                    </Col>
+                </Form.Group>
+                <ListGroup variant="flush" className='rounded-0'>
+                    {filteredList!==[] && filteredList.map((item, index) => (
+                        <ListGroup.Item action onClick={()=>alertClicked(item.SpecID)} key={item.SpecID}>
+                            {item.SpecName}
+                        </ListGroup.Item>
+                    ))}
                 </ListGroup>
             </Modal.Body>
             <Modal.Footer>

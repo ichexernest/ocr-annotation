@@ -36,7 +36,6 @@ const MainCanvas = ({ activePageId }) => {
         height: window.innerHeight
     });
     const [show, setShow] = useState(false);
-    const [eShow, setEShow] = useState(false);
     const [newAnnotation, setNewAnnotation] = useState([]);
     const zoomRef = React.useRef();
     const [editItem, setEditItem] = useState({});
@@ -108,10 +107,7 @@ const MainCanvas = ({ activePageId }) => {
         }
     };
     const handleEdit = () => {
-        setEditItem(annoList.find(obj => {
-            return obj.id === selectedId;
-        }))
-        setEShow(true);
+        setShow(true);
     };
     const handleSave = event => {
 
@@ -141,6 +137,7 @@ const MainCanvas = ({ activePageId }) => {
                                         onMouseDown={() => {
                                             // deselect when clicked on empty area
                                             selectAnnotation(null);
+                                            setEditItem(null);
                                         }}
                                     />
                                     {annotationsToDraw.map((item, i) => {
@@ -152,6 +149,10 @@ const MainCanvas = ({ activePageId }) => {
                                                 annoType={item.type}
                                                 onSelect={() => {
                                                     selectAnnotation(item.id);
+                                                    setEditItem(annoList.find(obj => {
+                                                        return obj.id === item.id;
+                                                    }))
+                                                    
                                                 }}
                                                 onChange={newAttrs => {
                                                     const rects = annoList.slice();
@@ -168,11 +169,16 @@ const MainCanvas = ({ activePageId }) => {
                         </WorkArea>
                     </PanZoom>
                 </Col>
-                <Col sm={3} className="side">
+                <Col sm={3} className="side p-0 x-0">
                     <Accordion flush activeKey={selectedId}>
                         {annoList.map((item, i) => {
                             return (
-                                <Accordion.Item eventKey={item.id} onClick={() => selectAnnotation(item.id)}>
+                                <Accordion.Item eventKey={item.id} onClick={() =>{
+                                    setEditItem(annoList.find(obj => {
+                                        return obj.id === item.id;
+                                    }))
+                                    selectAnnotation(item.id)
+                                }}>
                                     <Accordion.Header><Badge bg={item.type === "title" ? "danger" : "primary"} className='me-2'>{item.type.toUpperCase()}</Badge>
                                         {item.IsAnchor === 1 && <FontAwesomeIcon className="icon me-1 text-primary" icon={faAnchor} />}
                                         {item.AreaName}</Accordion.Header>
