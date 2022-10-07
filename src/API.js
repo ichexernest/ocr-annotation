@@ -82,8 +82,8 @@ const apiSettings = {
                   {
                       id: "specTitleInitId01",
                       TitleID: "specTitleId01",
-                      AreaName: "specAreaName01",
-                      AreaDesc: "specAreaDesc01",
+                      AreaName: "specTitleAreaName01",
+                      AreaDesc: "specTitleAreaDesc01",
                       Title: "specTitle01",
                       TitleContent: "specTitleContent01",
                       PageNum: 1,
@@ -97,8 +97,8 @@ const apiSettings = {
                       LX: 40,
                       LY: 40,
                       WordCount: 0,
-                      IsOneLine: "N",
-                      IsEng: "N",
+                      IsOneLine: true,
+                      IsEng: false,
                   }
               ],
               SpecAreaSet: [
@@ -120,8 +120,8 @@ const apiSettings = {
                       LX: 100,
                       LY: 100,
                       WordCount: 0,
-                      IsOneLine: "N",
-                      IsEng: "Y",
+                      IsOneLine: true,
+                      IsEng: true,
                   }
               ],
           }

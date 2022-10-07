@@ -44,6 +44,7 @@ const initialState = {
     ]
 };
 const reducer = (state, action) => {
+    let newState ={};
     switch (action.type) {
         case 'fetch_success':
             console.log(`REDUCER fetch_success : ${JSON.stringify(action.OCR_SpecSet)}`);
@@ -74,40 +75,60 @@ const reducer = (state, action) => {
             console.log(`REDUCER new_specInfo : ${JSON.stringify(state)}`);
             return state;
 
-        case "edit_annotations":
-            //alert(`REDUCER edit_annotations : ${JSON.stringify(action.newAnnotationList)}`);
-            let copy = Object.assign({}, state);
-            console.log(`REDUCER state edit_annotations : ${JSON.stringify(state.PageSet[action.activePageId])}`);
-            copy.PageSet[action.activePageId].SpecTitleSet = [];
-            copy.PageSet[action.activePageId].SpecAreaSet = [];
+        case "update_annotations":
+            //alert(`REDUCER update_annotations : ${JSON.stringify(action.newAnnotationList)}`);
+            newState = Object.assign({}, state);
+            console.log(`REDUCER state update_annotations : ${JSON.stringify(state.PageSet[action.activePageId])}`);
+            newState.PageSet[action.activePageId].SpecTitleSet = [];
+            newState.PageSet[action.activePageId].SpecAreaSet = [];
             action.newAnnotationList.forEach(item => {
                 if (item.type === "area") {
-                    copy.PageSet[action.activePageId].SpecAreaSet.push(item);
+                    newState.PageSet[action.activePageId].SpecAreaSet.push(item);
                 }
                 else if (item.type === "title") {
-                    copy.PageSet[action.activePageId].SpecTitleSet.push(item);
+                    newState.PageSet[action.activePageId].SpecTitleSet.push(item);
                 }
             });
-            console.log(`REDUCER_END edit_annotations : ${JSON.stringify(state)}`);
-            return copy;
+            console.log(`REDUCER_END update_annotations : ${JSON.stringify(state)}`);
+            return newState;
 
         case "add_new_annotation":
             console.log(`REDUCER add_new_annotation : ${JSON.stringify(action.newAnnotation)}`);
-            //let newState = Object.assign({}, state);
+            newState = Object.assign({}, state);
             //console.log(`REDUCER begin add_new_annotation : ${JSON.stringify(newState)}`);
             if (action.newAnnotation.type === "area")
-                state.PageSet[action.activePageId].SpecAreaSet.push(action.newAnnotation);
+            newState.PageSet[action.activePageId].SpecAreaSet.push(action.newAnnotation);
             else if (action.newAnnotation.type === "title") {
-                if (action.newAnnotation.IsAnchor === 1) {
-                    state.PageSet[action.activePageId].SpecTitleSet.forEach(item => {
-                        item.IsAnchor = 0;
+                if (action.newAnnotation.IsAnchor) {
+                    newState.PageSet[action.activePageId].SpecTitleSet.forEach(item => {
+                        item.IsAnchor = false;
                     })
                 }
-                state.PageSet[action.activePageId].SpecTitleSet.push(action.newAnnotation);
+                newState.PageSet[action.activePageId].SpecTitleSet.push(action.newAnnotation);
             }
             console.log(`REDUCER DONE add_new_annotation : ${JSON.stringify(state.PageSet[action.activePageId].SpecAreaSet)}`);
-            return state;
-            
+            return newState;
+
+        case "add_edit_annotation":
+            console.log(`REDUCER add_edit_annotation : ${JSON.stringify(action.annotation)}`);
+            newState = Object.assign({}, state);
+            //console.log(`REDUCER begin add_new_annotation : ${JSON.stringify(newState)}`);
+            if (action.annotation.type === "area"){
+                let foundIndex = newState.PageSet[action.activePageId].SpecAreaSet.findIndex(x => x.id == action.annotation.id);
+                newState.PageSet[action.activePageId].SpecAreaSet[foundIndex] = action.annotation;
+            }
+            else if (action.annotation.type === "title") {
+                if (action.annotation.IsAnchor) {
+                    newState.PageSet[action.activePageId].SpecTitleSet.forEach(item => {
+                        item.IsAnchor = false;
+                    })
+                }
+                let foundIndex = newState.PageSet[action.activePageId].SpecTitleSet.findIndex(x => x.id == action.annotation.id);
+                newState.PageSet[action.activePageId].SpecTitleSet[foundIndex] = action.annotation;
+            }
+            console.log(`REDUCER DONE add_new_annotation : ${JSON.stringify(state.PageSet[action.activePageId].SpecAreaSet)}`);
+            return newState;
+
         default:
             return state;
     }
@@ -129,4 +150,6 @@ export const useAPI = () => {
     }
     return context;
 }
+
+
 

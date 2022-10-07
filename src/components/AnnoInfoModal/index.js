@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
-
+import { v1 as uuidv1 } from "uuid";
 import { useAPI } from "../annotationContext";
 
 const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activePageId, editItem }) => {
@@ -21,16 +21,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
         IsEng: false,
     };
     console.log(`EDITITEM:::` + JSON.stringify(editItem))
-    const [inputs, setInputs] = useState(editItem !== null ? {
-        AreaName: editItem.AreaName,
-        AreaDesc: editItem.AreaDesc,
-        Title: editItem.Title,
-        TitleContent: editItem.TitleContent,
-        WordCount: editItem.WordCount,
-        IsAnchor: editItem.IsAnchor,
-        IsOneLine: editItem.IsOneLine,
-        IsEng: editItem.IsEng,
-    } : {
+    const [inputs, setInputs] = useState({
         AreaName: "",
         AreaDesc: "",
         Title: "",
@@ -41,6 +32,30 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
         IsEng: false,
     });
     const [annoType, setAnnoType] = useState('area');
+
+    useEffect(() => {
+        setAnnoType(editItem !== null ? editItem.type : "area");
+        setInputs(editItem !== null ? {
+            AreaName: editItem.AreaName,
+            AreaDesc: editItem.AreaDesc,
+            Title: editItem.Title,
+            TitleContent: editItem.TitleContent,
+            WordCount: editItem.WordCount,
+            IsAnchor: editItem.IsAnchor,
+            IsOneLine: editItem.IsOneLine,
+            IsEng: editItem.IsEng,
+        } : {
+            AreaName: "",
+            AreaDesc: "",
+            Title: "",
+            TitleContent: "",
+            WordCount: 0,
+            IsAnchor: false,
+            IsOneLine: false,
+            IsEng: false,
+        })
+    }, [editItem]);
+
     const handleTextChange = (event) => {
         let name, value;
         console.log(event)
@@ -78,6 +93,9 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
     const handleCheck = (e) => {
         e.preventDefault()
         submitData = inputs;
+        const id = uuidv1();
+        // alert(JSON.stringify(editItem))
+        // return;
         //alert(JSON.stringify(submitData));
         if (submitData.AreaName === '') {
             alert(`未填寫區域名稱`);
@@ -96,26 +114,22 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
                 alert(`未填寫標籤內容`);
                 return;
             }
-            if (submitData.IsAnchor) {
-                // annotations.forEach(item => {
-                //     item.IsAnchor = 0;
-                // })
-                submitData.IsAnchor = 1;
-            } else {
-                submitData.isAnchor = 0;
-            }
         }
         submitData.type = annoType;
         submitData.AreaID = "manualID";
-        submitData.IsOneLine = submitData.IsOneLine ? 1 : 0;
-        submitData.IsEng = submitData.IsEng ? 1 : 0;
+        submitData.IsOneLine = submitData.IsOneLine;
+        submitData.IsEng = submitData.IsEng;
 
-
-        newAnnotation[0] = { ...newAnnotation[0], ...submitData };
-        //annotations.push(...newAnnotation);
-        //setAnnotations(annotations);
-        setDispatch({ type: 'add_new_annotation', newAnnotation: newAnnotation[0], activePageId: activePageId })
-
+        if (editItem !== null) {
+            alert(`here is EDIT pattern ::: edititem:${JSON.stringify(editItem)} & submit data:${JSON.stringify(submitData)} `)
+            const editedItem = {...editItem, ...submitData};
+            setDispatch({ type: 'add_edit_annotation', annotation: editedItem, activePageId: activePageId })
+        } else {
+            submitData.id = id;
+            alert(`here is CREATENEW pattern ::: newAnnotation:${JSON.stringify(newAnnotation[0])} & submit data:${JSON.stringify(submitData)} `)
+            newAnnotation[0] = { ...newAnnotation[0], ...submitData };
+            setDispatch({ type: 'add_new_annotation', newAnnotation: newAnnotation[0], activePageId: activePageId })
+        }
         setNewAnnotation([]);
         setShow(false);
         setInputs({
@@ -143,7 +157,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
                         label="選擇標註類型"
                         className="mb-3"
                         onChange={handleSelectType}>
-                        <Form.Select>
+                        <Form.Select defaultValue={annoType} disabled={editItem!==null}>
                             <option value="area">area</option>
                             <option value="title">title</option>
                         </Form.Select>
@@ -160,14 +174,14 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
                         label="區域說明*"
                         className="mb-3"
                         onChange={handleTextChange}>
-                        <Form.Control type="text" placeholder="type areaDesc" />
+                        <Form.Control type="text" placeholder="type areaDesc" defaultValue={editItem !== null ? editItem.AreaDesc : ""} />
                     </FloatingLabel>
                     <FloatingLabel
                         controlId="Title"
                         label="標籤名稱*"
                         className="mb-3"
                         onChange={handleTextChange}>
-                        <Form.Control type="text" placeholder="type title" />
+                        <Form.Control type="text" placeholder="type title" defaultValue={editItem !== null ? editItem.Title : ""} />
                     </FloatingLabel>
                     {annoType === "title" &&
                         < FloatingLabel
@@ -175,7 +189,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
                             label="標籤內容*"
                             className="mb-3"
                             onChange={handleTextChange}>
-                            <Form.Control type="text" placeholder="type titleContent" />
+                            <Form.Control type="text" placeholder="type titleContent" defaultValue={editItem !== null ? editItem.TitleContent : ""} />
                         </FloatingLabel>
                     }
                     <FloatingLabel
@@ -183,7 +197,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
                         label="字數"
                         className="mb-3"
                         onChange={handleTextChange}>
-                        <Form.Control type="text" placeholder="type wordCount" />
+                        <Form.Control type="number" placeholder="type wordCount" defaultValue={editItem !== null ? editItem.WordCount : ""} />
                     </FloatingLabel>
                     {annoType === "title" &&
                         <Form.Group className="mb-3">
@@ -191,6 +205,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
                                 id="IsAnchor"
                                 label="是否為錨點(anchor)(勾選此項會將此設為本頁唯一錨點)"
                                 onChange={handleTextChange}
+                                defaultChecked={editItem !== null ? editItem.IsAnchor : ""}
                             />
                         </Form.Group>
                     }
@@ -199,6 +214,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
                             id="IsOneLine"
                             label="是否為單行"
                             onChange={handleTextChange}
+                            defaultChecked={editItem !== null ? editItem.IsOneLine : ""}
                         />
                     </Form.Group>
                     <Form.Group className="mb-3">
@@ -206,6 +222,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
                             id="IsEng"
                             label="是否為英數字"
                             onChange={handleTextChange}
+                            defaultChecked={editItem !== null ? editItem.IsEng : ""}
                         />
                     </Form.Group>
                 </Modal.Body>

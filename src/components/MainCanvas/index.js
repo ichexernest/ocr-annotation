@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
 import { Stage, Layer } from 'react-konva';
-import { v1 as uuidv1 } from "uuid";
-import classNames from 'classnames';
 import { PanZoom } from 'react-easy-panzoom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAnchor } from '@fortawesome/free-solid-svg-icons'
@@ -50,8 +48,7 @@ const MainCanvas = ({ activePageId }) => {
             const { x, y } = event.target.getStage().getPointerPosition();
            // x = Math.round(x);
            // y = Math.round(y)
-            const id = uuidv1();
-            setNewAnnotation([{ x:Math.round(x), y:Math.round(y), width: 0, height: 0, id }]);
+            setNewAnnotation([{ x:Math.round(x), y:Math.round(y), width: 0, height: 0, }]);
         } else {
             setNewAnnotation([]);
         }
@@ -65,11 +62,9 @@ const MainCanvas = ({ activePageId }) => {
             Math.max(y, canvasMeasures.height);
             const width = Math.round(x - sx);
             const height = Math.round(y - sy);
-            const id = uuidv1();
             if (x < canvasMeasures.width || y < canvasMeasures.height) {
                 setNewAnnotation([
                     {
-                        id,
                         x: sx,
                         y: sy,
                         width: Math.abs(width),
@@ -103,7 +98,7 @@ const MainCanvas = ({ activePageId }) => {
                 annotation => annotation.id !== selectedId
             );
             //setAnnotations(annotationsAfterDelete);
-            setDispatch({ type: 'edit_annotations', newAnnotationList: annotationsAfterDelete, activePageId: activePageId })
+            setDispatch({ type: 'update_annotations', newAnnotationList: annotationsAfterDelete, activePageId: activePageId })
         }
     };
     const handleEdit = () => {
@@ -159,7 +154,7 @@ const MainCanvas = ({ activePageId }) => {
                                                     rects[i] = newAttrs;
                                                     console.log(`RECT::: ` + JSON.stringify(rects))
                                                     //setAnnotations(rects);
-                                                    setDispatch({ type: 'edit_annotations', newAnnotationList: rects, activePageId: activePageId })
+                                                    setDispatch({ type: 'update_annotations', newAnnotationList: rects, activePageId: activePageId })
                                                 }}
                                             />
                                         );
@@ -180,16 +175,16 @@ const MainCanvas = ({ activePageId }) => {
                                     selectAnnotation(item.id)
                                 }}>
                                     <Accordion.Header><Badge bg={item.type === "title" ? "danger" : "primary"} className='me-2'>{item.type.toUpperCase()}</Badge>
-                                        {item.IsAnchor === 1 && <FontAwesomeIcon className="icon me-1 text-primary" icon={faAnchor} />}
+                                        {item.IsAnchor === true && <FontAwesomeIcon className="icon me-1 text-primary" icon={faAnchor} />}
                                         {item.AreaName}</Accordion.Header>
                                     <Accordion.Body className='fs-6 d-flex flex-column'>
                                         {/* <span>pageNum: {item.pageNum}</span> */}
-                                        <span>areaID: {item.AreaID}</span>
+                                        <span>areaID: {item.id}</span>
                                         <span>區域說明: {item.AreaDesc}</span>
                                         <span>標籤名稱: {item.Title}</span>
                                         {item.type === "title" && <span>標籤內容: {item.TitleContent}</span>}
-                                        <span>是否為單行: {item.IsOneLine === 1 ? "是" : "否"}</span>
-                                        <span>是否為英數字: {item.IsEng === 1 ? "是" : "否"}</span>
+                                        <span>是否為單行: {item.IsOneLine === true ? "是" : "否"}</span>
+                                        <span>是否為英數字: {item.IsEng === true ? "是" : "否"}</span>
                                         <span>字數: {item.WordCount}</span>
                                         {/* <span>id={item.id}</span>*/}
                                         <span>UX: {item.UX}</span>
