@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import styled from "styled-components";
 import classNames from 'classnames';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faGear } from '@fortawesome/free-solid-svg-icons'
 
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -12,24 +14,25 @@ import Button from 'react-bootstrap/Button';
 
 import SpecModal from './SpecModal';
 import OpenModal from './OpenModal';
+import NoticeModal from './NoticeModal';
 import MainCanvas from "../components/MainCanvas";
-import { useAPI } from "./annotationContext";
+import { useAPI } from "./AnnotationContext";
+import API from "./../API";
 
 
 const Wrapper = styled(Container)`
 background-color:#FFF;
 .main{
     background-color: #ccc; 
-    height:91vh;
-    max-height:91vh;
+    height:85vh;
+    max-height:85vh;
     overflow:hidden;
 }
 .side{
     background-color: #FFF; 
-    height:91vh;
-    max-height:91vh;
+    height:85vh;
+    max-height:85vh;
     overflow:auto;
-    border:1px solid #ccc;
 }
 `;
 const SidebarWrapper = styled.div`
@@ -58,49 +61,101 @@ height:91vh;
 `;
 const AnnotationPage = () => {
     const [activePageId, setActivePageId] = useState(0); //active ocr area
-    const [showNew, setShowNew] = useState(false);
-    const [showEdit, setShowEdit] = useState(false);
+    const [showSpecModal, setShowSpecModal] = useState(false);
+    const [showOpenModal, setShowOpenModal] = useState(false);
+    const [showNoticeModal, setShowNoticeModal] = useState(false);
+    const [editSpecItem, setEditSpecItem] = useState(null);
+    const [type, setType] = useState("");
 
-    const { annotation } = useAPI();
-    //console.log(`ANNOTATIONPAGE: `+JSON.stringify(annotation))
+    const { annotation, setDispatch } = useAPI();
 
-    useEffect(() => {
-        //setActivePageId(0)
-    }, [annotation]);
+    const handleSave = () => {
+        fetchSaveAllAnnotations()
 
+    };
+    const fetchSaveAllAnnotations = async (specID) => {
+        try {
+            const [firstResponse, secondResponse] = await Promise.all([
+                API.saveAnnotations(),
+                API.getSpecSet(specID)
+            ]);
+            if (secondResponse === null) {
+                alert("error: no data");
+                return;
+            } else {
+                setDispatch({ type: 'fetch_success', OCR_SpecSet: secondResponse })
+            }
+        } catch (error) {
+            alert(error);
+            return;
+        }
+    };
+
+    const handleNextStep = (type) => {
+        if(annotation.SpecID !== ""){
+            setType(type);
+            setShowNoticeModal(true);
+        }else{
+            if(type==="spec")openNew();
+            else openExist();
+        }
+    }
+    const openExist = () => {
+        setShowOpenModal(true);
+    }
+    const openNew = () => {
+        setEditSpecItem(null);
+        setShowSpecModal(true)
+    }
+    const openEdit = () => {
+        setEditSpecItem(annotation);
+        setShowSpecModal(true)
+    }
     return (
         <>
-            <Navbar bg="dark" variant="dark">
-                <Container>
-                    <Navbar.Brand href="#home">OCR-Annotation</Navbar.Brand>
-                    <Nav className="me-auto">
-                        <Button onClick={() => setShowNew(true)} className="mx-1 btn-light">新增專案</Button>
-                        <Button onClick={() => setShowEdit(true)} className="mx-1 btn-light">開啟專案</Button>
-                    </Nav>
-                </Container>
+            <Navbar bg="dark" variant="dark" className='px-4'>
+                <Navbar.Brand href="#">OCR-Annotation</Navbar.Brand>
+                <Nav className="me-auto">
+                    <Button onClick={() => handleNextStep("spec")} className="mx-1 btn-dark">新增專案</Button>
+                    <Button onClick={() => handleNextStep("open")} className="mx-1 btn-dark">開啟專案</Button>
+                </Nav>
             </Navbar>
             <Wrapper fluid>
                 {annotation.SpecID !== "" ?
                     <Row>
-                        <Col sm={2} className="side">
+                        <div className='d-flex justify-content-start align-items-center bg-white border-bottom'>
+                            <h3>{annotation.SpecName}-{annotation.SpecID}</h3>
+                            <Button className='mx-1 btn-light' onClick={() => openEdit()}><FontAwesomeIcon className="icon" icon={faGear} /></Button>
+                            <Button className='mx-1 btn-dark' onClick={() => handleSave()}>儲存</Button>
+                        </div>
+                        <Col sm={2} className="side border-end">
                             <Sidebar activePageId={activePageId} setActivePageId={setActivePageId} />
                         </Col>
                         <Col sm={10} className="main">
                             <MainCanvas
                                 activePageId={activePageId} />
                         </Col>
-                    </Row> : <Init className='text-secondary text-center'>Welcome to OCR-annotation tool.<br/>Open a spec project or create a new one.</Init>}
+                    </Row> : <Init className='text-secondary text-center'>Welcome to OCR-annotation tool.<br />Open a spec project or create a new one.</Init>}
             </Wrapper>
             <SpecModal
-                show={showNew}
-                setShow={setShowNew}
+                show={showSpecModal}
+                setShow={setShowSpecModal}
                 setActivePageId={setActivePageId}
+                editSpecItem={editSpecItem}
             />
             <OpenModal
-                show={showEdit}
-                setShow={setShowEdit}
+                show={showOpenModal}
+                setShow={setShowOpenModal}
                 setActivePageId={setActivePageId}
             />
+            {annotation.SpecID !== "" &&
+            <NoticeModal
+                show={showNoticeModal}
+                setShow={setShowNoticeModal}
+                content={"離開此頁後將不保留編輯內容，請確認是否已經儲存。"}
+                showLoading={false}
+                nextStep={type==="spec"?openNew:openExist}
+            />}
         </>
     )
 
@@ -112,7 +167,6 @@ const Sidebar = ({ setActivePageId, activePageId }) => {
     const handleSelectTarget = (i) => {
         setActivePageId(i);
     }
-    // console.log(`Sidebar  get annotation::: ${JSON.stringify(annotation)}`)
     return (
         <SidebarWrapper>
             <ul>

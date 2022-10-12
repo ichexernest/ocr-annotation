@@ -37,7 +37,6 @@ body{
     h3{
         font-size:1.1rem;
         font-weight:600;
-        color:rgb(34, 20, 95);
         margin: 8px;
         padding:8px;
     }

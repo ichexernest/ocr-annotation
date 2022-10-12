@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 
 import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import Offcanvas from 'react-bootstrap/Offcanvas';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
+
 import { v1 as uuidv1 } from "uuid";
-import { useAPI } from "../annotationContext";
+
+import { useAPI } from "../AnnotationContext";
 
 const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activePageId, editItem }) => {
-    const { setDispatch, annotation } = useAPI();
-    //let editAnnoList = JSON.parse(JSON.stringify(annotations));
+    const { setDispatch } = useAPI();
     let submitData = {
         AreaName: '',
         AreaDesc: '',
@@ -21,6 +22,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
         IsEng: false,
     };
     console.log(`EDITITEM:::` + JSON.stringify(editItem))
+
     const [inputs, setInputs] = useState({
         AreaName: "",
         AreaDesc: "",
@@ -34,8 +36,8 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
     const [annoType, setAnnoType] = useState('area');
 
     useEffect(() => {
-        setAnnoType(editItem !== null ? editItem.type : "area");
-        setInputs(editItem !== null ? {
+        setAnnoType(editItem !== null && editItem !== undefined ? editItem.type : "area");
+        setInputs(editItem !== null && editItem !== undefined ? {
             AreaName: editItem.AreaName,
             AreaDesc: editItem.AreaDesc,
             Title: editItem.Title,
@@ -58,20 +60,17 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
 
     const handleTextChange = (event) => {
         let name, value;
-        console.log(event)
         name = event.target.id;
         if (event.target.type === "checkbox") {
             value = event.target.checked;
         } else {
             value = event.target.value;
         }
-        console.log(name, value, event.target)
         setInputs(values => ({ ...values, [name]: value }))
     }
 
     const handleClose = () => {
         setNewAnnotation([]);
-        //alert(JSON.stringify(newAnnotation));
         setShow(false);
         setInputs({
             AreaName: '',
@@ -94,9 +93,6 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
         e.preventDefault()
         submitData = inputs;
         const id = uuidv1();
-        // alert(JSON.stringify(editItem))
-        // return;
-        //alert(JSON.stringify(submitData));
         if (submitData.AreaName === '') {
             alert(`未填寫區域名稱`);
             return;
@@ -116,17 +112,13 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
             }
         }
         submitData.type = annoType;
-        submitData.AreaID = "manualID";
-        submitData.IsOneLine = submitData.IsOneLine;
-        submitData.IsEng = submitData.IsEng;
+        //submitData.AreaID = "manualID";
 
-        if (editItem !== null) {
-            alert(`here is EDIT pattern ::: edititem:${JSON.stringify(editItem)} & submit data:${JSON.stringify(submitData)} `)
-            const editedItem = {...editItem, ...submitData};
+        if (editItem !== null && editItem !== undefined) {
+            const editedItem = { ...editItem, ...submitData };
             setDispatch({ type: 'add_edit_annotation', annotation: editedItem, activePageId: activePageId })
         } else {
-            submitData.id = id;
-            alert(`here is CREATENEW pattern ::: newAnnotation:${JSON.stringify(newAnnotation[0])} & submit data:${JSON.stringify(submitData)} `)
+            submitData.tempID = id;
             newAnnotation[0] = { ...newAnnotation[0], ...submitData };
             setDispatch({ type: 'add_new_annotation', newAnnotation: newAnnotation[0], activePageId: activePageId })
         }
@@ -146,20 +138,20 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
     }
 
     return (
-        <Modal show={show} onHide={handleClose} centered>
-            <Modal.Header closeButton>
-                <Modal.Title>新增標註</Modal.Title>
-            </Modal.Header>
+        <Offcanvas show={show} onHide={handleClose} placement="end">
+            <Offcanvas.Header closeButton>
+                <Offcanvas.Title>{editItem !== null && editItem !== undefined ? "編輯標註內容" : "新增標註"}</Offcanvas.Title>
+            </Offcanvas.Header>
             <Form onSubmit={handleCheck}>
-                <Modal.Body className="bg-light">
+                <Offcanvas.Body className="border-top">
                     <FloatingLabel
                         controlId="type"
                         label="選擇標註類型"
                         className="mb-3"
                         onChange={handleSelectType}>
-                        <Form.Select defaultValue={annoType} disabled={editItem!==null}>
-                            <option value="area">area</option>
-                            <option value="title">title</option>
+                        <Form.Select defaultValue={annoType} disabled={editItem !== null && editItem !== undefined}>
+                            <option value="area">資料區域</option>
+                            <option value="title">特徵區域</option>
                         </Form.Select>
                     </FloatingLabel>
                     <FloatingLabel
@@ -167,21 +159,21 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
                         label="區域名稱*"
                         className="mb-3"
                         onChange={handleTextChange}>
-                        <Form.Control type="text" placeholder="type areaName" defaultValue={editItem !== null ? editItem.AreaName : ""} />
+                        <Form.Control type="text" placeholder="type areaName" defaultValue={editItem !== null && editItem !== undefined ? editItem.AreaName : ""} />
                     </FloatingLabel>
                     <FloatingLabel
                         controlId="AreaDesc"
                         label="區域說明*"
                         className="mb-3"
                         onChange={handleTextChange}>
-                        <Form.Control type="text" placeholder="type areaDesc" defaultValue={editItem !== null ? editItem.AreaDesc : ""} />
+                        <Form.Control type="text" placeholder="type areaDesc" defaultValue={editItem !== null && editItem !== undefined ? editItem.AreaDesc : ""} />
                     </FloatingLabel>
                     <FloatingLabel
                         controlId="Title"
                         label="標籤名稱*"
                         className="mb-3"
                         onChange={handleTextChange}>
-                        <Form.Control type="text" placeholder="type title" defaultValue={editItem !== null ? editItem.Title : ""} />
+                        <Form.Control type="text" placeholder="type title" defaultValue={editItem !== null && editItem !== undefined ? editItem.Title : ""} />
                     </FloatingLabel>
                     {annoType === "title" &&
                         < FloatingLabel
@@ -189,7 +181,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
                             label="標籤內容*"
                             className="mb-3"
                             onChange={handleTextChange}>
-                            <Form.Control type="text" placeholder="type titleContent" defaultValue={editItem !== null ? editItem.TitleContent : ""} />
+                            <Form.Control type="text" placeholder="type titleContent" defaultValue={editItem !== null && editItem !== undefined ? editItem.TitleContent : ""} />
                         </FloatingLabel>
                     }
                     <FloatingLabel
@@ -197,7 +189,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
                         label="字數"
                         className="mb-3"
                         onChange={handleTextChange}>
-                        <Form.Control type="number" placeholder="type wordCount" defaultValue={editItem !== null ? editItem.WordCount : ""} />
+                        <Form.Control type="number" placeholder="type wordCount" defaultValue={editItem !== null && editItem !== undefined ? editItem.WordCount : ""} />
                     </FloatingLabel>
                     {annoType === "title" &&
                         <Form.Group className="mb-3">
@@ -205,7 +197,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
                                 id="IsAnchor"
                                 label="是否為錨點(anchor)(勾選此項會將此設為本頁唯一錨點)"
                                 onChange={handleTextChange}
-                                defaultChecked={editItem !== null ? editItem.IsAnchor : ""}
+                                defaultChecked={editItem !== null && editItem !== undefined ? editItem.IsAnchor : ""}
                             />
                         </Form.Group>
                     }
@@ -214,7 +206,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
                             id="IsOneLine"
                             label="是否為單行"
                             onChange={handleTextChange}
-                            defaultChecked={editItem !== null ? editItem.IsOneLine : ""}
+                            defaultChecked={editItem !== null && editItem !== undefined ? editItem.IsOneLine : ""}
                         />
                     </Form.Group>
                     <Form.Group className="mb-3">
@@ -222,20 +214,17 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
                             id="IsEng"
                             label="是否為英數字"
                             onChange={handleTextChange}
-                            defaultChecked={editItem !== null ? editItem.IsEng : ""}
+                            defaultChecked={editItem !== null && editItem !== undefined ? editItem.IsEng : ""}
                         />
                     </Form.Group>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        取消
-                    </Button>
-                    <Button variant="primary" type="submit">
+                </Offcanvas.Body>
+                <div className='d-flex justify-content-end'>
+                    <Button variant="dark" className='mx-4 px-5' type="submit">
                         儲存
                     </Button>
-                </Modal.Footer>
+                </div>
             </Form>
-        </Modal >
+        </Offcanvas >
     );
 }
 

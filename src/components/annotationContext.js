@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, createContext, useReducer } from "react";
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useContext, createContext, useReducer } from "react";
 //import API from '../API';
 const AnnotationContext = createContext();
 const initialState = {
@@ -16,7 +15,7 @@ const initialState = {
             ],
             SpecAreaSet: [
                 // {
-                //     id: "",
+                //     tempID: "",
                 //     x: 0,
                 //     y: 0,
                 //     width: 0,
@@ -44,13 +43,13 @@ const initialState = {
     ]
 };
 const reducer = (state, action) => {
-    let newState ={};
+    let newState = Object.assign({}, state);
     switch (action.type) {
         case 'fetch_success':
             console.log(`REDUCER fetch_success : ${JSON.stringify(action.OCR_SpecSet)}`);
             let result = JSON.stringify(action.OCR_SpecSet);
-            state = JSON.parse(result)
-            return state;
+            newState = JSON.parse(result)
+            return newState;
 
         case 'new_specInfo':
             console.log(`REDUCER new_specInfo : ${JSON.stringify(action.submitData)}`);
@@ -71,13 +70,20 @@ const reducer = (state, action) => {
                 ]
             }
             let aresult = JSON.stringify(a);
-            state = JSON.parse(aresult);
+            newState = JSON.parse(aresult);
+            console.log(`REDUCER new_specInfo : ${JSON.stringify(newState)}`);
+            return newState;
+
+        case 'update_specInfo':
+            console.log(`REDUCER new_specInfo : ${JSON.stringify(action.submitData)}`);
+            newState.RpaAPID=action.submitData.RpaAPID;
+            newState.OCRModel=action.submitData.OCRModel;
+            newState.SpecName=action.submitData.SpecName;
+            newState.SpecDesc=action.submitData.SpecDesc;
             console.log(`REDUCER new_specInfo : ${JSON.stringify(state)}`);
-            return state;
+            return newState;
 
         case "update_annotations":
-            //alert(`REDUCER update_annotations : ${JSON.stringify(action.newAnnotationList)}`);
-            newState = Object.assign({}, state);
             console.log(`REDUCER state update_annotations : ${JSON.stringify(state.PageSet[action.activePageId])}`);
             newState.PageSet[action.activePageId].SpecTitleSet = [];
             newState.PageSet[action.activePageId].SpecAreaSet = [];
@@ -94,15 +100,15 @@ const reducer = (state, action) => {
 
         case "add_new_annotation":
             console.log(`REDUCER add_new_annotation : ${JSON.stringify(action.newAnnotation)}`);
-            newState = Object.assign({}, state);
-            //console.log(`REDUCER begin add_new_annotation : ${JSON.stringify(newState)}`);
             if (action.newAnnotation.type === "area")
-            newState.PageSet[action.activePageId].SpecAreaSet.push(action.newAnnotation);
+                newState.PageSet[action.activePageId].SpecAreaSet.push(action.newAnnotation);
             else if (action.newAnnotation.type === "title") {
                 if (action.newAnnotation.IsAnchor) {
                     newState.PageSet[action.activePageId].SpecTitleSet.forEach(item => {
                         item.IsAnchor = false;
                     })
+                } else if (newState.PageSet[action.activePageId].SpecTitleSet.length === 0) {
+                    action.newAnnotation.IsAnchor = true;
                 }
                 newState.PageSet[action.activePageId].SpecTitleSet.push(action.newAnnotation);
             }
@@ -111,10 +117,8 @@ const reducer = (state, action) => {
 
         case "add_edit_annotation":
             console.log(`REDUCER add_edit_annotation : ${JSON.stringify(action.annotation)}`);
-            newState = Object.assign({}, state);
-            //console.log(`REDUCER begin add_new_annotation : ${JSON.stringify(newState)}`);
-            if (action.annotation.type === "area"){
-                let foundIndex = newState.PageSet[action.activePageId].SpecAreaSet.findIndex(x => x.id == action.annotation.id);
+            if (action.annotation.type === "area") {
+                let foundIndex = newState.PageSet[action.activePageId].SpecAreaSet.findIndex(x => x.tempID === action.annotation.tempID);
                 newState.PageSet[action.activePageId].SpecAreaSet[foundIndex] = action.annotation;
             }
             else if (action.annotation.type === "title") {
@@ -123,7 +127,7 @@ const reducer = (state, action) => {
                         item.IsAnchor = false;
                     })
                 }
-                let foundIndex = newState.PageSet[action.activePageId].SpecTitleSet.findIndex(x => x.id == action.annotation.id);
+                let foundIndex = newState.PageSet[action.activePageId].SpecTitleSet.findIndex(x => x.tempID === action.annotation.tempID);
                 newState.PageSet[action.activePageId].SpecTitleSet[foundIndex] = action.annotation;
             }
             console.log(`REDUCER DONE add_new_annotation : ${JSON.stringify(state.PageSet[action.activePageId].SpecAreaSet)}`);

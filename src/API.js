@@ -3,9 +3,9 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 
 const apiSettings = {
-  turnPdf2Jpeg: async () => {
-  },
+  //取得spec辨識規格列表
   getSpecList: async () => {
+    const url = `${BASE_URL}/GetSpecList`;
     const result =
       [{
         SpecID:"spid001",
@@ -43,7 +43,9 @@ const apiSettings = {
     //const result=  await axios.post(url);
     return result;
   },
+  //取得rpa服務列表
   getRpaAPList: async () => {
+    const url = `${BASE_URL}/GetRpaAPList`;
     const result =
       [{
         RpaAPID:"rpaap001",
@@ -57,6 +59,7 @@ const apiSettings = {
     //const result=  await axios.post(url);
     return result;
   },
+  //取得spec辨識規格內容
   getSpecSet: async (SpecID) => {
     const url = `${BASE_URL}/GetSpecSet`;
     const bodyData = {
@@ -80,7 +83,7 @@ const apiSettings = {
               PageNum: 2,
               SpecTitleSet: [
                   {
-                      id: "specTitleInitId01",
+                    tempID: "specTitleInitId01",
                       TitleID: "specTitleId01",
                       AreaName: "specTitleAreaName01",
                       AreaDesc: "specTitleAreaDesc01",
@@ -103,7 +106,7 @@ const apiSettings = {
               ],
               SpecAreaSet: [
                   {
-                      id: "specAreaInitId01",
+                      tempID: "specAreaInitId01",
                       AreaID: "specAreaId01",
                       AreaName: "specAreaName01",
                       AreaDesc: "specAreaDesc01",
@@ -130,6 +133,7 @@ const apiSettings = {
     //const result=  await axios.post(url,bodyData);
     return result;
   },
+  //新建spec辨識規格
   createSpec: async (formData) => {
     const url = `${BASE_URL}/CreateSpec`;
     // const bodyData = {
@@ -140,6 +144,25 @@ const apiSettings = {
       }
   });
     return result.SpecID;
+  },
+  //pdf轉jpeg
+  turnPdf2Jpeg: async () => {
+  },
+  //儲存所有已編輯的標註內容
+  saveAnnotations: async (annotations) => {
+    const url = `${BASE_URL}/SaveAnnotations`;
+    const bodyData = {annotations};
+    console.log(bodyData);
+    //const result= await axios.post(url,bodyData);
+    return 1;
+  },
+  //更新spec辨識規格資訊
+  updateSpec: async (editedItem) => {
+      const url = `${BASE_URL}/UpdateSpec`;
+      const bodyData = {editedItem};
+      //const result=  await axios.post(url,bodyData);
+      //return result.SpecID;
+      return "testId";
   },
 };
 

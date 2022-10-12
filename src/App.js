@@ -1,9 +1,9 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+//import { Routes, Route, Navigate } from 'react-router-dom';
 import { GlobalStyle } from './GlobalStyle';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import { AnnotationContextProvider} from "./components/annotationContext";
+import { AnnotationContextProvider} from "./components/AnnotationContext";
 
 import AnnotationPage from './components/AnnotationPage';
 

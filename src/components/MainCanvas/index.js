@@ -14,7 +14,7 @@ import Badge from 'react-bootstrap/Badge';
 import ImageFromUrl from "../ImageFormUrl";
 import Annotation from "../Annotation";
 import AnnoInfoModal from '../AnnoInfoModal';
-import { useAPI } from "../annotationContext";
+import { useAPI } from "../AnnotationContext";
 
 import { WorkArea } from './MainCanvas.styles';
 
@@ -27,7 +27,7 @@ const MainCanvas = ({ activePageId }) => {
         //annoList=annotation.PageSet[activePageId].SpecAreaSet.concat(annotation.PageSet[activePageId].SpecTitleSet);
     }, [activePageId]);
 
-    const [annotations, setAnnotations] = useState([]);
+    //const [annotations, setAnnotations] = useState([]);
     const [selectedId, selectAnnotation] = useState(null);
     const [canvasMeasures, setCanvasMeasures] = useState({
         width: window.innerWidth,
@@ -46,9 +46,9 @@ const MainCanvas = ({ activePageId }) => {
     const handleMouseDown = event => {
         if (selectedId === null && newAnnotation.length === 0) {
             const { x, y } = event.target.getStage().getPointerPosition();
-           // x = Math.round(x);
-           // y = Math.round(y)
-            setNewAnnotation([{ x:Math.round(x), y:Math.round(y), width: 0, height: 0, }]);
+            // x = Math.round(x);
+            // y = Math.round(y)
+            setNewAnnotation([{ x: Math.round(x), y: Math.round(y), width: 0, height: 0, }]);
         } else {
             setNewAnnotation([]);
         }
@@ -83,10 +83,7 @@ const MainCanvas = ({ activePageId }) => {
     };
     const handleMouseUp = () => {
         if (selectedId === null && newAnnotation.length === 1) {
-            // alert(JSON.stringify(newAnnotation));
             setShow(true);
-        } else {
-            //改變已存在之標註
         }
     };
     const handleMouseEnter = event => {
@@ -95,24 +92,17 @@ const MainCanvas = ({ activePageId }) => {
     const handleDelete = () => {
         if (selectedId !== null) {
             const annotationsAfterDelete = annoList.filter(
-                annotation => annotation.id !== selectedId
+                annotation => annotation.tempID !== selectedId
             );
-            //setAnnotations(annotationsAfterDelete);
             setDispatch({ type: 'update_annotations', newAnnotationList: annotationsAfterDelete, activePageId: activePageId })
         }
     };
     const handleEdit = () => {
         setShow(true);
     };
-    const handleSave = event => {
-
-    };
-
-    console.log(`ANNOTATIONS LIST CHECK:::` + JSON.stringify(annoList));
     return (
         <>
             <Row>
-                <div className='d-flex justify-content-between align-items-center bg-white'><h3>{annotation.SpecID}</h3><Button onClick={() => handleSave()}>儲存</Button></div>
                 <Col sm={9} className="main">
                     <PanZoom preventPan={preventPan}>
                         <WorkArea tabIndex={1}>
@@ -140,20 +130,18 @@ const MainCanvas = ({ activePageId }) => {
                                             <Annotation
                                                 key={i}
                                                 shapeProps={item}
-                                                isSelected={item.id === selectedId}
+                                                isSelected={item.tempID === selectedId}
                                                 annoType={item.type}
                                                 onSelect={() => {
-                                                    selectAnnotation(item.id);
+                                                    selectAnnotation(item.tempID);
                                                     setEditItem(annoList.find(obj => {
-                                                        return obj.id === item.id;
+                                                        return obj.tempID === item.tempID;
                                                     }))
-                                                    
+
                                                 }}
                                                 onChange={newAttrs => {
                                                     const rects = annoList.slice();
                                                     rects[i] = newAttrs;
-                                                    console.log(`RECT::: ` + JSON.stringify(rects))
-                                                    //setAnnotations(rects);
                                                     setDispatch({ type: 'update_annotations', newAnnotationList: rects, activePageId: activePageId })
                                                 }}
                                             />
@@ -164,33 +152,30 @@ const MainCanvas = ({ activePageId }) => {
                         </WorkArea>
                     </PanZoom>
                 </Col>
-                <Col sm={3} className="side p-0 x-0">
+                <Col sm={3} className="side p-0 x-0 border-start">
                     <Accordion flush activeKey={selectedId}>
                         {annoList.map((item, i) => {
                             return (
-                                <Accordion.Item eventKey={item.id} onClick={() =>{
+                                <Accordion.Item id={item.tempID} eventKey={item.tempID} onClick={() => {
                                     setEditItem(annoList.find(obj => {
-                                        return obj.id === item.id;
+                                        return obj.tempID === item.tempID;
                                     }))
-                                    selectAnnotation(item.id)
+                                    selectAnnotation(item.tempID)
                                 }}>
-                                    <Accordion.Header><Badge bg={item.type === "title" ? "danger" : "primary"} className='me-2'>{item.type.toUpperCase()}</Badge>
+                                    <Accordion.Header><Badge bg={item.type === "title" ? "danger" : "primary"} className='me-2'>{item.type === "area" ? "資料區域" : "特徵區域"}</Badge>
                                         {item.IsAnchor === true && <FontAwesomeIcon className="icon me-1 text-primary" icon={faAnchor} />}
                                         {item.AreaName}</Accordion.Header>
                                     <Accordion.Body className='fs-6 d-flex flex-column'>
                                         {/* <span>pageNum: {item.pageNum}</span> */}
-                                        <span>areaID: {item.id}</span>
+                                        <span>起始座標: {'('} {item.UX}, {item.UY} {')'}</span>
+                                        <span>結束座標: {'('} {item.LX}, {item.LY} {')'} </span>
                                         <span>區域說明: {item.AreaDesc}</span>
                                         <span>標籤名稱: {item.Title}</span>
                                         {item.type === "title" && <span>標籤內容: {item.TitleContent}</span>}
                                         <span>是否為單行: {item.IsOneLine === true ? "是" : "否"}</span>
                                         <span>是否為英數字: {item.IsEng === true ? "是" : "否"}</span>
                                         <span>字數: {item.WordCount}</span>
-                                        {/* <span>id={item.id}</span>*/}
-                                        <span>UX: {item.UX}</span>
-                                        <span>UY: {item.UY}</span>
-                                        <span>LX: {item.LX}</span>
-                                        <span>LY: {item.LY}</span>
+                                        {/* <span>id={item.tempID}</span>*/}
                                         <div className="d-flex justify-content-end">
                                             <Button className="mx-1 btn-light" type="button" onClick={() => handleEdit()}>編輯</Button>
                                             <Button className="mx-1 btn-light" type="button" onClick={() => handleDelete()}>刪除</Button>

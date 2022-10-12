@@ -9,7 +9,7 @@ import Row from 'react-bootstrap/Row';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
-import { useAPI } from '../annotationContext';
+import { useAPI } from '../AnnotationContext';
 import API from '../../API';
 
 const OpenModal = ({ show, setShow, setActivePageId }) => {
@@ -17,7 +17,6 @@ const OpenModal = ({ show, setShow, setActivePageId }) => {
     const [specList, setSpecList] = useState([]);
     const [filteredList, setFilteredList] = useState([]);
     const { setDispatch } = useAPI();
-    const [active, setActive] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
     const handleClose = () => {
         setShow(false);
@@ -30,7 +29,6 @@ const OpenModal = ({ show, setShow, setActivePageId }) => {
     };
 
     const alertClicked = (specID) => {
-        setActive(true);
         setSelectedId(specID);
     };
 
@@ -102,10 +100,10 @@ const OpenModal = ({ show, setShow, setActivePageId }) => {
                 </ListGroup>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button variant="light" onClick={handleClose}>
                     取消
                 </Button>
-                <Button variant="primary" onClick={handleChoose}>
+                <Button variant="dark" onClick={handleChoose}>
                     開啟
                 </Button>
             </Modal.Footer>

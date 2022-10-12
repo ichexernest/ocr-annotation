@@ -21,11 +21,6 @@ const Annotation = ({ shapeProps, isSelected, annoType, onSelect, onChange }) =>
         event.target.getStage().container().style.cursor = "crosshair";
     };
 
-    // shapeProps.x = shapeProps.UX;
-    // shapeProps.y = shapeProps.UY;
-    // shapeProps.width = shapeProps.LX-shapeProps.UX;
-    // shapeProps.height = shapeProps.LY-shapeProps.UY;
-
     return (
         <>
             <Rect
@@ -38,7 +33,6 @@ const Annotation = ({ shapeProps, isSelected, annoType, onSelect, onChange }) =>
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
                 onDragEnd={event => {
-                    console.log(`onchangeB` + JSON.stringify(shapeProps));
                     const ox = shapeProps.x;
                     const oy = shapeProps.y;
                     const ux = shapeProps.UX;
