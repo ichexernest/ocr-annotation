@@ -70,8 +70,9 @@ const AnnotationPage = () => {
     const { annotation, setDispatch } = useAPI();
 
     const handleSave = () => {
-        fetchSaveAllAnnotations()
-
+        //fetchSaveAllAnnotations();
+        alert(JSON.stringify(annotation));
+        console.log(`HERES SAVE ANNO LIST ::::  `+JSON.stringify(annotation))
     };
     const fetchSaveAllAnnotations = async (specID) => {
         try {

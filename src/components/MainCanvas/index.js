@@ -156,7 +156,7 @@ const MainCanvas = ({ activePageId }) => {
                     <Accordion flush activeKey={selectedId}>
                         {annoList.map((item, i) => {
                             return (
-                                <Accordion.Item id={item.tempID} eventKey={item.tempID} onClick={() => {
+                                <Accordion.Item key={item.tempID} id={item.tempID} eventKey={item.tempID} onClick={() => {
                                     setEditItem(annoList.find(obj => {
                                         return obj.tempID === item.tempID;
                                     }))
