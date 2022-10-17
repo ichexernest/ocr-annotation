@@ -91,7 +91,7 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
             const editedItem = { ...editSpecItem, ...submitData };
             fetchUpdateSpec(editedItem);
         } else {
-           //fetchCreateSpecSet(submitData);
+            fetchCreateSpecSet(submitData);
             setDispatch({
                 type: "new_specInfo",
                 submitData: submitData,
@@ -125,22 +125,39 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
 
     const fetchCreateSpecSet = async (submitData) => {
         try {
-            const [firstResponse, secondResponse,thirdResponse] = await Promise.all([
-                API.saveAnnotations(submitData),
-                API.turnPdf2Jpeg(firstResponse),
-                API.getSpecSet(firstResponse)
-            ]);
-            if (thirdResponse === null) {
+            // const [firstResponse, secondResponse, thirdResponse] = await Promise.all([
+            //     API.turnPdf2Jpeg(submitData),
+            //     API.createSpec(submitData,firstResponse),
+            //     API.getSpecSet(secondResponse)
+            // ]);
+            let result = await API.turnPdf2Jpeg(submitData)
+                .then(res => API.createSpec(submitData, res))
+                .then(res => API.getSpecSet(res))
+            if (result === null) {
                 alert("error: no page data");
                 return;
             } else {
-                setDispatch({ type: 'fetch_success', OCR_SpecSet: thirdResponse })
+                setDispatch({ type: 'fetch_success', OCR_SpecSet: result })
             }
         } catch (error) {
             alert(error);
             return;
         }
     };
+    const fetchTestConvert = async (submitData) => {
+        try {
+            let formData = new FormData();
+            formData.append("Cfile", submitData['FormFile']);
+            //alert(JSON.stringify(submitData['FormFile']));
+            const iCount = await API.turnPdf2Jpeg(formData);
+            alert(`done iCOunt:: ` + iCount)
+            return iCount;
+
+        } catch (error) {
+            alert(error);
+        }
+    };
+
 
     return (
         <Modal show={show} onHide={handleClose} centered>
@@ -158,7 +175,7 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
                     </FloatingLabel>
                     <FloatingLabel controlId="RpaAPID" label="RpaAPID*" className="mb-3" onChange={handleTextChange}>
                         <Form.Select aria-label="Floating label select example" defaultValue={editSpecItem !== null && editSpecItem !== undefined ? editSpecItem.RpaAPID : ""}>
-                            <option selected disabled hidden value="">請選擇...</option>
+                            <option disabled hidden value="">請選擇...</option>
                             {options !== [] && options.map((item, index) => (
                                 <option key={item.RpaAPID} value={item.RpaAPID}>{item.RpaAPName}</option>
                             ))}

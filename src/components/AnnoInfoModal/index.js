@@ -220,7 +220,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
                 </Offcanvas.Body>
                 <div className='d-flex justify-content-end'>
                     <Button variant="dark" className='mx-4 px-5' type="submit">
-                        儲存
+                        確定
                     </Button>
                 </div>
             </Form>
