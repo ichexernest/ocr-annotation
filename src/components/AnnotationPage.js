@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import styled from "styled-components";
 import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGear } from '@fortawesome/free-solid-svg-icons'
+import { faGear, faHandPaper, faMousePointer } from '@fortawesome/free-solid-svg-icons'
 
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -65,6 +65,7 @@ const AnnotationPage = () => {
     const [showOpenModal, setShowOpenModal] = useState(false);
     const [showNoticeModal, setShowNoticeModal] = useState(false);
     const [editSpecItem, setEditSpecItem] = useState(null);
+    const [annoSwitch, setAnnoSwitch] = useState(false);
     const [type, setType] = useState("");
 
     const { annotation, setDispatch } = useAPI();
@@ -101,6 +102,9 @@ const AnnotationPage = () => {
             else openExist();
         }
     }
+    const handleSwitch = ()=>{
+        setAnnoSwitch(!annoSwitch);
+    }
     const openExist = () => {
         setShowOpenModal(true);
     }
@@ -128,13 +132,15 @@ const AnnotationPage = () => {
                             <h3>{annotation.SpecName}-{annotation.SpecID}</h3>
                             <Button className='mx-1 btn-light' onClick={() => openEdit()}><FontAwesomeIcon className="icon" icon={faGear} /></Button>
                             <Button className='mx-1 btn-dark' onClick={() => handleSave()}>儲存</Button>
+                            <Button className='mx-1 btn-dark' onClick={() => handleSwitch()}><FontAwesomeIcon className="icon" icon={annoSwitch?faMousePointer:faHandPaper} /></Button>
                         </div>
                         <Col sm={2} className="side border-end">
                             <Sidebar activePageId={activePageId} setActivePageId={setActivePageId} />
                         </Col>
                         <Col sm={10} className="main">
                             <MainCanvas
-                                activePageId={activePageId} />
+                                activePageId={activePageId}
+                                annoSwitch={annoSwitch} />
                         </Col>
                     </Row> : <Init className='text-secondary text-center'>Welcome to OCR-annotation tool.<br />Open a spec project or create a new one.</Init>}
             </Wrapper>

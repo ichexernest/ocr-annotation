@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Rect, Transformer } from "react-konva";
 
-const Annotation = ({ shapeProps, isSelected, annoType, onSelect, onChange }) => {
+const Annotation = ({ shapeProps, isSelected, annoType, onSelect, onChange, annoSwitch }) => {
     const shapeRef = React.useRef();
     const transformRef = React.useRef();
 
@@ -29,7 +29,7 @@ const Annotation = ({ shapeProps, isSelected, annoType, onSelect, onChange }) =>
                 onMouseDown={onSelect}
                 ref={shapeRef}
                 {...shapeProps}
-                draggable
+                draggable={annoSwitch}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
                 onDragEnd={event => {

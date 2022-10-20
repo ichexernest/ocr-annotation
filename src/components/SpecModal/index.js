@@ -91,7 +91,7 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
             const editedItem = { ...editSpecItem, ...submitData };
             fetchUpdateSpec(editedItem);
         } else {
-            fetchCreateSpecSet(submitData);
+            //fetchCreateSpecSet(submitData);
             setDispatch({
                 type: "new_specInfo",
                 submitData: submitData,

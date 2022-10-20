@@ -18,16 +18,15 @@ import { useAPI } from "../AnnotationContext";
 
 import { WorkArea } from './MainCanvas.styles';
 
-const MainCanvas = ({ activePageId }) => {
+const MainCanvas = ({ activePageId, annoSwitch }) => {
 
     const { setDispatch, annotation } = useAPI();
     const annoList = annotation.PageSet[activePageId].SpecAreaSet.concat(annotation.PageSet[activePageId].SpecTitleSet);
 
     useEffect(() => {
         //annoList=annotation.PageSet[activePageId].SpecAreaSet.concat(annotation.PageSet[activePageId].SpecTitleSet);
-    }, [activePageId]);
+    }, [activePageId,annoSwitch]);
 
-    //const [annotations, setAnnotations] = useState([]);
     const [selectedId, selectAnnotation] = useState(null);
     const [canvasMeasures, setCanvasMeasures] = useState({
         width: window.innerWidth,
@@ -39,11 +38,13 @@ const MainCanvas = ({ activePageId }) => {
     const [editItem, setEditItem] = useState({});
     const annotationsToDraw = [...annoList, ...newAnnotation];
 
-    const preventPan = (e, x, y) => {        // if the target is the content container then prevent panning
-        return true;
+    const preventPan = (e, x, y) => {   
+             // if the target is the content container then prevent panning
+        return annoSwitch;
 
     }
     const handleMouseDown = event => {
+        if(annoSwitch){
         if (selectedId === null && newAnnotation.length === 0) {
             const { x, y } = event.target.getStage().getPointerPosition();
             // x = Math.round(x);
@@ -52,8 +53,10 @@ const MainCanvas = ({ activePageId }) => {
         } else {
             setNewAnnotation([]);
         }
+        }
     };
     const handleMouseMove = event => {
+        if(annoSwitch){
         if (selectedId === null && newAnnotation.length === 1) {
             const sx = newAnnotation[0].x;
             const sy = newAnnotation[0].y;
@@ -80,14 +83,19 @@ const MainCanvas = ({ activePageId }) => {
         } else {
             return;
         }
+        }
     };
     const handleMouseUp = () => {
-        if (selectedId === null && newAnnotation.length === 1) {
-            setShow(true);
+        if(annoSwitch){
+            if (selectedId === null && newAnnotation.length === 1) {
+                setShow(true);
+            }
         }
     };
     const handleMouseEnter = event => {
+        if(annoSwitch){
         event.target.getStage().container().style.cursor = "crosshair";
+        }
     };
     const handleDelete = () => {
         if (selectedId !== null) {
@@ -104,7 +112,7 @@ const MainCanvas = ({ activePageId }) => {
         <>
             <Row>
                 <Col sm={9} className="main">
-                    <PanZoom preventPan={preventPan}>
+                    <PanZoom disabled={annoSwitch} >
                         <WorkArea tabIndex={1}>
                             <Stage
                                 width={canvasMeasures.width}
@@ -132,12 +140,12 @@ const MainCanvas = ({ activePageId }) => {
                                                 shapeProps={item}
                                                 isSelected={item.tempID === selectedId}
                                                 annoType={item.type}
+                                                annoSwitch={annoSwitch}
                                                 onSelect={() => {
                                                     selectAnnotation(item.tempID);
                                                     setEditItem(annoList.find(obj => {
                                                         return obj.tempID === item.tempID;
                                                     }))
-
                                                 }}
                                                 onChange={newAttrs => {
                                                     const rects = annoList.slice();

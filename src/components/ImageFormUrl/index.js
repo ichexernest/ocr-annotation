@@ -14,6 +14,7 @@ const ImageFromUrl = ({
         const imageToLoad = new window.Image();
         imageToLoad.src = imageUrl;
         imageToLoad.addEventListener("load", () => {
+            console.log(`img:::`+ JSON.stringify(imageToLoad))
             setImage(imageToLoad);
             setCanvasMeasures({
                 width: imageToLoad.width,
