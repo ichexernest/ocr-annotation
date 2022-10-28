@@ -9,7 +9,7 @@ const initialState = {
     RpaAPID: "",
     PageSet: [
         {
-            FilePath: "",
+            FileContent: "",
             PageNum: 1,
             SpecTitleSet: [
             ],
@@ -53,16 +53,16 @@ const reducer = (state, action) => {
 
         case 'new_specInfo':
             console.log(`REDUCER new_specInfo : ${JSON.stringify(action.submitData)}`);
-            let fileP = URL.createObjectURL(action.submitData.FormFile);
+            //let fileP = URL.createObjectURL(action.submitData.FormFile);
             let a = {
-                SpecID: "new_SpecSet_Id01",
+                SpecID: action.submitData.SpecID,
                 SpecName: action.submitData.SpecName,
                 SpecDesc: action.submitData.SpecDesc,
                 OCRModel: action.submitData.OCRModel,
                 RpaAPID: action.submitData.RpaAPID,
                 PageSet: [
                     {
-                        FilePath: fileP,
+                        FileContent: action.submitData.FormContent,
                         PageNum: 1,
                         SpecTitleSet: [],
                         SpecAreaSet: [],
@@ -70,7 +70,7 @@ const reducer = (state, action) => {
                 ]
             }
             let aresult = JSON.stringify(a);
-            newState = JSON.parse(aresult);
+            newState = action.submitData;
             console.log(`REDUCER new_specInfo : ${JSON.stringify(newState)}`);
             return newState;
 

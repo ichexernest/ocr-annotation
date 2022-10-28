@@ -132,7 +132,7 @@ const AnnotationPage = () => {
                             <h3>{annotation.SpecName}-{annotation.SpecID}</h3>
                             <Button className='mx-1 btn-light' onClick={() => openEdit()}><FontAwesomeIcon className="icon" icon={faGear} /></Button>
                             <Button className='mx-1 btn-dark' onClick={() => handleSave()}>儲存</Button>
-                            <Button className='mx-1 btn-dark' onClick={() => handleSwitch()}><FontAwesomeIcon className="icon" icon={annoSwitch?faMousePointer:faHandPaper} /></Button>
+                            <Button className='mx-1 btn-dark' onClick={() => handleSwitch() } title="切換"><FontAwesomeIcon className="icon" icon={annoSwitch?faMousePointer:faHandPaper} /></Button>
                         </div>
                         <Col sm={2} className="side border-end">
                             <Sidebar activePageId={activePageId} setActivePageId={setActivePageId} />
@@ -184,7 +184,7 @@ const Sidebar = ({ setActivePageId, activePageId }) => {
                         });
                         return (
                             <li key={item.PageNum} className={liClasses} onClick={() => handleSelectTarget(index)} >
-                                <img src={item.FilePath} alt={item.PageNum} />
+                                <img src={"data:image/jpeg;base64 ," + item.FileContent} alt={item.PageNum} />
                                 頁數: {item.PageNum}
                             </li>)
                     })}

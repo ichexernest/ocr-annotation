@@ -126,7 +126,7 @@ const MainCanvas = ({ activePageId, annoSwitch }) => {
                                 <Layer>
                                     <ImageFromUrl
                                         setCanvasMeasures={setCanvasMeasures}
-                                        imageUrl={annotation.PageSet[activePageId].FilePath}
+                                        imageUrl={annotation.PageSet[activePageId].FileContent}
                                         onMouseDown={() => {
                                             // deselect when clicked on empty area
                                             selectAnnotation(null);

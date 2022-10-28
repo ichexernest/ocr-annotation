@@ -23,7 +23,7 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
     const fetchRpaAPList = useCallback(async () => {
         try {
             const data = await API.getRpaAPList();
-            setOptions(data);
+            setOptions(JSON.parse(data));
         } catch (error) {
             console.log(error);
         }
@@ -31,7 +31,7 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
 
     useEffect(() => {
         fetchRpaAPList();
-    }, [fetchRpaAPList])
+    }, [show])
 
     useEffect(() => {
         setInputs(editSpecItem !== null && editSpecItem !== undefined ? {
@@ -84,18 +84,35 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
             alert(`未填寫規格說明`);
             return;
         }
-        //TODO: POST 資料建檔
-        //TODO: 預處理 若是pdf則轉檔切分放入
 
         if (editSpecItem !== null && editSpecItem !== undefined) {
             const editedItem = { ...editSpecItem, ...submitData };
             fetchUpdateSpec(editedItem);
         } else {
-            //fetchCreateSpecSet(submitData);
-            setDispatch({
-                type: "new_specInfo",
-                submitData: submitData,
-            })
+            if(submitData.FormFile.type ==="application/pdf"){
+            //fetchTestConvert(submitData);                        
+            fetchCreateSpecSet(submitData);
+            // setDispatch({
+            //     type: "new_specInfo",
+            //     submitData: submitData,
+            // })
+            }
+            else if( submitData.FormFile.type==="image/png"||submitData.FormFile.type==="image/jpeg" ){
+                //convert to base64
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    // Use a regex to remove data url part
+                    const base64String = reader.result
+                    console.log(base64String);
+                    //fetchTestConvertImage(submitData,base64String)
+                    fetchCreateSpecSet(submitData,base64String)
+                };
+                reader.readAsDataURL(submitData.FormFile);
+                
+            }else{
+                alert("not supported file type");
+                return;
+            }
         }
         setActivePageId(0);
         setShow(false);
@@ -123,21 +140,36 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
         }
     };
 
-    const fetchCreateSpecSet = async (submitData) => {
+    const fetchCreateSpecSet = async (submitData,base64Data) => {
         try {
             // const [firstResponse, secondResponse, thirdResponse] = await Promise.all([
             //     API.turnPdf2Jpeg(submitData),
             //     API.createSpec(submitData,firstResponse),
             //     API.getSpecSet(secondResponse)
             // ]);
-            let result = await API.turnPdf2Jpeg(submitData)
+            let result = "";
+            if(submitData.FormFile.type ==="application/pdf"){
+                let formData = new FormData();
+                formData.append("Cfile", submitData['FormFile']);
+                result = await API.turnPdf2Jpeg(formData)
                 .then(res => API.createSpec(submitData, res))
                 .then(res => API.getSpecSet(res))
+                .then(res => setDispatch({
+                    type: "fetch_success",
+                    OCR_SpecSet: JSON.parse(res),
+                }))
+            }else{
+                result = await API.createSpec(submitData, base64Data.split(',')[1])
+                .then(res => API.getSpecSet(res))
+                .then(res => setDispatch({
+                    type: "fetch_success",
+                    OCR_SpecSet: JSON.parse(res),
+                }))
+            }
+            
             if (result === null) {
                 alert("error: no page data");
                 return;
-            } else {
-                setDispatch({ type: 'fetch_success', OCR_SpecSet: result })
             }
         } catch (error) {
             alert(error);
@@ -149,14 +181,32 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
             let formData = new FormData();
             formData.append("Cfile", submitData['FormFile']);
             //alert(JSON.stringify(submitData['FormFile']));
-            const iCount = await API.turnPdf2Jpeg(formData);
-            alert(`done iCOunt:: ` + iCount)
-            return iCount;
+            const jpegBase64 = await API.turnPdf2Jpeg(formData);
+            submitData['FormFile'] = jpegBase64;
+            setDispatch({
+                type: "new_specInfo",
+                submitData: submitData,
+            })
+            return;
 
         } catch (error) {
             alert(error);
         }
     };
+    const fetchTestConvertImage = async (submitData, base64Data) => {
+        try {
+            submitData['FormFile'] = base64Data;
+            setDispatch({
+                type: "new_specInfo",
+                submitData: submitData,
+            })
+            return;
+
+        } catch (error) {
+            alert(error);
+        }
+    };
+
 
 
     return (

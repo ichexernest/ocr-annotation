@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Buffer } from 'buffer';
-const BASE_URL = process.env.REACT_APP_BASE_URL;
-
+//const BASE_URL = process.env.REACT_APP_BASE_URL;
+const BASE_URL = 'https://localhost:44375/OCR_Annotation.asmx';
 
 const apiSettings = {
   //取得spec辨識規格列表
@@ -47,17 +47,22 @@ const apiSettings = {
   //取得rpa服務列表
   getRpaAPList: async () => {
     const url = `${BASE_URL}/GetRpaAPList`;
-    const result =
-      [{
-        RpaAPID: "rpaap001",
-        RpaAPName: "銀行水單"
-      },
-      {
-        RpaAPID: "rpaap002",
-        RpaAPName: "現金券申請單"
-      },
-      ];
-    //const result=  await axios.post(url);
+    // const result =
+    //   [{
+    //     RpaAPID: "rpaap001",
+    //     RpaAPName: "銀行水單"
+    //   },
+    //   {
+    //     RpaAPID: "rpaap002",
+    //     RpaAPName: "現金券申請單"
+    //   },
+    //   ];
+    const response = await axios.post(url, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    const result = response.data.d
     return result;
   },
   //取得spec辨識規格內容
@@ -66,72 +71,74 @@ const apiSettings = {
     const bodyData = {
       'p_szSpecID': SpecID,
     };
-    const result = {
-      SpecID: "Test001",
-      SpecName: "測試1",
-      SpecDesc: "這是測試用",
-      OCRModel: "OCR01EN",
-      RpaAPID: "AP001",
-      PageSet: [
-        {
-          FilePath: "https://picsum.photos/200/300?random=1",
-          PageNum: 1,
-          SpecTitleSet: [],
-          SpecAreaSet: [],
-        },
-        {
-          FilePath: "https://picsum.photos/200/300?random=2",
-          PageNum: 2,
-          SpecTitleSet: [
-            {
-              tempID: "specTitleInitId01",
-              TitleID: "specTitleId01",
-              AreaName: "specTitleAreaName01",
-              AreaDesc: "specTitleAreaDesc01",
-              Title: "specTitle01",
-              TitleContent: "specTitleContent01",
-              PageNum: 1,
-              x: 0,
-              y: 0,
-              width: 40,
-              height: 40,
-              type: "title",
-              UX: 0,
-              UY: 0,
-              LX: 40,
-              LY: 40,
-              WordCount: 0,
-              IsOneLine: true,
-              IsEng: false,
-            }
-          ],
-          SpecAreaSet: [
-            {
-              tempID: "specAreaInitId01",
-              AreaID: "specAreaId01",
-              AreaName: "specAreaName01",
-              AreaDesc: "specAreaDesc01",
-              Title: "specAreaTitle01",
-              TitleContent: "specAreaTitleContent01",
-              PageNum: 1,
-              x: 50,
-              y: 50,
-              width: 100,
-              height: 100,
-              type: "area",
-              UX: 50,
-              UY: 50,
-              LX: 100,
-              LY: 100,
-              WordCount: 0,
-              IsOneLine: true,
-              IsEng: true,
-            }
-          ],
-        }
-      ]
-    };
-    //const result=  await axios.post(url,bodyData);
+    // const result = {
+    //   SpecID: "Test001",
+    //   SpecName: "測試1",
+    //   SpecDesc: "這是測試用",
+    //   OCRModel: "OCR01EN",
+    //   RpaAPID: "AP001",
+    //   PageSet: [
+    //     {
+    //       FileContent: "https://picsum.photos/200/300?random=1",
+    //       PageNum: 1,
+    //       SpecTitleSet: [],
+    //       SpecAreaSet: [],
+    //     },
+    //     {
+    //       FileContent: "https://picsum.photos/200/300?random=2",
+    //       PageNum: 2,
+    //       SpecTitleSet: [
+    //         {
+    //           tempID: "specTitleInitId01",
+    //           TitleID: "specTitleId01",
+    //           AreaName: "specTitleAreaName01",
+    //           AreaDesc: "specTitleAreaDesc01",
+    //           Title: "specTitle01",
+    //           TitleContent: "specTitleContent01",
+    //           PageNum: 1,
+    //           x: 0,
+    //           y: 0,
+    //           width: 40,
+    //           height: 40,
+    //           type: "title",
+    //           UX: 0,
+    //           UY: 0,
+    //           LX: 40,
+    //           LY: 40,
+    //           WordCount: 0,
+    //           IsOneLine: true,
+    //           IsEng: false,
+    //         }
+    //       ],
+    //       SpecAreaSet: [
+    //         {
+    //           tempID: "specAreaInitId01",
+    //           AreaID: "specAreaId01",
+    //           AreaName: "specAreaName01",
+    //           AreaDesc: "specAreaDesc01",
+    //           Title: "specAreaTitle01",
+    //           TitleContent: "specAreaTitleContent01",
+    //           PageNum: 1,
+    //           x: 50,
+    //           y: 50,
+    //           width: 100,
+    //           height: 100,
+    //           type: "area",
+    //           UX: 50,
+    //           UY: 50,
+    //           LX: 100,
+    //           LY: 100,
+    //           WordCount: 0,
+    //           IsOneLine: true,
+    //           IsEng: true,
+    //         }
+    //       ],
+    //     }
+    //   ]
+    // };
+    const response=  await axios.post(url,bodyData);
+    console.log(response)
+    const result = response.data.d;
     return result;
   },
   //新建spec辨識規格
@@ -141,26 +148,25 @@ const apiSettings = {
     formData.append("RpaAPID", submitData['RpaAPID']);
     formData.append("SpecName", submitData['SpecName']);
     formData.append("SpecDesc", submitData['SpecDesc']);
-    formData.append("FilePath", base64Data);
+    formData.append("FileContent", base64Data);
     const url = `${BASE_URL}/CreateSpec`;
-    alert(`FORM DATA: `+JSON.stringify(formData));
-    alert(`FORM DATA: `+JSON.stringify(base64Data));
-    // const result = await axios.post(url, formData, {
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data'
-    //   }
-    // });
-    return 0;
+    const response = await axios.post(url, formData, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    let result = new window.DOMParser().parseFromString(response.data, "text/xml").childNodes[0].childNodes[0].nodeValue;
+    return result;
   },
   //pdf轉jpeg
-  turnPdf2Jpeg: async (submitData) => {
-    let formData = new FormData();
-    formData.append("Cfile", submitData['FormFile']);
+  turnPdf2Jpeg: async (formData) => {
+    // let formData = new FormData();
+    // formData.append("Cfile", submitData['FormFile']);
     const url = `http://10.3.228.224:8888/api/v1/img/pdf2jpg`;
     const result = await axios.post(url, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
-      },responseType: 'arraybuffer'
+      }, responseType: 'arraybuffer'
     });
     alert(Buffer.from(result.data, 'binary').toString('base64'))
     return Buffer.from(result.data, 'binary').toString('base64');
@@ -181,6 +187,10 @@ const apiSettings = {
     //return result.SpecID;
     return "testId";
   },
+  //存入jpg/png檔
+  saveImage: async () => {
+
+  }
 };
 
 export default apiSettings;
