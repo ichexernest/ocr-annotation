@@ -118,7 +118,8 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
             const editedItem = { ...editItem, ...submitData };
             setDispatch({ type: 'add_edit_annotation', annotation: editedItem, activePageId: activePageId })
         } else {
-            submitData.tempID = id;
+            submitData.TempID = id;
+            submitData.PageNum = activePageId+1;
             newAnnotation[0] = { ...newAnnotation[0], ...submitData };
             setDispatch({ type: 'add_new_annotation', newAnnotation: newAnnotation[0], activePageId: activePageId })
         }

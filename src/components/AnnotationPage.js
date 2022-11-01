@@ -11,6 +11,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import Spinner from 'react-bootstrap/Spinner';
 
 import SpecModal from './SpecModal';
 import OpenModal from './OpenModal';
@@ -59,6 +60,24 @@ align-items:center;
 justify-content:center;
 height:91vh;
 `;
+
+const LoadingBg= styled.div`
+position: fixed;
+top: 0; left: 0; z-index: 999;
+width: 100vw; height: 100vh;
+background: rgba(0, 0, 0, 0.7);
+transition: opacity 0.2s;
+`;
+const LoadingContent= styled.div`
+position: absolute;
+top:50%;
+left: 50%;
+transform: translate(-50%, -50%);
+h2{
+    color:white;
+}
+`;
+
 const AnnotationPage = () => {
     const [activePageId, setActivePageId] = useState(0); //active ocr area
     const [showSpecModal, setShowSpecModal] = useState(false);
@@ -71,21 +90,21 @@ const AnnotationPage = () => {
     const { annotation, setDispatch } = useAPI();
 
     const handleSave = () => {
-        //fetchSaveAllAnnotations();
+        fetchSaveAllAnnotations(annotation);
         alert(JSON.stringify(annotation));
         console.log(`HERES SAVE ANNO LIST ::::  `+JSON.stringify(annotation))
     };
     const fetchSaveAllAnnotations = async (specID) => {
         try {
-            const [firstResponse, secondResponse] = await Promise.all([
-                API.saveAnnotations(),
-                API.getSpecSet(specID)
-            ]);
-            if (secondResponse === null) {
+            const result = await API.saveAnnotations(annotation)
+            .then(API.getSpecSet(specID))
+            .then(res => setDispatch({
+                type: "fetch_success",
+                OCR_SpecSet: JSON.parse(res),
+            }))
+            if (result === null) {
                 alert("error: no data");
                 return;
-            } else {
-                setDispatch({ type: 'fetch_success', OCR_SpecSet: secondResponse })
             }
         } catch (error) {
             alert(error);
@@ -118,6 +137,7 @@ const AnnotationPage = () => {
     }
     return (
         <>
+        <Loading/>
             <Navbar bg="dark" variant="dark" className='px-4'>
                 <Navbar.Brand href="#">OCR-Annotation</Navbar.Brand>
                 <Nav className="me-auto">
@@ -184,12 +204,23 @@ const Sidebar = ({ setActivePageId, activePageId }) => {
                         });
                         return (
                             <li key={item.PageNum} className={liClasses} onClick={() => handleSelectTarget(index)} >
-                                <img src={"data:image/jpeg;base64 ," + item.FileContent} alt={item.PageNum} />
+                                <img src={item.FileContent} alt={item.PageNum} />
                                 頁數: {item.PageNum}
                             </li>)
                     })}
             </ul>
         </SidebarWrapper>
+    );
+}
+
+const Loading = ({show}) => {
+    return (
+        <LoadingBg>     
+            <LoadingContent className="d-flex flex-column justicy-content-center align-items-center">
+            <Spinner className='content mb-3' animation="grow" variant="light"/>
+            <h2>Loading</h2>
+            </LoadingContent>     
+        </LoadingBg>
     );
 }
 export default AnnotationPage;

@@ -89,13 +89,8 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
             const editedItem = { ...editSpecItem, ...submitData };
             fetchUpdateSpec(editedItem);
         } else {
-            if(submitData.FormFile.type ==="application/pdf"){
-            //fetchTestConvert(submitData);                        
+            if(submitData.FormFile.type ==="application/pdf"){                      
             fetchCreateSpecSet(submitData);
-            // setDispatch({
-            //     type: "new_specInfo",
-            //     submitData: submitData,
-            // })
             }
             else if( submitData.FormFile.type==="image/png"||submitData.FormFile.type==="image/jpeg" ){
                 //convert to base64
@@ -127,12 +122,12 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
 
     const fetchUpdateSpec = async (editedItem) => {
         try {
-            const resData = await API.updateSpec(editedItem);
+            const resData = await API.updateSpec(editedItem)
+                .then(setDispatch({ type: 'update_specInfo', submitData: editedItem }))
+            
             if (resData === null) {
-                alert("error: no data");
+                alert("error: no page data");
                 return;
-            } else {
-                setDispatch({ type: 'update_specInfo', submitData: editedItem })
             }
         } catch (error) {
             alert(error);
@@ -142,11 +137,6 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
 
     const fetchCreateSpecSet = async (submitData,base64Data) => {
         try {
-            // const [firstResponse, secondResponse, thirdResponse] = await Promise.all([
-            //     API.turnPdf2Jpeg(submitData),
-            //     API.createSpec(submitData,firstResponse),
-            //     API.getSpecSet(secondResponse)
-            // ]);
             let result = "";
             if(submitData.FormFile.type ==="application/pdf"){
                 let formData = new FormData();
@@ -221,16 +211,17 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
                         label="OCR模型*"
                         className="mb-3"
                         onChange={handleTextChange}>
-                        <Form.Control type="text" placeholder="type OCRModel" defaultValue={editSpecItem !== null && editSpecItem !== undefined ? editSpecItem.OCRModel : ""} />
+                        <Form.Control type="text" placeholder="type OCRModel" defaultValue={editSpecItem !== null && editSpecItem !== undefined ? editSpecItem.OCRModel : ""} disabled={editSpecItem !== null && editSpecItem !== undefined ? true:false}/>
                     </FloatingLabel>
                     <FloatingLabel controlId="RpaAPID" label="RpaAPID*" className="mb-3" onChange={handleTextChange}>
-                        <Form.Select aria-label="Floating label select example" defaultValue={editSpecItem !== null && editSpecItem !== undefined ? editSpecItem.RpaAPID : ""}>
+                        <Form.Select aria-label="Floating label select example" defaultValue={editSpecItem !== null && editSpecItem !== undefined ? editSpecItem.RpaAPID : ""} disabled={editSpecItem !== null && editSpecItem !== undefined ? true:false}>
                             <option disabled hidden value="">請選擇...</option>
                             {options !== [] && options.map((item, index) => (
                                 <option key={item.RpaAPID} value={item.RpaAPID}>{item.RpaAPName}</option>
                             ))}
                         </Form.Select>
                     </FloatingLabel>
+                    
                     <FloatingLabel
                         controlId="SpecName"
                         label="規格名稱*"

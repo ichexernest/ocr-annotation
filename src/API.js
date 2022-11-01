@@ -7,41 +7,48 @@ const apiSettings = {
   //取得spec辨識規格列表
   getSpecList: async () => {
     const url = `${BASE_URL}/GetSpecList`;
-    const result =
-      [{
-        SpecID: "spid001",
-        SpecName: "一號專案"
-      },
-      {
-        SpecID: "spid002",
-        SpecName: "二號專案"
-      },
-      {
-        SpecID: "spid003",
-        SpecName: "三號專案"
-      },
-      {
-        SpecID: "spid004",
-        SpecName: "四號專案"
-      },
-      {
-        SpecID: "spid005",
-        SpecName: "五號專案"
-      },
-      {
-        SpecID: "spid006",
-        SpecName: "六號專案"
-      },
-      {
-        SpecID: "spid007",
-        SpecName: "七號專案"
-      },
-      {
-        SpecID: "spid008",
-        SpecName: "eight"
-      },
-      ];
-    //const result=  await axios.post(url);
+    // const result =
+    //   [{
+    //     SpecID: "spid001",
+    //     SpecName: "一號專案"
+    //   },
+    //   {
+    //     SpecID: "spid002",
+    //     SpecName: "二號專案"
+    //   },
+    //   {
+    //     SpecID: "spid003",
+    //     SpecName: "三號專案"
+    //   },
+    //   {
+    //     SpecID: "spid004",
+    //     SpecName: "四號專案"
+    //   },
+    //   {
+    //     SpecID: "spid005",
+    //     SpecName: "五號專案"
+    //   },
+    //   {
+    //     SpecID: "spid006",
+    //     SpecName: "六號專案"
+    //   },
+    //   {
+    //     SpecID: "spid007",
+    //     SpecName: "七號專案"
+    //   },
+    //   {
+    //     SpecID: "spid008",
+    //     SpecName: "eight"
+    //   },
+    //   ];
+    // const result=  await axios.post(url);
+    // return result;
+
+    const response=  await axios.post(url);
+    console.log(`GetSpecList`+JSON.stringify(response))
+    //const result = response.data.d;
+    let result = new window.DOMParser().parseFromString(response.data, "text/xml").childNodes[0].childNodes[0].nodeValue;
+
     return result;
   },
   //取得rpa服務列表
@@ -89,7 +96,7 @@ const apiSettings = {
     //       PageNum: 2,
     //       SpecTitleSet: [
     //         {
-    //           tempID: "specTitleInitId01",
+    //           TempID: "specTitleInitId01",
     //           TitleID: "specTitleId01",
     //           AreaName: "specTitleAreaName01",
     //           AreaDesc: "specTitleAreaDesc01",
@@ -112,7 +119,7 @@ const apiSettings = {
     //       ],
     //       SpecAreaSet: [
     //         {
-    //           tempID: "specAreaInitId01",
+    //           TempID: "specAreaInitId01",
     //           AreaID: "specAreaId01",
     //           AreaName: "specAreaName01",
     //           AreaDesc: "specAreaDesc01",
@@ -168,24 +175,31 @@ const apiSettings = {
         'Content-Type': 'multipart/form-data'
       }, responseType: 'arraybuffer'
     });
-    alert(Buffer.from(result.data, 'binary').toString('base64'))
+    //alert(Buffer.from(result.data, 'binary').toString('base64'))
     return Buffer.from(result.data, 'binary').toString('base64');
   },
   //儲存所有已編輯的標註內容
   saveAnnotations: async (annotations) => {
     const url = `${BASE_URL}/SaveAnnotations`;
-    const bodyData = { annotations };
+    const bodyData = { szSpec: JSON.stringify(annotations) };
     console.log(bodyData);
-    //const result= await axios.post(url,bodyData);
-    return 1;
+    const response= await axios.post(url,bodyData);
+    return response;
   },
   //更新spec辨識規格資訊
   updateSpec: async (editedItem) => {
+
+    let formData = new FormData();
+    formData.append("SpecName", editedItem['SpecName']);
+    formData.append("SpecDesc", editedItem['SpecDesc']);
+    formData.append("SpecID", editedItem['SpecID']);
     const url = `${BASE_URL}/UpdateSpec`;
-    const bodyData = { editedItem };
-    //const result=  await axios.post(url,bodyData);
-    //return result.SpecID;
-    return "testId";
+    const response = await axios.post(url, formData, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    let result = new window.DOMParser().parseFromString(response.data, "text/xml").childNodes[0].childNodes[0].nodeValue;
   },
   //存入jpg/png檔
   saveImage: async () => {

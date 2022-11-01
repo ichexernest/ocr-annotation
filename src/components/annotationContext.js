@@ -15,7 +15,7 @@ const initialState = {
             ],
             SpecAreaSet: [
                 // {
-                //     tempID: "",
+                //     TempID: "",
                 //     x: 0,
                 //     y: 0,
                 //     width: 0,
@@ -118,7 +118,7 @@ const reducer = (state, action) => {
         case "add_edit_annotation":
             console.log(`REDUCER add_edit_annotation : ${JSON.stringify(action.annotation)}`);
             if (action.annotation.type === "area") {
-                let foundIndex = newState.PageSet[action.activePageId].SpecAreaSet.findIndex(x => x.tempID === action.annotation.tempID);
+                let foundIndex = newState.PageSet[action.activePageId].SpecAreaSet.findIndex(x => x.TempID === action.annotation.TempID);
                 newState.PageSet[action.activePageId].SpecAreaSet[foundIndex] = action.annotation;
             }
             else if (action.annotation.type === "title") {
@@ -127,7 +127,7 @@ const reducer = (state, action) => {
                         item.IsAnchor = false;
                     })
                 }
-                let foundIndex = newState.PageSet[action.activePageId].SpecTitleSet.findIndex(x => x.tempID === action.annotation.tempID);
+                let foundIndex = newState.PageSet[action.activePageId].SpecTitleSet.findIndex(x => x.TempID === action.annotation.TempID);
                 newState.PageSet[action.activePageId].SpecTitleSet[foundIndex] = action.annotation;
             }
             console.log(`REDUCER DONE add_new_annotation : ${JSON.stringify(state.PageSet[action.activePageId].SpecAreaSet)}`);

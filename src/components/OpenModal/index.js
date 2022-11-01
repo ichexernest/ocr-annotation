@@ -1,4 +1,5 @@
 import React, { useState,useEffect,useCallback } from 'react';
+import styled from "styled-components";
 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -11,6 +12,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 import { useAPI } from '../AnnotationContext';
 import API from '../../API';
+
+const NewGroup = styled(ListGroup)`
+max-height: 300px;
+overflow-y: auto;
+`;
 
 const OpenModal = ({ show, setShow, setActivePageId }) => {
 
@@ -40,7 +46,7 @@ const OpenModal = ({ show, setShow, setActivePageId }) => {
                 alert("error: no page data");
                 return;
             } else {
-                setDispatch({ type: 'fetch_success', OCR_SpecSet: resData })
+                setDispatch({ type: 'fetch_success', OCR_SpecSet: JSON.parse(resData) })
             }
         } catch (error) {
             alert(error);
@@ -50,10 +56,10 @@ const OpenModal = ({ show, setShow, setActivePageId }) => {
 
     const fetchSpecList = useCallback(async () => {
         try {
-            const data = await API.getSpecList();
-            console.log(data);
-            setSpecList(data);
-            setFilteredList(data);
+            const resData = await API.getSpecList();
+            console.log(resData);
+            setSpecList(JSON.parse(resData));
+            setFilteredList(JSON.parse(resData));
             setSelectedId(null);
         } catch (error) {
             console.log(error);
@@ -91,13 +97,13 @@ const OpenModal = ({ show, setShow, setActivePageId }) => {
                         <Form.Control type="text" onChange={filterBySearch} />
                     </Col>
                 </Form.Group>
-                <ListGroup variant="flush" className='rounded-0'>
-                    {filteredList!==[] && filteredList.map((item, index) => (
+                <NewGroup variant="flush" className='rounded-0 overflow-y-auto'>
+                    {(filteredList!==null &&filteredList!==[]) && filteredList.map((item, index) => (
                         <ListGroup.Item action onClick={()=>alertClicked(item.SpecID)} key={item.SpecID}>
                             {item.SpecName}
                         </ListGroup.Item>
                     ))}
-                </ListGroup>
+                </NewGroup>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="light" onClick={handleClose}>

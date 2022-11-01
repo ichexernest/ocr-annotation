@@ -100,7 +100,7 @@ const MainCanvas = ({ activePageId, annoSwitch }) => {
     const handleDelete = () => {
         if (selectedId !== null) {
             const annotationsAfterDelete = annoList.filter(
-                annotation => annotation.tempID !== selectedId
+                annotation => annotation.TempID !== selectedId
             );
             setDispatch({ type: 'update_annotations', newAnnotationList: annotationsAfterDelete, activePageId: activePageId })
         }
@@ -138,13 +138,13 @@ const MainCanvas = ({ activePageId, annoSwitch }) => {
                                             <Annotation
                                                 key={i}
                                                 shapeProps={item}
-                                                isSelected={item.tempID === selectedId}
+                                                isSelected={item.TempID === selectedId}
                                                 annoType={item.type}
                                                 annoSwitch={annoSwitch}
                                                 onSelect={() => {
-                                                    selectAnnotation(item.tempID);
+                                                    selectAnnotation(item.TempID);
                                                     setEditItem(annoList.find(obj => {
-                                                        return obj.tempID === item.tempID;
+                                                        return obj.TempID === item.TempID;
                                                     }))
                                                 }}
                                                 onChange={newAttrs => {
@@ -164,11 +164,11 @@ const MainCanvas = ({ activePageId, annoSwitch }) => {
                     <Accordion flush activeKey={selectedId}>
                         {annoList.map((item, i) => {
                             return (
-                                <Accordion.Item key={item.tempID} id={item.tempID} eventKey={item.tempID} onClick={() => {
+                                <Accordion.Item key={item.TempID} id={item.TempID} eventKey={item.TempID} onClick={() => {
                                     setEditItem(annoList.find(obj => {
-                                        return obj.tempID === item.tempID;
+                                        return obj.TempID === item.TempID;
                                     }))
-                                    selectAnnotation(item.tempID)
+                                    selectAnnotation(item.TempID)
                                 }}>
                                     <Accordion.Header><Badge bg={item.type === "title" ? "danger" : "primary"} className='me-2'>{item.type === "area" ? "資料區域" : "特徵區域"}</Badge>
                                         {item.IsAnchor === true && <FontAwesomeIcon className="icon me-1 text-primary" icon={faAnchor} />}
@@ -183,7 +183,7 @@ const MainCanvas = ({ activePageId, annoSwitch }) => {
                                         <span>是否為單行: {item.IsOneLine === true ? "是" : "否"}</span>
                                         <span>是否為英數字: {item.IsEng === true ? "是" : "否"}</span>
                                         <span>字數: {item.WordCount}</span>
-                                        {/* <span>id={item.tempID}</span>*/}
+                                        {/* <span>id={item.TempID}</span>*/}
                                         <div className="d-flex justify-content-end">
                                             <Button className="mx-1 btn-light" type="button" onClick={() => handleEdit()}>編輯</Button>
                                             <Button className="mx-1 btn-light" type="button" onClick={() => handleDelete()}>刪除</Button>
