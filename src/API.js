@@ -144,7 +144,7 @@ const apiSettings = {
     //   ]
     // };
     const response=  await axios.post(url,bodyData);
-    console.log(response)
+    console.log(`GetSpecSet:::`+response)
     const result = response.data.d;
     return result;
   },
@@ -182,7 +182,7 @@ const apiSettings = {
   saveAnnotations: async (annotations) => {
     const url = `${BASE_URL}/SaveAnnotations`;
     const bodyData = { szSpec: JSON.stringify(annotations) };
-    console.log(bodyData);
+    console.log(`SaveAnnotations:::`+bodyData);
     const response= await axios.post(url,bodyData);
     return response;
   },
@@ -200,6 +200,7 @@ const apiSettings = {
       }
     });
     let result = new window.DOMParser().parseFromString(response.data, "text/xml").childNodes[0].childNodes[0].nodeValue;
+    return result;
   },
   //存入jpg/png檔
   saveImage: async () => {

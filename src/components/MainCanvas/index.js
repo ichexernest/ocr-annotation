@@ -38,11 +38,11 @@ const MainCanvas = ({ activePageId, annoSwitch }) => {
     const [editItem, setEditItem] = useState({});
     const annotationsToDraw = [...annoList, ...newAnnotation];
 
-    const preventPan = (e, x, y) => {   
-             // if the target is the content container then prevent panning
-        return annoSwitch;
+    // const preventPan = (e, x, y) => {   
+    //          // if the target is the content container then prevent panning
+    //     return annoSwitch;
+    // }
 
-    }
     const handleMouseDown = event => {
         if(annoSwitch){
         if (selectedId === null && newAnnotation.length === 0) {
@@ -183,6 +183,7 @@ const MainCanvas = ({ activePageId, annoSwitch }) => {
                                         <span>是否為單行: {item.IsOneLine === true ? "是" : "否"}</span>
                                         <span>是否為英數字: {item.IsEng === true ? "是" : "否"}</span>
                                         <span>字數: {item.WordCount}</span>
+                                        <span className='text-secondary'>{item.TempID}</span>
                                         {/* <span>id={item.TempID}</span>*/}
                                         <div className="d-flex justify-content-end">
                                             <Button className="mx-1 btn-light" type="button" onClick={() => handleEdit()}>編輯</Button>

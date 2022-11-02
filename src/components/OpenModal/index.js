@@ -18,12 +18,13 @@ max-height: 300px;
 overflow-y: auto;
 `;
 
-const OpenModal = ({ show, setShow, setActivePageId }) => {
+const OpenModal = ({ show, setShow, setActivePageId,setShowFullLoading }) => {
 
     const [specList, setSpecList] = useState([]);
     const [filteredList, setFilteredList] = useState([]);
     const { setDispatch } = useAPI();
     const [selectedId, setSelectedId] = useState(null);
+
     const handleClose = () => {
         setShow(false);
     };
@@ -40,14 +41,17 @@ const OpenModal = ({ show, setShow, setActivePageId }) => {
 
     const fetchSpecSet = async (specID) => {
         try {
-            const resData = await API.getSpecSet(specID);
-            console.log(resData);
-            if (resData === null) {
-                alert("error: no page data");
-                return;
-            } else {
-                setDispatch({ type: 'fetch_success', OCR_SpecSet: JSON.parse(resData) })
-            }
+            setShowFullLoading(true);
+            await API.getSpecSet(specID)
+            .then(res=>{
+                if(res !== null){
+                    setShowFullLoading(false);
+                    setDispatch({ type: 'fetch_success', OCR_SpecSet: JSON.parse(res) })
+                }else{
+                    alert("error: no page data");
+                    return;
+                }
+            },err=>alert(err))
         } catch (error) {
             alert(error);
             return;
@@ -56,11 +60,12 @@ const OpenModal = ({ show, setShow, setActivePageId }) => {
 
     const fetchSpecList = useCallback(async () => {
         try {
-            const resData = await API.getSpecList();
-            console.log(resData);
-            setSpecList(JSON.parse(resData));
-            setFilteredList(JSON.parse(resData));
-            setSelectedId(null);
+            await API.getSpecList()
+            .then(res=>{
+                setSpecList(JSON.parse(res));
+                setFilteredList(JSON.parse(res));
+                setSelectedId(null);
+            })
         } catch (error) {
             console.log(error);
         }
@@ -68,7 +73,7 @@ const OpenModal = ({ show, setShow, setActivePageId }) => {
 
     useEffect(() => {
         fetchSpecList();
-    }, [fetchSpecList])
+    }, [show,fetchSpecList])
 
     const filterBySearch = (event) => {
         // Access input value

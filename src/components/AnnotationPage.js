@@ -16,6 +16,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import SpecModal from './SpecModal';
 import OpenModal from './OpenModal';
 import NoticeModal from './NoticeModal';
+import Loading from './Loading';
 import MainCanvas from "../components/MainCanvas";
 import { useAPI } from "./AnnotationContext";
 import API from "./../API";
@@ -61,23 +62,6 @@ justify-content:center;
 height:91vh;
 `;
 
-const LoadingBg= styled.div`
-position: fixed;
-top: 0; left: 0; z-index: 999;
-width: 100vw; height: 100vh;
-background: rgba(0, 0, 0, 0.7);
-transition: opacity 0.2s;
-`;
-const LoadingContent= styled.div`
-position: absolute;
-top:50%;
-left: 50%;
-transform: translate(-50%, -50%);
-h2{
-    color:white;
-}
-`;
-
 const AnnotationPage = () => {
     const [activePageId, setActivePageId] = useState(0); //active ocr area
     const [showSpecModal, setShowSpecModal] = useState(false);
@@ -85,43 +69,43 @@ const AnnotationPage = () => {
     const [showNoticeModal, setShowNoticeModal] = useState(false);
     const [editSpecItem, setEditSpecItem] = useState(null);
     const [annoSwitch, setAnnoSwitch] = useState(false);
+    const [showFullLoading, setShowFullLoading] = useState(false);
+    const [saveSpinner,setSaveSpinner] = useState(false);
     const [type, setType] = useState("");
 
     const { annotation, setDispatch } = useAPI();
 
     const handleSave = () => {
-        fetchSaveAllAnnotations(annotation);
-        alert(JSON.stringify(annotation));
-        console.log(`HERES SAVE ANNO LIST ::::  `+JSON.stringify(annotation))
+        fetchSaveAllAnnotations();
+       // console.log(`HERES SAVE ANNO LIST ::::  ` + JSON.stringify(annotation))
     };
-    const fetchSaveAllAnnotations = async (specID) => {
+    const fetchSaveAllAnnotations = async () => {
         try {
-            const result = await API.saveAnnotations(annotation)
-            .then(API.getSpecSet(specID))
-            .then(res => setDispatch({
-                type: "fetch_success",
-                OCR_SpecSet: JSON.parse(res),
-            }))
-            if (result === null) {
-                alert("error: no data");
-                return;
-            }
+            setSaveSpinner(true);
+            await API.saveAnnotations(annotation)
+                .then(res => res && API.getSpecSet(annotation.SpecID),err => alert(err))
+                .then(res => setDispatch({
+                    type: "fetch_success",
+                    OCR_SpecSet: JSON.parse(res),
+                }),err => console.log(err))
+            setSaveSpinner(false);
         } catch (error) {
-            alert(error);
+            console.log(error);
+            setSaveSpinner(false);
             return;
         }
     };
 
     const handleNextStep = (type) => {
-        if(annotation.SpecID !== ""){
+        if (annotation.SpecID !== "") {
             setType(type);
             setShowNoticeModal(true);
-        }else{
-            if(type==="spec")openNew();
+        } else {
+            if (type === "spec") openNew();
             else openExist();
         }
     }
-    const handleSwitch = ()=>{
+    const handleSwitch = () => {
         setAnnoSwitch(!annoSwitch);
     }
     const openExist = () => {
@@ -137,7 +121,7 @@ const AnnotationPage = () => {
     }
     return (
         <>
-        <Loading/>
+            <Loading show={showFullLoading} />
             <Navbar bg="dark" variant="dark" className='px-4'>
                 <Navbar.Brand href="#">OCR-Annotation</Navbar.Brand>
                 <Nav className="me-auto">
@@ -151,8 +135,15 @@ const AnnotationPage = () => {
                         <div className='d-flex justify-content-start align-items-center bg-white border-bottom'>
                             <h3>{annotation.SpecName}-{annotation.SpecID}</h3>
                             <Button className='mx-1 btn-light' onClick={() => openEdit()}><FontAwesomeIcon className="icon" icon={faGear} /></Button>
-                            <Button className='mx-1 btn-dark' onClick={() => handleSave()}>儲存</Button>
-                            <Button className='mx-1 btn-dark' onClick={() => handleSwitch() } title="切換"><FontAwesomeIcon className="icon" icon={annoSwitch?faMousePointer:faHandPaper} /></Button>
+                            <Button className='mx-1 btn-dark' onClick={() => handleSave()}>
+                                {saveSpinner?<Spinner
+                                as="span"
+                                animation="border"
+                                size="sm"
+                                role="status"
+                                aria-hidden="true"
+                            />:"儲存"}</Button>
+                            <Button className='mx-1 btn-dark' onClick={() => handleSwitch()} title="切換"><FontAwesomeIcon className="icon" icon={annoSwitch ? faMousePointer : faHandPaper} /></Button>
                         </div>
                         <Col sm={2} className="side border-end">
                             <Sidebar activePageId={activePageId} setActivePageId={setActivePageId} />
@@ -169,20 +160,22 @@ const AnnotationPage = () => {
                 setShow={setShowSpecModal}
                 setActivePageId={setActivePageId}
                 editSpecItem={editSpecItem}
+                setShowFullLoading={setShowFullLoading}
             />
             <OpenModal
                 show={showOpenModal}
                 setShow={setShowOpenModal}
                 setActivePageId={setActivePageId}
+                setShowFullLoading={setShowFullLoading}
             />
             {annotation.SpecID !== "" &&
-            <NoticeModal
-                show={showNoticeModal}
-                setShow={setShowNoticeModal}
-                content={"離開此頁後將不保留編輯內容，請確認是否已經儲存。"}
-                showLoading={false}
-                nextStep={type==="spec"?openNew:openExist}
-            />}
+                <NoticeModal
+                    show={showNoticeModal}
+                    setShow={setShowNoticeModal}
+                    content={"離開此頁後將不保留編輯內容，請確認是否已經儲存。"}
+                    showLoading={false}
+                    nextStep={type === "spec" ? openNew : openExist}
+                />}
         </>
     )
 
@@ -213,14 +206,4 @@ const Sidebar = ({ setActivePageId, activePageId }) => {
     );
 }
 
-const Loading = ({show}) => {
-    return (
-        <LoadingBg>     
-            <LoadingContent className="d-flex flex-column justicy-content-center align-items-center">
-            <Spinner className='content mb-3' animation="grow" variant="light"/>
-            <h2>Loading</h2>
-            </LoadingContent>     
-        </LoadingBg>
-    );
-}
 export default AnnotationPage;

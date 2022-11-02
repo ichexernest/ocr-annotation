@@ -8,7 +8,7 @@ import Form from 'react-bootstrap/Form';
 import { useAPI } from '../AnnotationContext';
 import API from '../../API';
 
-const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
+const SpecModal = ({ show, setShow, setActivePageId, editSpecItem,setShowFullLoading }) => {
 
     const { setDispatch } = useAPI();
     const [options, setOptions] = useState([])
@@ -22,8 +22,8 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
 
     const fetchRpaAPList = useCallback(async () => {
         try {
-            const data = await API.getRpaAPList();
-            setOptions(JSON.parse(data));
+            await API.getRpaAPList()
+            .then(res=>setOptions(JSON.parse(res)))
         } catch (error) {
             console.log(error);
         }
@@ -31,7 +31,7 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
 
     useEffect(() => {
         fetchRpaAPList();
-    }, [show])
+    }, [show,fetchRpaAPList])
 
     useEffect(() => {
         setInputs(editSpecItem !== null && editSpecItem !== undefined ? {
@@ -89,7 +89,7 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
             const editedItem = { ...editSpecItem, ...submitData };
             fetchUpdateSpec(editedItem);
         } else {
-            if(submitData.FormFile.type ==="application/pdf"){                      
+            if(submitData.FormFile.type ==="application/pdf"){                     
             fetchCreateSpecSet(submitData);
             }
             else if( submitData.FormFile.type==="image/png"||submitData.FormFile.type==="image/jpeg" ){
@@ -103,7 +103,6 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
                     fetchCreateSpecSet(submitData,base64String)
                 };
                 reader.readAsDataURL(submitData.FormFile);
-                
             }else{
                 alert("not supported file type");
                 return;
@@ -122,13 +121,18 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
 
     const fetchUpdateSpec = async (editedItem) => {
         try {
-            const resData = await API.updateSpec(editedItem)
-                .then(setDispatch({ type: 'update_specInfo', submitData: editedItem }))
-            
-            if (resData === null) {
-                alert("error: no page data");
-                return;
-            }
+            setShowFullLoading(true)
+            await API.updateSpec(editedItem)
+                .then(res=>{
+                    if(res!==null){
+                        setDispatch({ type: 'update_specInfo', submitData: editedItem })
+                    }
+                    else{
+                        alert("error: no page data");
+                        return;
+                    }
+                })
+            setShowFullLoading(false)
         } catch (error) {
             alert(error);
             return;
@@ -137,11 +141,11 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
 
     const fetchCreateSpecSet = async (submitData,base64Data) => {
         try {
-            let result = "";
+            setShowFullLoading(true)
             if(submitData.FormFile.type ==="application/pdf"){
                 let formData = new FormData();
                 formData.append("Cfile", submitData['FormFile']);
-                result = await API.turnPdf2Jpeg(formData)
+                await API.turnPdf2Jpeg(formData)
                 .then(res => API.createSpec(submitData, res))
                 .then(res => API.getSpecSet(res))
                 .then(res => setDispatch({
@@ -149,57 +153,21 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
                     OCR_SpecSet: JSON.parse(res),
                 }))
             }else{
-                result = await API.createSpec(submitData, base64Data.split(',')[1])
+                await API.createSpec(submitData, base64Data.split(',')[1])
                 .then(res => API.getSpecSet(res))
                 .then(res => setDispatch({
                     type: "fetch_success",
                     OCR_SpecSet: JSON.parse(res),
                 }))
             }
-            
-            if (result === null) {
-                alert("error: no page data");
-                return;
-            }
+            setShowFullLoading(false)
         } catch (error) {
             alert(error);
             return;
         }
     };
-    const fetchTestConvert = async (submitData) => {
-        try {
-            let formData = new FormData();
-            formData.append("Cfile", submitData['FormFile']);
-            //alert(JSON.stringify(submitData['FormFile']));
-            const jpegBase64 = await API.turnPdf2Jpeg(formData);
-            submitData['FormFile'] = jpegBase64;
-            setDispatch({
-                type: "new_specInfo",
-                submitData: submitData,
-            })
-            return;
 
-        } catch (error) {
-            alert(error);
-        }
-    };
-    const fetchTestConvertImage = async (submitData, base64Data) => {
-        try {
-            submitData['FormFile'] = base64Data;
-            setDispatch({
-                type: "new_specInfo",
-                submitData: submitData,
-            })
-            return;
-
-        } catch (error) {
-            alert(error);
-        }
-    };
-
-
-
-    return (
+    return (<>
         <Modal show={show} onHide={handleClose} centered>
             <Modal.Header closeButton>
                 <Modal.Title>{editSpecItem !== null && editSpecItem !== undefined ? "修改專案內容" : "新增專案"}</Modal.Title>
@@ -253,6 +221,7 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem }) => {
                 </Modal.Footer>
             </Form>
         </Modal>
+        </>
     );
 }
 

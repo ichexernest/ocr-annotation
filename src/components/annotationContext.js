@@ -46,41 +46,41 @@ const reducer = (state, action) => {
     let newState = Object.assign({}, state);
     switch (action.type) {
         case 'fetch_success':
-            console.log(`REDUCER fetch_success : ${JSON.stringify(action.OCR_SpecSet)}`);
-            let result = JSON.stringify(action.OCR_SpecSet);
-            newState = JSON.parse(result)
+            //console.log(`REDUCER fetch_success : ${JSON.stringify(action.OCR_SpecSet)}`);
+            //let result = JSON.stringify(action.OCR_SpecSet);
+            newState = action.OCR_SpecSet;
             return newState;
 
-        case 'new_specInfo':
-            console.log(`REDUCER new_specInfo : ${JSON.stringify(action.submitData)}`);
-            //let fileP = URL.createObjectURL(action.submitData.FormFile);
-            let a = {
-                SpecID: action.submitData.SpecID,
-                SpecName: action.submitData.SpecName,
-                SpecDesc: action.submitData.SpecDesc,
-                OCRModel: action.submitData.OCRModel,
-                RpaAPID: action.submitData.RpaAPID,
-                PageSet: [
-                    {
-                        FileContent: action.submitData.FormContent,
-                        PageNum: 1,
-                        SpecTitleSet: [],
-                        SpecAreaSet: [],
-                    }
-                ]
-            }
-            let aresult = JSON.stringify(a);
-            newState = action.submitData;
-            console.log(`REDUCER new_specInfo : ${JSON.stringify(newState)}`);
-            return newState;
+        // case 'new_specInfo':
+        //     console.log(`REDUCER new_specInfo : ${JSON.stringify(action.submitData)}`);
+        //     //let fileP = URL.createObjectURL(action.submitData.FormFile);
+        //     let a = {
+        //         SpecID: action.submitData.SpecID,
+        //         SpecName: action.submitData.SpecName,
+        //         SpecDesc: action.submitData.SpecDesc,
+        //         OCRModel: action.submitData.OCRModel,
+        //         RpaAPID: action.submitData.RpaAPID,
+        //         PageSet: [
+        //             {
+        //                 FileContent: action.submitData.FormContent,
+        //                 PageNum: 1,
+        //                 SpecTitleSet: [],
+        //                 SpecAreaSet: [],
+        //             }
+        //         ]
+        //     }
+        //     let aresult = JSON.stringify(a);
+        //     newState = action.submitData;
+        //     console.log(`REDUCER new_specInfo : ${JSON.stringify(newState)}`);
+        //     return newState;
 
         case 'update_specInfo':
-            console.log(`REDUCER new_specInfo : ${JSON.stringify(action.submitData)}`);
+            console.log(`REDUCER update_specInfo : ${JSON.stringify(action.submitData)}`);
             newState.RpaAPID=action.submitData.RpaAPID;
             newState.OCRModel=action.submitData.OCRModel;
             newState.SpecName=action.submitData.SpecName;
             newState.SpecDesc=action.submitData.SpecDesc;
-            console.log(`REDUCER new_specInfo : ${JSON.stringify(state)}`);
+            console.log(`REDUCER update_specInfo : ${JSON.stringify(state)}`);
             return newState;
 
         case "update_annotations":
