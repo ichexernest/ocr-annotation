@@ -1,7 +1,9 @@
 import axios from "axios";
-import { Buffer } from 'buffer';
+//import { Buffer } from 'buffer';
 //const BASE_URL = process.env.REACT_APP_BASE_URL;
-const BASE_URL = 'https://localhost:44375/OCR_Annotation.asmx';
+//const BASE_URL = 'https://localhost:44375/OCR_Annotation.asmx';
+const PATH_URL = 'http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/';
+const BASE_URL = 'http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/OCR_Annotation.asmx';
 
 const apiSettings = {
   //取得spec辨識規格列表
@@ -44,11 +46,19 @@ const apiSettings = {
     // const result=  await axios.post(url);
     // return result;
 
-    const response=  await axios.post(url);
+    const response=  await axios.post(url, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    // .then(res =>{
+    //   if (res.includes('OCR_ANNOTATION_ERR')){
+    //     alert(`GetSpecList:::${res}`);
+    //     return null;
+    //   }
+    // })
     console.log(`GetSpecList`+JSON.stringify(response))
-    //const result = response.data.d;
-    let result = new window.DOMParser().parseFromString(response.data, "text/xml").childNodes[0].childNodes[0].nodeValue;
-
+    const result = response.data.d
     return result;
   },
   //取得rpa服務列表
@@ -68,7 +78,16 @@ const apiSettings = {
       headers: {
         'Content-Type': 'application/json'
       }
-    });
+    })
+    // .then(res =>{
+    //   console.log(res.data.d)
+    //   if (res.data.d.includes('OCR_ANNOTATION_ERR')){
+    //     alert(`GetRpaAPList:::${res}`);
+    //     return null;
+    //   }
+    // })
+
+    console.log(response)
     const result = response.data.d
     return result;
   },
@@ -143,7 +162,14 @@ const apiSettings = {
     //     }
     //   ]
     // };
-    const response=  await axios.post(url,bodyData);
+    const response=  await axios.post(url,bodyData)
+    // .then(res =>{
+    //   if (res.includes('OCR_ANNOTATION_ERR')){
+    //     alert(`GetSpecSet:::${res}`);
+    //     return null;
+    //   }
+    // })
+
     console.log(`GetSpecSet:::`+response)
     const result = response.data.d;
     return result;
@@ -156,34 +182,45 @@ const apiSettings = {
     formData.append("SpecName", submitData['SpecName']);
     formData.append("SpecDesc", submitData['SpecDesc']);
     formData.append("FileContent", base64Data);
-    const url = `${BASE_URL}/CreateSpec`;
-    const response = await axios.post(url, formData, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    let result = new window.DOMParser().parseFromString(response.data, "text/xml").childNodes[0].childNodes[0].nodeValue;
+    const url = `${PATH_URL}/CreateSpec.ashx`;
+    const response = await axios.post(url, formData)
+    // .then(res =>{
+    //   if (res.includes('OCR_ANNOTATION_ERR')){
+    //     alert(`CreateSpec:::${res}`);
+    //     return null;
+    //   }
+    // })
+    console.log(response.data);
+    const result = response.data
     return result;
   },
   //pdf轉jpeg
   turnPdf2Jpeg: async (formData) => {
     // let formData = new FormData();
     // formData.append("Cfile", submitData['FormFile']);
-    const url = `http://10.3.228.224:8888/api/v1/img/pdf2jpg`;
-    const result = await axios.post(url, formData, {
+    const url = `http://10.3.228.224:8888/api/v1/img/pdf2jpg2`;
+    const response = await axios.post(url, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
-      }, responseType: 'arraybuffer'
+      }
     });
-    //alert(Buffer.from(result.data, 'binary').toString('base64'))
-    return Buffer.from(result.data, 'binary').toString('base64');
+    const result=  response.data.map(i=>i.ImageStr).join(',');
+    console.log(result);
+    return result;
   },
   //儲存所有已編輯的標註內容
   saveAnnotations: async (annotations) => {
     const url = `${BASE_URL}/SaveAnnotations`;
     const bodyData = { szSpec: JSON.stringify(annotations) };
     console.log(`SaveAnnotations:::`+bodyData);
-    const response= await axios.post(url,bodyData);
+    const response= await axios.post(url,bodyData)
+    // .then(res =>{
+    //   if (res.includes('OCR_ANNOTATION_ERR')){
+    //     alert(`SaveAnnotations:::${res}`);
+    //     return null;
+    //   }
+    // })
+
     return response;
   },
   //更新spec辨識規格資訊
@@ -193,13 +230,16 @@ const apiSettings = {
     formData.append("SpecName", editedItem['SpecName']);
     formData.append("SpecDesc", editedItem['SpecDesc']);
     formData.append("SpecID", editedItem['SpecID']);
-    const url = `${BASE_URL}/UpdateSpec`;
-    const response = await axios.post(url, formData, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    let result = new window.DOMParser().parseFromString(response.data, "text/xml").childNodes[0].childNodes[0].nodeValue;
+    const url = `${PATH_URL}/UpdateSpec.ashx`;
+    const response = await axios.post(url, formData)
+    // .then(res =>{
+    //   if (res.includes('OCR_ANNOTATION_ERR')){
+    //     alert(`UpdateSpec:::${res}`);
+    //     return null;
+    //   }
+    // })
+
+    const result = response.data
     return result;
   },
   //存入jpg/png檔

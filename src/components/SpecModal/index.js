@@ -25,7 +25,8 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem,setShowFullLoa
             await API.getRpaAPList()
             .then(res=>setOptions(JSON.parse(res)))
         } catch (error) {
-            console.log(error);
+            alert(error);
+            return;
         }
     }, []);
 
@@ -97,9 +98,8 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem,setShowFullLoa
                 const reader = new FileReader();
                 reader.onloadend = () => {
                     // Use a regex to remove data url part
-                    const base64String = reader.result
+                    const base64String = reader.result.split(',')[1];
                     console.log(base64String);
-                    //fetchTestConvertImage(submitData,base64String)
                     fetchCreateSpecSet(submitData,base64String)
                 };
                 reader.readAsDataURL(submitData.FormFile);
@@ -123,22 +123,13 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem,setShowFullLoa
         try {
             setShowFullLoading(true)
             await API.updateSpec(editedItem)
-                .then(res=>{
-                    if(res!==null){
-                        setDispatch({ type: 'update_specInfo', submitData: editedItem })
-                    }
-                    else{
-                        alert("error: no page data");
-                        return;
-                    }
-                })
+                .then(res=>setDispatch({ type: 'update_specInfo', submitData: editedItem }))
             setShowFullLoading(false)
         } catch (error) {
             alert(error);
             return;
         }
     };
-
     const fetchCreateSpecSet = async (submitData,base64Data) => {
         try {
             setShowFullLoading(true)
@@ -153,7 +144,7 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem,setShowFullLoa
                     OCR_SpecSet: JSON.parse(res),
                 }))
             }else{
-                await API.createSpec(submitData, base64Data.split(',')[1])
+                await API.createSpec(submitData, base64Data)
                 .then(res => API.getSpecSet(res))
                 .then(res => setDispatch({
                     type: "fetch_success",
@@ -162,7 +153,7 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem,setShowFullLoa
             }
             setShowFullLoading(false)
         } catch (error) {
-            alert(error);
+            console.log(`GGGGGGGGGGGG`+error);
             return;
         }
     };

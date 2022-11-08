@@ -70,24 +70,21 @@ const AnnotationPage = () => {
     const [editSpecItem, setEditSpecItem] = useState(null);
     const [annoSwitch, setAnnoSwitch] = useState(false);
     const [showFullLoading, setShowFullLoading] = useState(false);
-    const [saveSpinner,setSaveSpinner] = useState(false);
+    const [saveSpinner, setSaveSpinner] = useState(false);
     const [type, setType] = useState("");
 
     const { annotation, setDispatch } = useAPI();
 
     const handleSave = () => {
         fetchSaveAllAnnotations();
-       // console.log(`HERES SAVE ANNO LIST ::::  ` + JSON.stringify(annotation))
+        // console.log(`HERES SAVE ANNO LIST ::::  ` + JSON.stringify(annotation))
     };
     const fetchSaveAllAnnotations = async () => {
         try {
             setSaveSpinner(true);
             await API.saveAnnotations(annotation)
-                .then(res => res && API.getSpecSet(annotation.SpecID),err => alert(err))
-                .then(res => setDispatch({
-                    type: "fetch_success",
-                    OCR_SpecSet: JSON.parse(res),
-                }),err => console.log(err))
+                .then(res =>API.getSpecSet(annotation.SpecID))
+                .then(res =>setDispatch({type: "fetch_success",OCR_SpecSet: JSON.parse(res)}))
             setSaveSpinner(false);
         } catch (error) {
             console.log(error);
@@ -136,13 +133,13 @@ const AnnotationPage = () => {
                             <h3>{annotation.SpecName}-{annotation.SpecID}</h3>
                             <Button className='mx-1 btn-light' onClick={() => openEdit()}><FontAwesomeIcon className="icon" icon={faGear} /></Button>
                             <Button className='mx-1 btn-dark' onClick={() => handleSave()}>
-                                {saveSpinner?<Spinner
-                                as="span"
-                                animation="border"
-                                size="sm"
-                                role="status"
-                                aria-hidden="true"
-                            />:"儲存"}</Button>
+                                {saveSpinner ? <Spinner
+                                    as="span"
+                                    animation="border"
+                                    size="sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                /> : "儲存"}</Button>
                             <Button className='mx-1 btn-dark' onClick={() => handleSwitch()} title="切換"><FontAwesomeIcon className="icon" icon={annoSwitch ? faMousePointer : faHandPaper} /></Button>
                         </div>
                         <Col sm={2} className="side border-end">

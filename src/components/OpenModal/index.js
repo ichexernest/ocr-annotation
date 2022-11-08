@@ -1,4 +1,4 @@
-import React, { useState,useEffect,useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from "styled-components";
 
 import Button from 'react-bootstrap/Button';
@@ -18,7 +18,7 @@ max-height: 300px;
 overflow-y: auto;
 `;
 
-const OpenModal = ({ show, setShow, setActivePageId,setShowFullLoading }) => {
+const OpenModal = ({ show, setShow, setActivePageId, setShowFullLoading }) => {
 
     const [specList, setSpecList] = useState([]);
     const [filteredList, setFilteredList] = useState([]);
@@ -43,17 +43,11 @@ const OpenModal = ({ show, setShow, setActivePageId,setShowFullLoading }) => {
         try {
             setShowFullLoading(true);
             await API.getSpecSet(specID)
-            .then(res=>{
-                if(res !== null){
-                    setShowFullLoading(false);
-                    setDispatch({ type: 'fetch_success', OCR_SpecSet: JSON.parse(res) })
-                }else{
-                    alert("error: no page data");
-                    return;
-                }
-            },err=>alert(err))
+                .then(res => setDispatch({ type: 'fetch_success', OCR_SpecSet: JSON.parse(res) }))
+            setShowFullLoading(false)
         } catch (error) {
             alert(error);
+            setShowFullLoading(false);
             return;
         }
     };
@@ -61,19 +55,21 @@ const OpenModal = ({ show, setShow, setActivePageId,setShowFullLoading }) => {
     const fetchSpecList = useCallback(async () => {
         try {
             await API.getSpecList()
-            .then(res=>{
-                setSpecList(JSON.parse(res));
-                setFilteredList(JSON.parse(res));
-                setSelectedId(null);
-            })
+                .then(res => {
+                    setSpecList(JSON.parse(res));
+                    setFilteredList(JSON.parse(res));
+                    setSelectedId(null);
+                }
+                )
         } catch (error) {
-            console.log(error);
+            alert(error);
+            return;
         }
-    },[]);
+    }, []);
 
     useEffect(() => {
         fetchSpecList();
-    }, [show,fetchSpecList])
+    }, [show, fetchSpecList])
 
     const filterBySearch = (event) => {
         // Access input value
@@ -103,8 +99,8 @@ const OpenModal = ({ show, setShow, setActivePageId,setShowFullLoading }) => {
                     </Col>
                 </Form.Group>
                 <NewGroup variant="flush" className='rounded-0 overflow-y-auto'>
-                    {(filteredList!==null &&filteredList!==[]) && filteredList.map((item, index) => (
-                        <ListGroup.Item action onClick={()=>alertClicked(item.SpecID)} key={item.SpecID}>
+                    {(filteredList !== null && filteredList !== []) && filteredList.map((item, index) => (
+                        <ListGroup.Item action onClick={() => alertClicked(item.SpecID)} key={item.SpecID}>
                             {item.SpecName}
                         </ListGroup.Item>
                     ))}
