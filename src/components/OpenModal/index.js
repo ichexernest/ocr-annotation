@@ -69,7 +69,7 @@ const OpenModal = ({ show, setShow, setActivePageId, setShowFullLoading }) => {
 
     useEffect(() => {
         fetchSpecList();
-    }, [show, fetchSpecList])
+    }, [show,fetchSpecList])
 
     const filterBySearch = (event) => {
         // Access input value

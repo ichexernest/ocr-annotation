@@ -5,13 +5,12 @@ import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGear, faHandPaper, faMousePointer } from '@fortawesome/free-solid-svg-icons'
 
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
+import Dropdown from 'react-bootstrap/Dropdown';
 
 import SpecModal from './SpecModal';
 import OpenModal from './OpenModal';
@@ -83,8 +82,8 @@ const AnnotationPage = () => {
         try {
             setSaveSpinner(true);
             await API.saveAnnotations(annotation)
-                .then(res =>API.getSpecSet(annotation.SpecID))
-                .then(res =>setDispatch({type: "fetch_success",OCR_SpecSet: JSON.parse(res)}))
+                .then(res => API.getSpecSet(annotation.SpecID))
+                .then(res => setDispatch({ type: "fetch_success", OCR_SpecSet: JSON.parse(res) }))
             setSaveSpinner(false);
         } catch (error) {
             console.log(error);
@@ -119,19 +118,18 @@ const AnnotationPage = () => {
     return (
         <>
             <Loading show={showFullLoading} />
-            <Navbar bg="dark" variant="dark" className='px-4'>
+            {/* <Navbar bg="dark" variant="dark" className='px-4'>
                 <Navbar.Brand href="#">OCR-Annotation</Navbar.Brand>
                 <Nav className="me-auto">
                     <Button onClick={() => handleNextStep("spec")} className="mx-1 btn-dark">新增專案</Button>
                     <Button onClick={() => handleNextStep("open")} className="mx-1 btn-dark">開啟專案</Button>
                 </Nav>
-            </Navbar>
+            </Navbar> */}
             <Wrapper fluid>
                 {annotation.SpecID !== "" ?
                     <Row>
                         <div className='d-flex justify-content-start align-items-center bg-white border-bottom'>
                             <h3>{annotation.SpecName}-{annotation.SpecID}</h3>
-                            <Button className='mx-1 btn-light' onClick={() => openEdit()}><FontAwesomeIcon className="icon" icon={faGear} /></Button>
                             <Button className='mx-1 btn-dark' onClick={() => handleSave()}>
                                 {saveSpinner ? <Spinner
                                     as="span"
@@ -141,6 +139,16 @@ const AnnotationPage = () => {
                                     aria-hidden="true"
                                 /> : "儲存"}</Button>
                             <Button className='mx-1 btn-dark' onClick={() => handleSwitch()} title="切換"><FontAwesomeIcon className="icon" icon={annoSwitch ? faMousePointer : faHandPaper} /></Button>
+                            <Dropdown className="d-inline mx-1">
+                            <Dropdown.Toggle id="dropdown-autoclose-true" className='btn-light'>
+                            <FontAwesomeIcon className="icon" icon={faGear} />
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu id="dropdown-basic-button" title="Dropdown button">
+                                <Dropdown.Item onClick={() => handleNextStep("spec")}>新增專案</Dropdown.Item>
+                                <Dropdown.Item onClick={() => handleNextStep("open")}>開啟專案</Dropdown.Item>
+                                <Dropdown.Item onClick={() => openEdit()}>編輯專案</Dropdown.Item>
+                            </Dropdown.Menu>
+                            </Dropdown>
                         </div>
                         <Col sm={2} className="side border-end">
                             <Sidebar activePageId={activePageId} setActivePageId={setActivePageId} />
@@ -150,7 +158,17 @@ const AnnotationPage = () => {
                                 activePageId={activePageId}
                                 annoSwitch={annoSwitch} />
                         </Col>
-                    </Row> : <Init className='text-secondary text-center'>Welcome to OCR-annotation tool.<br />Open a spec project or create a new one.</Init>}
+                    </Row>
+                    :
+                    <>
+                        <div className='d-flex justify-content-start align-items-center bg-white border-bottom'>
+                            <h3>--</h3>
+                            <Button onClick={() => handleNextStep("spec")} className="mx-1 btn-dark">新增專案</Button>
+                            <Button onClick={() => handleNextStep("open")} className="mx-1 btn-dark">開啟專案</Button>
+                        </div>
+                        <Init className='text-secondary text-center'>Welcome to OCR-annotation tool.<br />Open a spec project or create a new one.</Init>
+                    </>
+                }
             </Wrapper>
             <SpecModal
                 show={showSpecModal}

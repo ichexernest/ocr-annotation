@@ -97,20 +97,20 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
             alert(`未填寫區域名稱`);
             return;
         }
-        if (submitData.AreaDesc === '') {
-            alert(`未填寫區域說明`);
-            return;
-        }
+        // if (submitData.AreaDesc === '') {
+        //     alert(`未填寫區域說明`);
+        //     return;
+        // }
         if (submitData.Title === '') {
             alert(`未填寫標籤欄位`);
             return;
         }
-        if (annoType === "title") {
-            if (submitData.TitleContent === '') {
-                alert(`未填寫標籤內容`);
-                return;
-            }
-        }
+        // if (annoType === "title") {
+        //     if (submitData.TitleContent === '') {
+        //         alert(`未填寫標籤內容`);
+        //         return;
+        //     }
+        // }
         submitData.type = annoType;
         //submitData.AreaID = "manualID";
 
@@ -119,7 +119,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
             setDispatch({ type: 'add_edit_annotation', annotation: editedItem, activePageId: activePageId })
         } else {
             submitData.TempID = id;
-            submitData.PageNum = activePageId+1;
+            submitData.PageNum = activePageId + 1;
             newAnnotation[0] = { ...newAnnotation[0], ...submitData };
             setDispatch({ type: 'add_new_annotation', newAnnotation: newAnnotation[0], activePageId: activePageId })
         }
@@ -164,7 +164,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
                     </FloatingLabel>
                     <FloatingLabel
                         controlId="AreaDesc"
-                        label="區域說明*"
+                        label="區域說明"
                         className="mb-3"
                         onChange={handleTextChange}>
                         <Form.Control type="text" placeholder="type areaDesc" defaultValue={editItem !== null && editItem !== undefined ? editItem.AreaDesc : ""} />
@@ -176,15 +176,14 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
                         onChange={handleTextChange}>
                         <Form.Control type="text" placeholder="type title" defaultValue={editItem !== null && editItem !== undefined ? editItem.Title : ""} />
                     </FloatingLabel>
-                    {annoType === "title" &&
-                        < FloatingLabel
-                            controlId="TitleContent"
-                            label="標籤內容*"
-                            className="mb-3"
-                            onChange={handleTextChange}>
-                            <Form.Control type="text" placeholder="type titleContent" defaultValue={editItem !== null && editItem !== undefined ? editItem.TitleContent : ""} />
-                        </FloatingLabel>
-                    }
+                    < FloatingLabel
+                        controlId="TitleContent"
+                        label="標籤內容"
+                        className="mb-3"
+                        onChange={handleTextChange}>
+                        <Form.Control type="text" placeholder="type titleContent" defaultValue={editItem !== null && editItem !== undefined ? editItem.TitleContent : ""} />
+                    </FloatingLabel>
+
                     <FloatingLabel
                         controlId="WordCount"
                         label="字數"

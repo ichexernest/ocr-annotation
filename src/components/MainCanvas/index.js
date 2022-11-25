@@ -23,10 +23,6 @@ const MainCanvas = ({ activePageId, annoSwitch }) => {
     const { setDispatch, annotation } = useAPI();
     const annoList = annotation.PageSet[activePageId].SpecAreaSet.concat(annotation.PageSet[activePageId].SpecTitleSet);
 
-    useEffect(() => {
-        //annoList=annotation.PageSet[activePageId].SpecAreaSet.concat(annotation.PageSet[activePageId].SpecTitleSet);
-    }, [activePageId,annoSwitch]);
-
     const [selectedId, selectAnnotation] = useState(null);
     const [canvasMeasures, setCanvasMeasures] = useState({
         width: window.innerWidth,
