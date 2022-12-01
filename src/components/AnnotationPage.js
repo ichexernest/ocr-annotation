@@ -67,7 +67,7 @@ const AnnotationPage = () => {
     const [showOpenModal, setShowOpenModal] = useState(false);
     const [showNoticeModal, setShowNoticeModal] = useState(false);
     const [editSpecItem, setEditSpecItem] = useState(null);
-    const [annoSwitch, setAnnoSwitch] = useState(false);
+    const [annoSwitch, setAnnoSwitch] = useState(false); //true: annotate; false: zoom
     const [showFullLoading, setShowFullLoading] = useState(false);
     const [saveSpinner, setSaveSpinner] = useState(false);
     const [type, setType] = useState("");

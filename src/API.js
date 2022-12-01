@@ -1,6 +1,7 @@
 import axios from "axios";
 //import { Buffer } from 'buffer';
 //const BASE_URL = process.env.REACT_APP_BASE_URL;
+//const PATH_URL = 'https://localhost:44375/';
 //const BASE_URL = 'https://localhost:44375/OCR_Annotation.asmx';
 const PATH_URL = 'http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/';
 const BASE_URL = 'http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/OCR_Annotation.asmx';
@@ -242,10 +243,36 @@ const apiSettings = {
     const result = response.data
     return result;
   },
-  //存入jpg/png檔
-  saveImage: async () => {
-
-  }
+  getCase: async (p_szSCrateDTime, p_szECrateDTime) => {
+    const url = `${BASE_URL}/FindCase`;
+    const bodyData = {
+      'p_szSCreateDTime': p_szSCrateDTime,
+      'p_szECreateDTime': p_szECrateDTime
+    };
+    const result=  await axios.post(url,bodyData);
+    return result.data;
+    
+  },
+  getPageList: async (caseNo, createDTime) => {
+    const url = `${BASE_URL}/GetAllPage`;
+    const bodyData = {
+      'p_szCaseNo': caseNo,
+      'p_szCreateDTime': createDTime
+    };
+    const result=  await axios.post(url,bodyData);
+    return result.data;
+  },
+  modifiedBoxPass: async (caseNo, createDTime, page, boxIndex) => {
+    const url = `${BASE_URL}/ModifiedBoxPass`;
+    const bodyData = {
+      'p_szCaseNo': caseNo,
+      'p_szCreateDTime': createDTime,
+      'p_iPage': page,
+      'p_iBox': boxIndex,
+    };
+    const result=  await axios.post(url,bodyData);
+    return result.data;
+  },
 };
 
 export default apiSettings;

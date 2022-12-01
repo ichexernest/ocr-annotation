@@ -91,6 +91,15 @@ const MainCanvas = ({ activePageId, annoSwitch }) => {
     const handleMouseEnter = event => {
         if(annoSwitch){
         event.target.getStage().container().style.cursor = "crosshair";
+        }else{
+            event.target.getStage().container().style.cursor = "pointer";
+        }
+    };
+    const handleMouseLeave = event => {
+        if(annoSwitch){
+        event.target.getStage().container().style.cursor = "crosshair";
+        }else{
+            event.target.getStage().container().style.cursor = "pointer";
         }
     };
     const handleDelete = () => {
@@ -114,6 +123,7 @@ const MainCanvas = ({ activePageId, annoSwitch }) => {
                                 width={canvasMeasures.width}
                                 height={canvasMeasures.height}
                                 onMouseEnter={handleMouseEnter}
+                                onMouseLeave={handleMouseLeave}
                                 onMouseDown={handleMouseDown}
                                 onMouseMove={handleMouseMove}
                                 onMouseUp={handleMouseUp}

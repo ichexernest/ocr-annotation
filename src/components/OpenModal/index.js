@@ -15,6 +15,7 @@ import API from '../../API';
 
 const NewGroup = styled(ListGroup)`
 max-height: 300px;
+min-height: 300px;
 overflow-y: auto;
 `;
 
@@ -30,6 +31,10 @@ const OpenModal = ({ show, setShow, setActivePageId, setShowFullLoading }) => {
     };
 
     const handleChoose = () => {
+        if (selectedId === "" || selectedId === null) {
+            alert("尚未選擇任何專案。")
+            return;
+        }
         fetchSpecSet(selectedId);
         setActivePageId(0);
         setShow(false);
@@ -69,16 +74,20 @@ const OpenModal = ({ show, setShow, setActivePageId, setShowFullLoading }) => {
 
     useEffect(() => {
         fetchSpecList();
-    }, [show,fetchSpecList])
+    }, [show, fetchSpecList])
 
     const filterBySearch = (event) => {
+        setSelectedId(null)
         // Access input value
         const query = event.target.value;
         // Create copy of item list
         let updatedList = [...specList];
         // Include all elements which includes the search query
         updatedList = updatedList.filter((item) => {
-            return item.SpecName.includes(query);
+            if (item.SpecID.includes(query) || item.SpecName.includes(query))
+                return true;
+            else
+                return false;
         });
         // Trigger render with updated values
         setFilteredList(updatedList);
@@ -101,7 +110,7 @@ const OpenModal = ({ show, setShow, setActivePageId, setShowFullLoading }) => {
                 <NewGroup variant="flush" className='rounded-0 overflow-y-auto'>
                     {(filteredList !== null && filteredList !== []) && filteredList.map((item, index) => (
                         <ListGroup.Item action onClick={() => alertClicked(item.SpecID)} key={item.SpecID}>
-                            {item.SpecName}
+                            {`${item.SpecName}(${item.SpecID})`}
                         </ListGroup.Item>
                     ))}
                 </NewGroup>

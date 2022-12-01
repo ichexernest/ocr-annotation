@@ -15,6 +15,8 @@ import { AnnotationContextProvider} from "./components/AnnotationContext";
 
 import AnnotationPage from './components/AnnotationPage';
 import CheckPage from './components/CheckPage';
+import ResultPage from './components/ResultPage';
+import ListPage from './components/ListPage';
 
 function App() {
 
@@ -26,6 +28,14 @@ function App() {
     {
       path: "/Check",
       element:<CheckPage />,
+    },
+    {
+      path: "/List",
+      element:<ListPage />,
+    },
+    {
+      path: "/:caseNo/:createDTime",
+      element:<ResultPage />,
     },
   ]);
 
@@ -42,10 +52,10 @@ function App() {
 const Header = () => {
   return (
   <Navbar bg="dark" variant="dark" className='px-4'>
-      <Navbar.Brand href="#">OCR-Annotation</Navbar.Brand>
+      <Navbar.Brand href="/">OCR-Annotation</Navbar.Brand>
       <Nav className="me-auto">
-          <Button className="mx-1 btn-dark">Annotation</Button>
-          <Button className="mx-1 btn-dark">Result</Button>
+          <Button className="mx-1 btn-dark" href="/">Annotation</Button>
+          <Button className="mx-1 btn-dark" href="/List">Result</Button>
       </Nav>
   </Navbar>
   );

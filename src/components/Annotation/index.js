@@ -14,11 +14,19 @@ const Annotation = ({ shapeProps, isSelected, annoType, onSelect, onChange, anno
     }, [isSelected]);
 
     const onMouseEnter = event => {
-        event.target.getStage().container().style.cursor = "move";
+        if(annoSwitch){
+            event.target.getStage().container().style.cursor = "move";
+            }else{
+                event.target.getStage().container().style.cursor = "pointer";
+            }
     };
 
     const onMouseLeave = event => {
-        event.target.getStage().container().style.cursor = "crosshair";
+        if(annoSwitch){
+            event.target.getStage().container().style.cursor = "crosshair";
+            }else{
+                event.target.getStage().container().style.cursor = "pointer";
+            }
     };
 
     return (

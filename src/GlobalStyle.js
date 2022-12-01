@@ -14,6 +14,10 @@ export const GlobalStyle = createGlobalStyle`
     --darkGrey: #1c1c1c;
     --primary:rgb(34, 20, 95);
     --bgColor:rgb(254, 254, 255);
+    --tableActionColor:rgba(34, 20, 95, .2);
+    --bgMaskColor: #dddddd;
+    --bgError: rgb(242, 102, 102);
+    --bgSuccess:rgb(0, 196, 10);
 
 }
 
