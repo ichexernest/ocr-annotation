@@ -34,7 +34,7 @@ function App() {
       element:<ListPage />,
     },
     {
-      path: "/:caseNo/:createDTime",
+      path: "/:caseNo",
       element:<ResultPage />,
     },
   ]);

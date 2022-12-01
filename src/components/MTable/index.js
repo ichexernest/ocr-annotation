@@ -2,6 +2,8 @@ import { React, useState, useMemo} from 'react'
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import Table from 'react-bootstrap/Table';
+
 import InputGroup from 'react-bootstrap/InputGroup';
 
 import { useTable, useFilters, useGlobalFilter, useAsyncDebounce, usePagination } from 'react-table'
@@ -10,19 +12,17 @@ import { faSearch,faAngleRight,faAngleLeft,faAngleDoubleRight,faAngleDoubleLeft,
 import { Wrapper, SearchWrapper} from './MTable.styles'
 import { Link } from "react-router-dom";
 
-const DetailLink = ({ caseNo, createDTime}) => {
+const DetailLink = ({ caseNo}) => {
   // Loop through the array and create a badge-like component instead of a comma-separated string
   return (
     <>
       {(
-        <Link to={`/${caseNo}/${createDTime}`}>
-        <Button className="mx-1 btn-dark">
-          查看        <FontAwesomeIcon className="icon" icon={faArrowRight} />
+        <Link to={`/${caseNo}`}>
+        <Button className="mx-1 btn-dark" size="sm">
+          查看<FontAwesomeIcon className="icon" icon={faArrowRight} />
         </Button>
         </Link>
-
-      )
-      }
+      )}
     </>
   );
 };
@@ -52,7 +52,7 @@ const GlobalFilter = ({
   )
 }
 
-const Table = ({ columns, data }) => {
+const MainTable = ({ columns, data }) => {
   // Use the useTable Hook to send the columns and data to build the table
   const {
     getTableProps, // table props from react-table
@@ -90,10 +90,10 @@ const Table = ({ columns, data }) => {
         globalFilter={globalFilter}
         setGlobalFilter={setGlobalFilter}
       />
-      <table {...getTableProps()}>
+      <Table striped bordered hover {...getTableProps()}>
         <thead>
           {headerGroups.map(headerGroup => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
+            <tr className='p-2' {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
                 <th {...column.getHeaderProps()}>{column.render('Header')}</th>
               ))}
@@ -104,7 +104,7 @@ const Table = ({ columns, data }) => {
           {page.map((row, i) => {
             prepareRow(row)
             return (
-              <tr {...row.getRowProps()}>
+              <tr style={{padding: "1rem"}} {...row.getRowProps()}>
                 {row.cells.map(cell => {
                   return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
                 })}
@@ -112,7 +112,7 @@ const Table = ({ columns, data }) => {
             )
           })}
         </tbody>
-      </table>
+      </Table>
       <div className='d-flex justify-content-end align-items-center m-2'>
         <Button className="mx-1 btn-dark" onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
         <FontAwesomeIcon className="icon" icon={faAngleDoubleLeft} />
@@ -150,45 +150,32 @@ const MTable = ({ data }) => {
   const columns = useMemo(
     () => [
       {
-        Header: '案號',
-        accessor: 'Vhno',
+        Header: '案號ProcID',
+        accessor: 'ProcID',
       },
       {
-        Header: '建檔日期',
-        accessor: 'CreateTime',
+        Header: '規格SpecID',
+        accessor: 'SpecID',
       },
       {
-        Header: '立案人員',
-        accessor: 'CreateEmp',
+        Header: '標簽TitleID',
+        accessor: 'TitleID',
       },
       {
-        Header: '公司別',
-        accessor: 'Co',
+        Header: '時間TxDTime',
+        accessor: 'TxDTime',
       },
       {
-        Header: '通知信箱',
-        accessor: 'Email',
-
+        Header: '結果ResultData',
+        accessor: 'ResultData',
       },
-      // {
-      //   Header: '來源文件',
-      //   accessor: 'SrcFileName',
-      //   Cell: ({ cell }) => <SourcePath values={cell.row.values.SrcFileName} />,
-
-      // },
-      // {
-      //   Header: '比對文件',
-      //   accessor: 'RefFileName',
-      //   Cell: ({ cell}) => <SourcePath values={cell.row.values.RefFileName} />,
-
-      // },
       {
-        Header: '比對程序',
-        accessor: 'Result',
+        Header: '辨識狀態ProcStatus',
+        accessor: 'ProcStatus',
       },
       {
         Header: '比對結果查詢',
-        Cell: ({ cell }) => <DetailLink caseNo={cell.row.values.Vhno} createDTime={cell.row.values.CreateTime.slice(0, 8)}  />,
+        Cell: ({ cell }) => <DetailLink caseNo={cell.row.values.ProcID}/>,
       },
     ],
     []
@@ -197,7 +184,7 @@ const MTable = ({ data }) => {
   const mainData = useMemo(() => data, [data])
   return (
     <Wrapper>
-      <Table columns={columns} data={mainData} />
+      <MainTable columns={columns} data={mainData} />
     </Wrapper>
   )
 }
