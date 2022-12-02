@@ -62,58 +62,29 @@ const ListPage = () => {
 
         return result;
     }
-    // const fetchCase = useCallback(async (searchTermS, searchTermE) => {
-    //     try {
-    //         let szSCreateDTime = searchTermS ? searchTermS.replaceAll('-', '') : '';
-    //         let szECreateDTime = searchTermE ? searchTermE.replaceAll('-', '') : '';
-    //         console.log(`here get range ${szSCreateDTime} to ${szECreateDTime}`)
-    //         const data = await API.getCase(szSCreateDTime, szECreateDTime);
-    //         //console.log(data.d);
-    //         const result = filter(JSON.parse(data.d), function (element) {
-    //             //if (element.Vhno === 'Case01')
-    //             return true;
-    //             //return false;
-    //         });
-    //         console.log(result);
-    //         setData(result);
-    //         setSDate(searchTermS);
-    //         setEDate(searchTermE);
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // },[]);
-    const fetchCase = useCallback((searchTermS, searchTermE) => {
-        let szSCreateDTime = searchTermS ? searchTermS.replaceAll('-', '') : '';
-        let szECreateDTime = searchTermE ? searchTermE.replaceAll('-', '') : '';
-        console.log(`heressss get range ${szSCreateDTime} to ${szECreateDTime}`)
-        let data1 = [
-            { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001","TxDTime": "20210924093816035" , "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001","ProcStatus":20,},
-            { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001","TxDTime": "20210924093816035" , "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001","ProcStatus":20,},
-            { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001","TxDTime": "20210924093816035" , "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001","ProcStatus":20,},
-            { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001","TxDTime": "20210924093816035" , "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001","ProcStatus":20,},
-            { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001","TxDTime": "20210924093816035" , "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001","ProcStatus":20,},
-            { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001","TxDTime": "20210924093816035" , "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001","ProcStatus":20,},
-            { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001","TxDTime": "20210924093816035" , "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001","ProcStatus":20,},
-            { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001","TxDTime": "20210924093816035" , "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001","ProcStatus":20,},
-            { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001","TxDTime": "20210924093816035" , "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001","ProcStatus":20,},
-            { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001","TxDTime": "20210924093816035" , "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001","ProcStatus":20,},
-            { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001","TxDTime": "20210924093816035" , "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001","ProcStatus":20,},
-            { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001","TxDTime": "20210924093816035" , "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001","ProcStatus":20,},
-            { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001","TxDTime": "20210924093816035" , "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001","ProcStatus":20,},
-            { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001","TxDTime": "20210924093816035" , "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001","ProcStatus":20,},];
-        setData(data1);
-        console.log(`heres get fake data ${data1}`)
-        setSDate(searchTermS);
-        setEDate(searchTermE);
+    const fetchProcList = useCallback(async (searchTermS, searchTermE) => {
+        try {
+            let szSCreateDTime = searchTermS ? searchTermS.replaceAll('-', '') : '';
+            let szECreateDTime = searchTermE ? searchTermE.replaceAll('-', '') : '';
+            console.log(`here get range ${szSCreateDTime} to ${szECreateDTime}`)
+            const data = await API.getProc(szSCreateDTime, szECreateDTime);
+            //const result = filter(JSON.parse(data.d), e=>true);
+            console.log(data);
+            setData(data);
+            setSDate(searchTermS);
+            setEDate(searchTermE);
+        } catch (error) {
+            console.log(error);
+        }
     },[]);
     
     useEffect(() => {
-        fetchCase(sDate, eDate);
-    }, [fetchCase,sDate,eDate])
+        fetchProcList(sDate, eDate);
+    }, [fetchProcList,sDate,eDate])
     return (
         <Wrapper>
             <ControlWrapper>
-                <SearchBar fetchCase={fetchCase} sDate={sDate} eDate={eDate} initSDate={initSDate} initEDate={initEDate} />
+                <SearchBar fetchProcList={fetchProcList} sDate={sDate} eDate={eDate} initSDate={initSDate} initEDate={initEDate} />
             </ControlWrapper>
             {data !== null ?
                 <MTable data={data} /> :

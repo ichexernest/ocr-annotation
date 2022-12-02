@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState,useCallback } from "react";
-import { Wrapper, Box, Canvas, BoxText } from './DetailCanvas.styles';
+import { Wrapper, Canvas } from './DetailCanvas.styles';
 import { useAPI } from "../apiContext";
 import { PanZoom } from 'react-easy-panzoom';
 
@@ -39,15 +39,12 @@ const DetailCanvas = ({ targetIndex, pageIndex }) => {
 
     return (
         <Wrapper>
-            <Box>
-                <BoxText>局部特寫(擬校稿文件)</BoxText>
                 <PanZoom
                     boundaryRatioVertical={0.9}
                     boundaryRatioHorizontal={0.9}
                     enableBoundingBox>
                     <Canvas ref={canvasSrc} />
                 </PanZoom>
-            </Box>
         </Wrapper>
     )
 }

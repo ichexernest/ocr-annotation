@@ -63,12 +63,20 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem,setShowFullLoa
     }
 
     const handleClose = () => {
+        setInputs({
+            OCRModel: '',
+            RpaAPID: '',
+            SpecName: '',
+            SpecDesc: '',
+            FormFile: ''
+        })
         setShow(false);
     };
 
     const handleCheck = (e) => {
         e.preventDefault();
         let submitData = inputs;
+        console.log(`RPAAPID:::: `+submitData.RpaAPID)
         if (submitData.OCRModel === '') {
             alert(`未填寫OCR模型`);
             return;
