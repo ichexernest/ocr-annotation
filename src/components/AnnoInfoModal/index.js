@@ -33,7 +33,8 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
         IsOneLine: false,
         IsEng: false,
     });
-    const [annoType, setAnnoType] = useState('area');
+    const [annoType, setAnnoType] = useState(editItem !== null && editItem !== undefined ? editItem.type : "area");
+
 
     useEffect(() => {
         setAnnoType(editItem !== null && editItem !== undefined ? editItem.type : "area");
@@ -56,7 +57,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
             IsOneLine: false,
             IsEng: false,
         })
-    }, [editItem]);
+    }, [editItem,show]);
 
     const handleTextChange = (event) => {
         let name, value;
@@ -82,7 +83,6 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
             IsOneLine: false,
             IsEng: false,
         })
-        setAnnoType("area")
     };
 
     const handleSelectType = (e) => {
@@ -105,12 +105,12 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
             alert(`未填寫標籤欄位`);
             return;
         }
-        // if (annoType === "title") {
-        //     if (submitData.TitleContent === '') {
-        //         alert(`未填寫標籤內容`);
-        //         return;
-        //     }
-        // }
+        if (annoType === "title" && submitData.IsAnchor) {
+            if (submitData.TitleContent === '') {
+                alert(`未填寫標籤內容`);
+                return;
+            }
+        }
         submitData.type = annoType;
         //submitData.AreaID = "manualID";
 
@@ -135,7 +135,6 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
             IsOneLine: false,
             IsEng: false,
         })
-        setAnnoType("area")
     }
 
     return (
@@ -178,7 +177,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
                     </FloatingLabel>
                     < FloatingLabel
                         controlId="TitleContent"
-                        label="標籤內容"
+                        label="標籤內容(設定為Anchor時必填)"
                         className="mb-3"
                         onChange={handleTextChange}>
                         <Form.Control type="text" placeholder="type titleContent" defaultValue={editItem !== null && editItem !== undefined ? editItem.TitleContent : ""} />

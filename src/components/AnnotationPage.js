@@ -81,17 +81,33 @@ const AnnotationPage = () => {
     const fetchSaveAllAnnotations = async () => {
         try {
             setSaveSpinner(true);
-            await API.saveAnnotations(annotation)
+            if(!checkAnchor()){
+                alert("未設置任何Anchor")
+                setSaveSpinner(false);
+                return;
+            } else{
+                await API.saveAnnotations(annotation)
                 .then(res => API.getSpecSet(annotation.SpecID))
                 .then(res => setDispatch({ type: "fetch_success", OCR_SpecSet: JSON.parse(res) }))
             setSaveSpinner(false);
+            }
         } catch (error) {
             console.log(error);
             setSaveSpinner(false);
             return;
         }
     };
-
+    const checkAnchor=()=>{
+        let checkSum = 0;
+        for(let i = 0; i<annotation.PageSet.length;i++){
+            annotation.PageSet[i].SpecTitleSet.forEach(item => {
+                if(item.IsAnchor) checkSum++;
+            })
+        }
+        console.log(checkSum)
+        if (checkSum > 0) return true;
+        else return false;
+    };
     const handleNextStep = (type) => {
         if (annotation.SpecID !== "") {
             setType(type);

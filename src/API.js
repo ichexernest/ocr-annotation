@@ -1,10 +1,10 @@
 import axios from "axios";
 //import { Buffer } from 'buffer';
 //const BASE_URL = process.env.REACT_APP_BASE_URL;
-//const PATH_URL = 'https://localhost:44375/';
-//const BASE_URL = 'https://localhost:44375/OCR_Annotation.asmx';
-const PATH_URL = 'http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/';
-const BASE_URL = 'http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/OCR_Annotation.asmx';
+const PATH_URL = 'https://localhost:44375/';
+const BASE_URL = 'https://localhost:44375/OCR_Annotation.asmx';
+//const PATH_URL = 'http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/';
+//const BASE_URL = 'http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/OCR_Annotation.asmx';
 
 const apiSettings = {
   //取得spec辨識規格列表

@@ -48,6 +48,7 @@ const reducer = (state, action) => {
         case 'fetch_success':
             //console.log(`REDUCER fetch_success : ${JSON.stringify(action.OCR_SpecSet)}`);
             //let result = JSON.stringify(action.OCR_SpecSet);
+            console.log('FETCH SUCCESS :::'+JSON.stringify(action.OCR_SpecSet));
             newState = action.OCR_SpecSet;
             return newState;
 
@@ -107,9 +108,10 @@ const reducer = (state, action) => {
                     newState.PageSet[action.activePageId].SpecTitleSet.forEach(item => {
                         item.IsAnchor = false;
                     })
-                } else if (newState.PageSet[action.activePageId].SpecTitleSet.length === 0) {
-                    action.newAnnotation.IsAnchor = true;
-                }
+                } 
+                // else if (newState.PageSet[action.activePageId].SpecTitleSet.length === 0) {
+                //     action.newAnnotation.IsAnchor = true;
+                // }
                 newState.PageSet[action.activePageId].SpecTitleSet.push(action.newAnnotation);
             }
             console.log(`REDUCER DONE add_new_annotation : ${JSON.stringify(state.PageSet[action.activePageId].SpecAreaSet)}`);
