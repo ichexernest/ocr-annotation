@@ -60,28 +60,20 @@ const ContentArea = ({ activePageId }) => {
 }
 
 const ResultList = ({ setActiveTargetId, activeTargetId, pageIndex }) => {
-    const [hide, setHide] = useState(false);
     const { pages } = useAPI();
     const handleSelectTarget = (i) => {
         console.log(`listItem clicked ${i}${pages.pageList[pageIndex].Sets.length}`)
         //切頁超過最大筆數會抓不到
         setActiveTargetId(i);
     }
-    const changeList = () => {
-        setHide(!hide);
-    }
 
     return (
         <div className="d-flex flex-column bg-white">
-            <Button className="m-2 btn-dark" onClick={() => changeList()}>{hide ? "顯示全部" : "僅顯示標註項目"}</Button>
             <ContentList>
                 <ul>
                     {pages.pageList[pageIndex].Sets.map((item, index) => {
                         let liClasses = classNames({
-                            'success': (item.OcrSSIM < 1 && item.Pass) ? true : false,
-                            'error': (item.OcrSSIM < 1 && !item.Pass) ? true : false,
                             'active': (activeTargetId === index) ? true : false,
-                            'd-none': (item.OcrSSIM === 1) ? hide : false,
                         });
                         return (
                             <li

@@ -16,9 +16,7 @@ const initialState = {
     pageList: [
         {
             "Page": 0,
-            "FilePathSets": [
-                "", "", "", "", "",
-            ],
+            "FilePathSet": "",
             "Sets": [
                 { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 28, "Y": 50, "Width": 232, "Height": 54 }, "Page": 0, "BoxIndex": 1, "OcrSSIM": 1.0, "SrcText": "MeDiPro", "RefText": "MeDiPro", "Pass": false }],
             "PassSets": [
@@ -74,15 +72,6 @@ export const CaseContextProvider = ({ children }) => {
                 } else {
                     //turn to pass 
                     console.log(`PassSets 0 ${JSON.stringify(pageList[0].PassSets)}`)
-                    for (let i = 0; i < pageList.length; i++) {
-                        pageList[i].PassSets.forEach(PassSet => {
-                            const isPass = (element) => element.BoxIndex === PassSet.boxIndex;
-                            let passIndex = pageList[0].Sets.findIndex(isPass);
-                            if (passIndex !== -1) {
-                                pageList[i].Sets[passIndex].Pass = true;
-                            }
-                        });
-                    }
                     dispatch({ type: 'fetch_success', caseNo: caseNo, pageList: pageList })
                 }
             } catch (error) {

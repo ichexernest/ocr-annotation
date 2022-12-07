@@ -8,6 +8,8 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
+//import testImg from '../img/t1.png';
+
 const Wrapper = styled(Container)`
 background-color:#FFF;
 .main{
@@ -85,7 +87,7 @@ const Sidebar = ({ setActivePageId, activePageId }) => {
                         });
                         return (
                             <li key={item.Page} className={liClasses} onClick={() => handleSelectTarget(index)} >
-                                <img src={item.FilePathSets[0]} alt={item.Page} />
+                                <img src={item.FilePathSet} alt={item.Page} />
                                 頁數: {item.Page}
                             </li>)
                     })}

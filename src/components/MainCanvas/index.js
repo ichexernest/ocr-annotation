@@ -132,7 +132,7 @@ const MainCanvas = ({ activePageId, annoSwitch }) => {
                                 <Layer>
                                     <ImageFromUrl
                                         setCanvasMeasures={setCanvasMeasures}
-                                        imageUrl={annotation.PageSet[activePageId].FileContent}
+                                        imageUrl={`http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/HandleImage.ashx?`+annotation.PageSet[activePageId].FileContent}
                                         onMouseDown={() => {
                                             // deselect when clicked on empty area
                                             selectAnnotation(null);
@@ -186,6 +186,7 @@ const MainCanvas = ({ activePageId, annoSwitch }) => {
                                         <span>區域說明: {item.AreaDesc}</span>
                                         <span>標籤名稱: {item.Title}</span>
                                         {item.type === "title" && <span>標籤內容: {item.TitleContent}</span>}
+                                        <span>預處理: {item.PreProcOp === "procnt001" ? "正常":"有設置"}</span>
                                         <span>是否為單行: {item.IsOneLine === true ? "是" : "否"}</span>
                                         <span>是否為英數字: {item.IsEng === true ? "是" : "否"}</span>
                                         <span>字數: {item.WordCount}</span>

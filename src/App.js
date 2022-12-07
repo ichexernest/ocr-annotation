@@ -37,7 +37,7 @@ function App() {
       path: "/:caseNo",
       element:<ResultPage />,
     },
-  ]);
+  ],);
 
   return (
     <>

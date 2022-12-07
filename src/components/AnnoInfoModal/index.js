@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback} from 'react';
 
 import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
@@ -8,6 +8,7 @@ import Form from 'react-bootstrap/Form';
 import { v1 as uuidv1 } from "uuid";
 
 import { useAPI } from "../AnnotationContext";
+import API from '../../API';
 
 const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activePageId, editItem }) => {
     const { setDispatch } = useAPI();
@@ -16,18 +17,20 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
         AreaDesc: '',
         Title: '',
         TitleContent: '',
+        PreProcOp:'',
         WordCount: 0,
         IsAnchor: false,
         IsOneLine: false,
         IsEng: false,
     };
     console.log(`EDITITEM:::` + JSON.stringify(editItem))
-
+    const [options, setOptions] = useState([])
     const [inputs, setInputs] = useState({
         AreaName: "",
         AreaDesc: "",
         Title: "",
         TitleContent: "",
+        PreProcOp:'',
         WordCount: 0,
         IsAnchor: false,
         IsOneLine: false,
@@ -35,6 +38,19 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
     });
     const [annoType, setAnnoType] = useState(editItem !== null && editItem !== undefined ? editItem.type : "area");
 
+    const fetchPreProcOptions = useCallback(async () => {
+        try {
+            await API.getPreProcOptions()
+            .then(res=>setOptions(JSON.parse(res)))
+        } catch (error) {
+            alert(error);
+            return;
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchPreProcOptions();
+    }, [show,fetchPreProcOptions])
 
     useEffect(() => {
         setAnnoType(editItem !== null && editItem !== undefined ? editItem.type : "area");
@@ -43,6 +59,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
             AreaDesc: editItem.AreaDesc,
             Title: editItem.Title,
             TitleContent: editItem.TitleContent,
+            PreProcOp:editItem.PreProcOp,
             WordCount: editItem.WordCount,
             IsAnchor: editItem.IsAnchor,
             IsOneLine: editItem.IsOneLine,
@@ -52,6 +69,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
             AreaDesc: "",
             Title: "",
             TitleContent: "",
+            PreProcOp:"",
             WordCount: 0,
             IsAnchor: false,
             IsOneLine: false,
@@ -78,6 +96,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
             AreaDesc: '',
             Title: '',
             TitleContent: '',
+            PreProcOp:'',
             WordCount: 0,
             IsAnchor: false,
             IsOneLine: false,
@@ -101,6 +120,10 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
         //     alert(`未填寫區域說明`);
         //     return;
         // }
+        if (submitData.PreProcOp === '') {
+            alert(`未填寫預處理選項`);
+            return;
+        }
         if (submitData.Title === '') {
             alert(`未填寫標籤欄位`);
             return;
@@ -130,6 +153,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
             AreaDesc: '',
             Title: '',
             TitleContent: '',
+            PreProcOp:'',
             WordCount: 0,
             IsAnchor: false,
             IsOneLine: false,
@@ -142,7 +166,7 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
             <Offcanvas.Header closeButton>
                 <Offcanvas.Title>{editItem !== null && editItem !== undefined ? "編輯標註內容" : "新增標註"}</Offcanvas.Title>
             </Offcanvas.Header>
-            <Form onSubmit={handleCheck}>
+            <Form onSubmit={handleCheck} className="overflow-auto pb-3">
                 <Offcanvas.Body className="border-top">
                     <FloatingLabel
                         controlId="type"
@@ -189,6 +213,14 @@ const AnnoInfoModal = ({ show, setShow, newAnnotation, setNewAnnotation, activeP
                         className="mb-3"
                         onChange={handleTextChange}>
                         <Form.Control type="number" placeholder="type wordCount" defaultValue={editItem !== null && editItem !== undefined ? editItem.WordCount : ""} />
+                    </FloatingLabel>
+                    <FloatingLabel controlId="PreProcOp" label="預處理選項*" className="mb-3" onChange={handleTextChange}>
+                        <Form.Select aria-label="Floating label select example" defaultValue={editItem !== null && editItem !== undefined ? editItem.PreProcOp : ""} >
+                            <option disabled hidden value="">請選擇...</option>
+                            {options !== [] && options.map((item, index) => (
+                                <option key={item.ParmName} value={item.ParmName}>{item.ParmValue}</option>
+                            ))}
+                        </Form.Select>
                     </FloatingLabel>
                     {annoType === "title" &&
                         <Form.Group className="mb-3">

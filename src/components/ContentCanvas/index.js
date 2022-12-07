@@ -5,6 +5,8 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { useAPI } from "../apiContext";
 import { PanZoom } from 'react-easy-panzoom'
 
+//import testImg from '../img/t1.png';
+
 const ContentCanvas = ({ targetIndex, pageIndex }) => {
     const canvasRef = useRef(null);
     const { pages } = useAPI();
@@ -16,7 +18,7 @@ const ContentCanvas = ({ targetIndex, pageIndex }) => {
         const canvasObj = canvasRef.current;
         const ctx = canvasObj.getContext('2d');
         const img = new Image();
-        img.src = pageBase.FilePathSets[0];
+        img.src = pageBase.FilePathSet;
         img.onload = () => {
             //setLoad(false);
             canvasObj.height = img.height;

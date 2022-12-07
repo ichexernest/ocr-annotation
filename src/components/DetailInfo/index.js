@@ -42,8 +42,8 @@ const DetailInfo = ({ targetIndex, pageIndex }) => {
                 {/* <Button className='mx-1 btn-dark' disabled={disabled} onClick={() => handleCheck(pages.pageList[pageIndex].Sets[targetIndex].BoxIndex)}>標註為相符</Button> */}
                 <Form.Check
                     type={'checkbox'}
-                    id={`isEng`}
-                    label={`isEng`}
+                    id={`isError`}
+                    label={`isError`}
                 />
                 <Form.Group controlId="exampleForm.ControlTextarea1">
                     <Form.Label>更正:</Form.Label>

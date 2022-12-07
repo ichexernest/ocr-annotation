@@ -3,6 +3,7 @@ import { Wrapper, Canvas } from './DetailCanvas.styles';
 import { useAPI } from "../apiContext";
 import { PanZoom } from 'react-easy-panzoom';
 
+//import testImg from '../../img/t1.png';
 
 const DetailCanvas = ({ targetIndex, pageIndex }) => {
     const canvasSrc = useRef(null);
@@ -16,7 +17,7 @@ const DetailCanvas = ({ targetIndex, pageIndex }) => {
         const canvasSrcCtx = canvasSrcObj.getContext('2d');
         const imgSrc = new Image();
         imgSrc.style = loaded ? {} : { display: 'none' };
-        imgSrc.src = pageBase.FilePathSets[4];
+        imgSrc.src = pageBase.FilePathSet;
         imgSrc.onload = () => {
             canvasSrcObj.width = pageBase.Sets[targetIndex].Rect.Width;
             canvasSrcObj.height = pageBase.Sets[targetIndex].Rect.Height;
