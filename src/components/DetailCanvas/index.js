@@ -8,7 +8,7 @@ import { PanZoom } from 'react-easy-panzoom';
 const DetailCanvas = ({ targetIndex, pageIndex }) => {
     const canvasSrc = useRef(null);
     const { pages } = useAPI();
-    const pageBase = pages.pageList[pageIndex];
+    const pageBase = pages.PageSet[pageIndex];
     const [loaded, setLoaded] = useState(false);
     const drawCanvaDetail = useCallback(() => {
         let count = 2;
@@ -17,19 +17,19 @@ const DetailCanvas = ({ targetIndex, pageIndex }) => {
         const canvasSrcCtx = canvasSrcObj.getContext('2d');
         const imgSrc = new Image();
         imgSrc.style = loaded ? {} : { display: 'none' };
-        imgSrc.src = pageBase.FilePathSet;
+        imgSrc.src = pageBase.ImageData;
         imgSrc.onload = () => {
-            canvasSrcObj.width = pageBase.Sets[targetIndex].Rect.Width;
-            canvasSrcObj.height = pageBase.Sets[targetIndex].Rect.Height;
+            canvasSrcObj.width = pageBase.ResultSet[targetIndex].Width;
+            canvasSrcObj.height = pageBase.ResultSet[targetIndex].Height;
             canvasSrcCtx.drawImage(
                 imgSrc,
-                pageBase.Sets[targetIndex].Rect.X,
-                pageBase.Sets[targetIndex].Rect.Y,
-                pageBase.Sets[targetIndex].Rect.Width,
-                pageBase.Sets[targetIndex].Rect.Height,
+                pageBase.ResultSet[targetIndex].UX,
+                pageBase.ResultSet[targetIndex].UY,
+                pageBase.ResultSet[targetIndex].Width,
+                pageBase.ResultSet[targetIndex].Height,
                 0, 0,
-                pageBase.Sets[targetIndex].Rect.Width,
-                pageBase.Sets[targetIndex].Rect.Height
+                pageBase.ResultSet[targetIndex].Width,
+                pageBase.ResultSet[targetIndex].Height
             );
             count--;
         }

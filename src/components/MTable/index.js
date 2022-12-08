@@ -12,12 +12,12 @@ import { faSearch,faAngleRight,faAngleLeft,faAngleDoubleRight,faAngleDoubleLeft,
 import { Wrapper, SearchWrapper} from './MTable.styles'
 import { Link } from "react-router-dom";
 
-const DetailLink = ({ caseNo}) => {
+const DetailLink = ({ProcID}) => {
   // Loop through the array and create a badge-like component instead of a comma-separated string
   return (
     <>
       {(
-        <Link to={`/${caseNo}`}>
+        <Link to={`/${ProcID}`}>
         <Button className="mx-1 btn-dark" size="sm">
           查看<FontAwesomeIcon className="icon" icon={faArrowRight} />
         </Button>
@@ -175,7 +175,7 @@ const MTable = ({ data }) => {
       },
       {
         Header: '比對結果查詢',
-        Cell: ({ cell }) => <DetailLink caseNo={cell.row.values.ProcID}/>,
+        Cell: ({ cell }) => <DetailLink ProcID={cell.row.values.ProcID}/>,
       },
     ],
     []

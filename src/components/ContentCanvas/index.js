@@ -10,7 +10,7 @@ import { PanZoom } from 'react-easy-panzoom'
 const ContentCanvas = ({ targetIndex, pageIndex }) => {
     const canvasRef = useRef(null);
     const { pages } = useAPI();
-    const pageBase = pages.pageList[pageIndex];
+    const pageBase = pages.PageSet[pageIndex];
 
     const [loaded, setLoaded] = useState(false);
     const drawCanva = useCallback(() => {
@@ -18,7 +18,7 @@ const ContentCanvas = ({ targetIndex, pageIndex }) => {
         const canvasObj = canvasRef.current;
         const ctx = canvasObj.getContext('2d');
         const img = new Image();
-        img.src = pageBase.FilePathSet;
+        img.src = pageBase.ImageData;
         img.onload = () => {
             //setLoad(false);
             canvasObj.height = img.height;
@@ -27,10 +27,10 @@ const ContentCanvas = ({ targetIndex, pageIndex }) => {
                 ctx.lineWidth = 3;
                 ctx.strokeStyle = "red";
                 ctx.strokeRect(
-                    pageBase.Sets[targetIndex].Rect.X,
-                    pageBase.Sets[targetIndex].Rect.Y,
-                    pageBase.Sets[targetIndex].Rect.Width,
-                    pageBase.Sets[targetIndex].Rect.Height);
+                    pageBase.ResultSet[targetIndex].UX,
+                    pageBase.ResultSet[targetIndex].UY,
+                    pageBase.ResultSet[targetIndex].Width,
+                    pageBase.ResultSet[targetIndex].Height);
                 //count--;
             
             setLoaded(true);

@@ -287,8 +287,9 @@ const apiSettings = {
     const result = response.data
     return result;
   },
+  //取得辨識單號列表
   getProc: async (p_szSCrateDTime, p_szECrateDTime) => {
-    const url = `${BASE_URL}/FindCase`;
+    const url = `${BASE_URL}/FindProc`;
     const bodyData = {
       'p_szSCreateDTime': p_szSCrateDTime,
       'p_szECreateDTime': p_szECrateDTime
@@ -296,132 +297,161 @@ const apiSettings = {
     //const result=  await axios.post(url,bodyData);
     //return result.data;
     let data1 = [
-      { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Case01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, }
+      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
+      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
+      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
+      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
+      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
+      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
+      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
+      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
+      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
+      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
+      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
+      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
+      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
+      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, }
     ];
     return data1;
 
   },
-  getPageList: async (caseNo) => {
-    const url = `${BASE_URL}/GetAllPage`;
+  //取得辨識結果
+  getResultPageSet: async (ProcID) => {
+    const url = `${BASE_URL}/GetResultPageSet`;
     const bodyData = {
-      'p_szCaseNo': caseNo,
+      'p_szProcID': ProcID,
     };
-    let data = [
-      {
-        "Page": 1,
-        "FilePathSet":"https://www.researchgate.net/publication/44625641/figure/fig1/AS:202987784937472@1425407467010/Paper-data-collection-form-A-one-page-paper-form-was-created-in-order-to-assemble-the.png",
-        "Sets": [
-          { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 28, "Y": 50, "Width": 232, "Height": 54 }, "Page": 0, "BoxIndex": 1, "OcrSSIM": 1.0, "SrcText": "MeDiPro", "RefText": "MeDiPro", "Pass": false },
-          { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 570, "Y": 52, "Width": 132, "Height": 30 }, "Page": 0, "BoxIndex": 2, "OcrSSIM": 0.375, "SrcText": "保存侏什2-8C", "RefText": "(保存條件2-", "Pass": false },
-          { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 481, "Y": 59, "Width": 76, "Height": 42 }, "Page": 0, "BoxIndex": 3, "OcrSSIM": 0.0, "SrcText": "WD", "RefText": "IL", "Pass": false },
-          { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 280, "Y": 66, "Width": 194, "Height": 36 }, "Page": 0, "BoxIndex": 4, "OcrSSIM": 1.0, "SrcText": "AC-00013-05", "RefText": "AC-00013-05", "Pass": false },
-          { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 576, "Y": 76, "Width": 76, "Height": 36 }, "Page": 0, "BoxIndex": 5, "OcrSSIM": 0.4, "SrcText": "10 ml", "RefText": " 10 n", "Pass": false },
-          { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 130, "Y": 98, "Width": 40, "Height": 12 }, "Page": 0, "BoxIndex": 6, "OcrSSIM": "-Infinity", "SrcText": "", "RefText": "Diagno", "Pass": false },
-          { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 9, "Y": 116, "Width": 392, "Height": 66 }, "Page": 0, "BoxIndex": 7, "OcrSSIM": 0.95652173913043481, "SrcText": "Antibody screening cell", "RefText": "Anfibody screening cell", "Pass": false },
-          { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 0, "Y": 162, "Width": 142, "Height": 115 }, "Page": 0, "BoxIndex": 8, "OcrSSIM": -1.0, "SrcText": "I", "RefText": "III", "Pass": false },
-          { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 127, "Y": 187, "Width": 236, "Height": 42 }, "Page": 0, "BoxIndex": 9, "OcrSSIM": 0.84615384615384615, "SrcText": "血球濃度 : 3i0.5%", "RefText": "血球濃度 : 3+0. 5%", "Pass": false },
-          { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 379, "Y": 205, "Width": 72, "Height": 40 }, "Page": 0, "BoxIndex": 10, "OcrSSIM": 0.25, "SrcText": "Lot:", "RefText": "L", "Pass": false },
-          { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 379, "Y": 255, "Width": 63, "Height": 45 }, "Page": 0, "BoxIndex": 11, "OcrSSIM": 0.0, "SrcText": "Exp", "RefText": "臼", "Pass": false },
-          { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 315, "Y": 318, "Width": 439, "Height": 53 }, "Page": 0, "BoxIndex": 12, "OcrSSIM": -1.5833333333333335, "SrcText": "日里土醫科枝服份有呎公司", "RefText": "oawosk Ho MebicAt fedhNotosyfo昂", "Pass": false },
-          { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 318, "Y": 356, "Width": 436, "Height": 32 }, "Page": 0, "BoxIndex": 13, "OcrSSIM": 0.0, "SrcText": "FORMU5A BloMtDICAL TEGHHotn6y CORI", "RefText": "", "Pass": false }
-        ],
-        "PassSets": [
-          {
-            "Page": 1,
-            "BoxIndex": 2,
-            "Pass": true,
-          },
-          {
-            "Page": 1,
-            "BoxIndex": 5,
-            "Pass": true,
-          },
-        ]
-      }, {
-        "Page": 2,
-        "FilePathSet":"https://www.researchgate.net/publication/44625641/figure/fig1/AS:202987784937472@1425407467010/Paper-data-collection-form-A-one-page-paper-form-was-created-in-order-to-assemble-the.png",
-        "Sets": [
-          { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 28, "Y": 50, "Width": 232, "Height": 54 }, "Page": 0, "BoxIndex": 1, "OcrSSIM": 1.0, "SrcText": "MeDiPro", "RefText": "MeDiPro", "Pass": false },
-          { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 570, "Y": 52, "Width": 132, "Height": 30 }, "Page": 0, "BoxIndex": 2, "OcrSSIM": 0.375, "SrcText": "保存侏什2-8C", "RefText": "(保存條件2-", "Pass": false },
-          { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 481, "Y": 59, "Width": 76, "Height": 42 }, "Page": 0, "BoxIndex": 3, "OcrSSIM": 0.0, "SrcText": "WD", "RefText": "IL", "Pass": false },
-          { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 280, "Y": 66, "Width": 194, "Height": 36 }, "Page": 0, "BoxIndex": 4, "OcrSSIM": 1.0, "SrcText": "AC-00013-05", "RefText": "AC-00013-05", "Pass": false },
-          { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 576, "Y": 76, "Width": 76, "Height": 36 }, "Page": 0, "BoxIndex": 5, "OcrSSIM": 0.4, "SrcText": "10 ml", "RefText": " 10 n", "Pass": false },
-          { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 130, "Y": 98, "Width": 40, "Height": 12 }, "Page": 0, "BoxIndex": 6, "OcrSSIM": "-Infinity", "SrcText": "", "RefText": "Diagno", "Pass": false },
-          { "Index": 0, "Ssim": 0.0, "Qatm_score": 0.0, "Rect": { "X": 9, "Y": 116, "Width": 392, "Height": 66 }, "Page": 0, "BoxIndex": 7, "OcrSSIM": 0.95652173913043481, "SrcText": "Antibody screening cell", "RefText": "Anfibody screening cell", "Pass": false },
-        ],
-        "PassSets": [
-          {
-            "Page": 2,
-            "BoxIndex": 2,
-            "Pass": true,
-          },
-          {
-            "Page": 2,
-            "BoxIndex": 5,
-            "Pass": true,
-          },
-          {
-            "Page": 2,
-            "BoxIndex": 6,
-            "Pass": true,
-          },
-          {
-            "Page": 2,
-            "BoxIndex": 7,
-            "Pass": true,
-          },
-        ]
-      }
-    ];
-    {
-    const data2 = {
-      ProcID: '',
+    const data= {
+      ProcID: 'PPPProcID001',
       PageSet: [
           {
               PageNum: 1,
-              ImageData:'',
+              ImageData:'https://learn.microsoft.com/zh-tw/visualstudio/get-started/visual-basic/media/vs-2019/vb-create-new-project-search-winforms-filtered.png?view=vs-2022',
               ResultSet: [{
-                  AreaID:'',
-                  RawData:'',
-                  ResultData:'',
-                  ProcStatus:'',
-                  DocID:'',
-                  UX:'',UY:'',LX:'',LY:'',
-                  IsEng:'',
+                  AreaID:'G01Item',
+                  TxDTime:'20221020-172452-463',
+                  RawData:'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
+                  ResultData:'1          家樂福           525          500         78                           89, 000',
+                  ProcStatus:10,
+                  DocID:'93097399-FF56-4C5E-849A-0851575B37E3',
+                  UX:0,UY:0,LX:50,LY:50,Width:50,Height:50,
+                  IsEng:false,
+                  IsError:false,
                   NewResult:'',
-              }
+              },
+              {
+                AreaID:'G02Item',
+                TxDTime:'20221020-172452-463',
+                RawData:'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
+                ResultData:'AAAAAA0',
+                ProcStatus:10,
+                DocID:'93097399-FF56-4C5E-849A-0851575B37E3',
+                UX:0,UY:0,LX:100,LY:200,Width:100,Height:200,
+                IsEng:false,
+                IsError:false,
+                NewResult:'fwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfw',
+            },
+            {
+              AreaID:'G03Item',
+              TxDTime:'20221020-172452-463',
+              RawData:'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
+              ResultData:'AAAAAA0',
+              ProcStatus:51,
+              DocID:'93097399-FF56-4C5E-849A-0851575B37E3',
+              UX:200,UY:200,LX:300,LY:400,Width:100,Height:200,
+              IsEng:true,
+              IsError:true,
+              NewResult:'',
+          },
+          {
+            AreaID:'G04Item',
+            TxDTime:'20221020-172452-463',
+            RawData:'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
+            ResultData:'AAAAAA0',
+            ProcStatus:51,
+            DocID:'93097399-FF56-4C5E-849A-0851575B37E3',
+            UX:300,UY:300,LX:400,LY:500,Width:100,Height:200,
+            IsEng:false,
+            IsError:false,
+            NewResult:'',
+        }
               ],
-          }
-      ]
-  }};
+          },
+          {
+            PageNum: 2,
+            ImageData:'https://learn.microsoft.com/zh-tw/visualstudio/get-started/visual-basic/media/vs-2019/vb-create-new-project-search-winforms-filtered.png?view=vs-2022',
+            ResultSet: [{
+                AreaID:'G101Item',
+                TxDTime:'20221020-172452-463',
+                RawData:'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
+                ResultData:'1          家樂福           525          500         78                           89, 000',
+                ProcStatus:10,
+                DocID:'93097399-FF56-4C5E-849A-0851575B37E3',
+                UX:0,UY:0,LX:50,LY:50,Width:50,Height:50,
+                IsEng:true,
+                IsError:false,
+                NewResult:'',
+            },
+            {
+              AreaID:'G102Item',
+              TxDTime:'20221020-172452-463',
+              RawData:'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
+              ResultData:'AAAAAA0',
+              ProcStatus:10,
+              DocID:'93097399-FF56-4C5E-849A-0851575B37E3',
+              UX:0,UY:0,LX:100,LY:200,Width:100,Height:200,
+              IsEng:true,
+              IsError:true,
+              NewResult:'',
+          },
+          {
+            AreaID:'G103Item',
+            TxDTime:'20221020-172452-463',
+            RawData:'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
+            ResultData:'AAAAAA0',
+            ProcStatus:51,
+            DocID:'93097399-FF56-4C5E-849A-0851575B37E3',
+            UX:200,UY:200,LX:300,LY:400,Width:100,Height:200,
+            IsEng:false,
+            IsError:false,
+            NewResult:'',
+        },
+        {
+          AreaID:'G104Item',
+          TxDTime:'20221020-172452-463',
+          RawData:'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
+          ResultData:'AAAAAA0',
+          ProcStatus:51,
+          DocID:'93097399-FF56-4C5E-849A-0851575B37E3',
+          UX:300,UY:300,LX:400,LY:500,Width:100,Height:200,
+          IsEng:false,
+          IsError:false,
+          NewResult:'',
+      }
+            ],
+        }
+      ]};
+  
+
     //const result=  await axios.post(url,bodyData);
     //return result.data;
     return data;
   },
-  modifiedBoxPass: async (caseNo, createDTime, page, boxIndex) => {
-    const url = `${BASE_URL}/ModifiedBoxPass`;
-    const bodyData = {
-      'p_szCaseNo': caseNo,
-      'p_szCreateDTime': createDTime,
-      'p_iPage': page,
-      'p_iBox': boxIndex,
-    };
-    const result = await axios.post(url, bodyData);
-    return result.data;
-  },
+  //儲存辨識結果修改項
+  saveResults: async (annotations) => {
+      const url = `${BASE_URL}/SaveResults`;
+      const bodyData = { szSpec: JSON.stringify(annotations) };
+      console.log(`SaveResults:::` + bodyData);
+      const response = await axios.post(url, bodyData)
+      // .then(res =>{
+      //   if (res.includes('OCR_ANNOTATION_ERR')){
+      //     alert(`SaveAnnotations:::${res}`);
+      //     return null;
+      //   }
+      // })
+  
+      return response;
+    },
 };
 
 export default apiSettings;

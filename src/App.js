@@ -34,7 +34,7 @@ function App() {
       element:<ListPage />,
     },
     {
-      path: "/:caseNo",
+      path: "/:ProcID",
       element:<ResultPage />,
     },
   ],);

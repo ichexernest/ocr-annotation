@@ -20,7 +20,7 @@ const ContentArea = ({ activePageId }) => {
     return (
         <Wrapper className="border-start "> 
             <Grid className="border-bottom " isMain={true}>
-                {pages.pageList[activePageId].Sets[activeTargetId] ?
+                {pages.PageSet[activePageId].ResultSet[activeTargetId] ?
                     <ContentCanvas
                         targetIndex={activeTargetId}
                         pageIndex={activePageId}
@@ -35,7 +35,7 @@ const ContentArea = ({ activePageId }) => {
                     setActiveTargetId={setActiveTargetId} />
             </Grid>
             <Grid isMain={false}>
-                {pages.pageList[activePageId].Sets[activeTargetId] ?
+                {pages.PageSet[activePageId].ResultSet[activeTargetId] ?
                     <>
                         <DetailCanvas
                             targetIndex={activeTargetId}
@@ -62,7 +62,7 @@ const ContentArea = ({ activePageId }) => {
 const ResultList = ({ setActiveTargetId, activeTargetId, pageIndex }) => {
     const { pages } = useAPI();
     const handleSelectTarget = (i) => {
-        console.log(`listItem clicked ${i}${pages.pageList[pageIndex].Sets.length}`)
+        console.log(`listItem clicked ${i}${pages.PageSet[pageIndex].ResultSet.length}`)
         //切頁超過最大筆數會抓不到
         setActiveTargetId(i);
     }
@@ -71,16 +71,16 @@ const ResultList = ({ setActiveTargetId, activeTargetId, pageIndex }) => {
         <div className="d-flex flex-column bg-white">
             <ContentList>
                 <ul>
-                    {pages.pageList[pageIndex].Sets.map((item, index) => {
+                    {pages.PageSet[pageIndex].ResultSet.map((item, index) => {
                         let liClasses = classNames({
                             'active': (activeTargetId === index) ? true : false,
                         });
                         return (
                             <li
-                                key={item.BoxIndex}
+                                key={item.AreaID}
                                 className={liClasses}
                                 onClick={() => handleSelectTarget(index)}
-                                title={`ocr:${item.OcrSSIM}/src:${item.SrcText}`}>{item.BoxIndex}. {item.SrcText}:{item.OcrSSIM}</li>
+                                title={`areaID:${item.AreaID}`}>{item.AreaID}</li>
                         )
                     })}
                 </ul>

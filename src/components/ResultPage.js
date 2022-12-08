@@ -7,6 +7,12 @@ import { CaseContextProvider, useAPI } from "./apiContext";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
+import Spinner from 'react-bootstrap/Spinner';
+
+import API from "./../API";
+
+
 
 //import testImg from '../img/t1.png';
 
@@ -57,13 +63,13 @@ const ResultPage = () => {
         <CaseContextProvider>
             <Wrapper fluid>
                 <Row>
-                <ControlBar activePageId={activePageId} />
-                <Col sm={2} className="side border-end">
-                <Sidebar activePageId={activePageId} setActivePageId={setActivePageId} />
-                </Col>
-                <Col sm={10} className="main">
-                <ContentArea activePageId={activePageId} />
-                </Col>
+                    <ControlBar activePageId={activePageId} />
+                    <Col sm={2} className="side border-end">
+                        <Sidebar activePageId={activePageId} setActivePageId={setActivePageId} />
+                    </Col>
+                    <Col sm={10} className="main">
+                        <ContentArea activePageId={activePageId} />
+                    </Col>
                 </Row>
             </Wrapper>
         </CaseContextProvider>
@@ -80,15 +86,15 @@ const Sidebar = ({ setActivePageId, activePageId }) => {
     return (
         <SidebarWrapper>
             <ul>
-                {pages.pageList &&
-                    pages.pageList.map((item, index) => {
+                {pages.PageSet &&
+                    pages.PageSet.map((item, index) => {
                         let liClasses = classNames({
                             'active': (activePageId === index) ? true : false,
                         });
                         return (
-                            <li key={item.Page} className={liClasses} onClick={() => handleSelectTarget(index)} >
-                                <img src={item.FilePathSet} alt={item.Page} />
-                                頁數: {item.Page}
+                            <li key={item.PageNum} className={liClasses} onClick={() => handleSelectTarget(index)} >
+                                <img src={item.ImageData} alt={item.PageNum} />
+                                頁數: {item.PageNum}
                             </li>)
                     })}
             </ul>
@@ -97,11 +103,39 @@ const Sidebar = ({ setActivePageId, activePageId }) => {
 }
 
 const ControlBar = ({ activePageId }) => {
-    const { pages } = useAPI();
+    const { pages, setDispatch } = useAPI();
+    const [saveSpinner, setSaveSpinner] = useState(false);
+
+    const handleSave = () => {
+        fetchSaveAllResults();
+    };
+
+    const fetchSaveAllResults = async () => {
+        try {
+            setSaveSpinner(true);
+            await API.saveResults(pages)
+                .then(res => API.getResultPageSet(pages.ProcID))
+                .then(res => setDispatch({ type: "fetch_success", OCR_SpecSet: JSON.parse(res) }))
+            setSaveSpinner(false);
+            
+        } catch (error) {
+            console.log(error);
+            setSaveSpinner(false);
+            return;
+        }
+    };
 
     return (
         <div className="d-flex align-items-center justify-content-between border-bottom">
-            <h3>{`${pages.caseNo} 頁數:${pages.pageList[activePageId].Page}`}</h3>
+            <h3>{`${pages.ProcID} 頁數:${pages.PageSet[activePageId].PageNum}`}</h3>
+            <Button className='mx-1 btn-dark' onClick={() => handleSave()}>
+                {saveSpinner ? <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                /> : "儲存"}</Button>
         </div>
     );
 }
