@@ -6,6 +6,7 @@ width:350px;
 height:265px;
 overflow-wrap: break-word;
 `;
-export const TextView = styled.textarea`
-resize: none;
+export const EditNav = styled.div`
+position: sticky;
+top:0;
 `;

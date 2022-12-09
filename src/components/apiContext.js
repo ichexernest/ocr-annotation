@@ -18,7 +18,6 @@ const initialState = {
                 DocID: '',
                 UX: 0, UY: 0, LX: 0, LY: 0, Width: 0, Height: 0,
                 IsEng: true,
-                IsError: false,
                 NewResult: '',
             }
             ],
@@ -33,8 +32,10 @@ const reducer = (state, action) => {
             newState = action.OCR_PreProcResult;
             return newState;
         case 'update_results':
-            console.log(`REDUCER UPDATE_RESULTS : ${action.OCR_PreProcResult}`);
-            newState = action.OCR_PreProcResult;
+            console.log(`REDUCER UPDATE_RESULTS :${action.activeTarget}+${action.activePageIndex}`);
+                let foundIndex = newState.PageSet[action.activePageIndex].ResultSet.findIndex(x => x.AreaID === action.activeTarget.AreaID);
+            newState.PageSet[action.activePageIndex].ResultSet[foundIndex] = action.activeTarget;
+            console.log(`REDUCER DONE UPDATE_RESULTS : ${JSON.stringify(newState.PageSet[action.activePageIndex].ResultSet)}`);
             return newState;
         default:
             return state;

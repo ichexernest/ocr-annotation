@@ -74,6 +74,7 @@ const ResultList = ({ setActiveTargetId, activeTargetId, pageIndex }) => {
                     {pages.PageSet[pageIndex].ResultSet.map((item, index) => {
                         let liClasses = classNames({
                             'active': (activeTargetId === index) ? true : false,
+                            'text-danger': (item.ProcStatus === 51) ? true : false,
                         });
                         return (
                             <li

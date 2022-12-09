@@ -321,117 +321,111 @@ const apiSettings = {
     const bodyData = {
       'p_szProcID': ProcID,
     };
-    const data= {
+    const data = {
       ProcID: 'PPPProcID001',
       PageSet: [
-          {
-              PageNum: 1,
-              ImageData:'https://learn.microsoft.com/zh-tw/visualstudio/get-started/visual-basic/media/vs-2019/vb-create-new-project-search-winforms-filtered.png?view=vs-2022',
-              ResultSet: [{
-                  AreaID:'G01Item',
-                  TxDTime:'20221020-172452-463',
-                  RawData:'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
-                  ResultData:'1          家樂福           525          500         78                           89, 000',
-                  ProcStatus:10,
-                  DocID:'93097399-FF56-4C5E-849A-0851575B37E3',
-                  UX:0,UY:0,LX:50,LY:50,Width:50,Height:50,
-                  IsEng:false,
-                  IsError:false,
-                  NewResult:'',
-              },
-              {
-                AreaID:'G02Item',
-                TxDTime:'20221020-172452-463',
-                RawData:'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
-                ResultData:'AAAAAA0',
-                ProcStatus:10,
-                DocID:'93097399-FF56-4C5E-849A-0851575B37E3',
-                UX:0,UY:0,LX:100,LY:200,Width:100,Height:200,
-                IsEng:false,
-                IsError:false,
-                NewResult:'fwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfwwfw',
-            },
-            {
-              AreaID:'G03Item',
-              TxDTime:'20221020-172452-463',
-              RawData:'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
-              ResultData:'AAAAAA0',
-              ProcStatus:51,
-              DocID:'93097399-FF56-4C5E-849A-0851575B37E3',
-              UX:200,UY:200,LX:300,LY:400,Width:100,Height:200,
-              IsEng:true,
-              IsError:true,
-              NewResult:'',
+        {
+          PageNum: 1,
+          ImageData: 'https://learn.microsoft.com/zh-tw/visualstudio/get-started/visual-basic/media/vs-2019/vb-create-new-project-search-winforms-filtered.png?view=vs-2022',
+          ResultSet: [{
+            AreaID: 'G01Item',
+            TxDTime: '20221020-172452-463',
+            RawData: 'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
+            ResultData: '1          家樂福           525          500         78                           89, 000',
+            ProcStatus: 10,
+            DocID: '93097399-FF56-4C5E-849A-0851575B37E3',
+            UX: 0, UY: 0, LX: 50, LY: 50, Width: 50, Height: 50,
+            IsEng: false,
+            NewResult: '',
           },
           {
-            AreaID:'G04Item',
-            TxDTime:'20221020-172452-463',
-            RawData:'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
-            ResultData:'AAAAAA0',
-            ProcStatus:51,
-            DocID:'93097399-FF56-4C5E-849A-0851575B37E3',
-            UX:300,UY:300,LX:400,LY:500,Width:100,Height:200,
-            IsEng:false,
-            IsError:false,
-            NewResult:'',
-        }
-              ],
+            AreaID: 'G02Item',
+            TxDTime: '20221020-172452-463',
+            RawData: 'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
+            ResultData: '1          家樂福           525          500         78                           89, 000',
+            ProcStatus: 10,
+            DocID: '93097399-FF56-4C5E-849A-0851575B37E3',
+            UX: 0, UY: 0, LX: 50, LY: 50, Width: 50, Height: 50,
+            IsEng: true,
+            NewResult: '',
           },
           {
-            PageNum: 2,
-            ImageData:'https://learn.microsoft.com/zh-tw/visualstudio/get-started/visual-basic/media/vs-2019/vb-create-new-project-search-winforms-filtered.png?view=vs-2022',
-            ResultSet: [{
-                AreaID:'G101Item',
-                TxDTime:'20221020-172452-463',
-                RawData:'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
-                ResultData:'1          家樂福           525          500         78                           89, 000',
-                ProcStatus:10,
-                DocID:'93097399-FF56-4C5E-849A-0851575B37E3',
-                UX:0,UY:0,LX:50,LY:50,Width:50,Height:50,
-                IsEng:true,
-                IsError:false,
-                NewResult:'',
-            },
-            {
-              AreaID:'G102Item',
-              TxDTime:'20221020-172452-463',
-              RawData:'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
-              ResultData:'AAAAAA0',
-              ProcStatus:10,
-              DocID:'93097399-FF56-4C5E-849A-0851575B37E3',
-              UX:0,UY:0,LX:100,LY:200,Width:100,Height:200,
-              IsEng:true,
-              IsError:true,
-              NewResult:'',
+            AreaID: 'G03Item',
+            TxDTime: '20221020-172452-463',
+            RawData: 'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
+            ResultData: '1          家樂福           525          500         78                           89, 000',
+            ProcStatus: 51,
+            DocID: '93097399-FF56-4C5E-849A-0851575B37E3',
+            UX: 0, UY: 0, LX: 50, LY: 50, Width: 50, Height: 50,
+            IsEng: true,
+            NewResult: '',
           },
           {
-            AreaID:'G103Item',
-            TxDTime:'20221020-172452-463',
-            RawData:'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
-            ResultData:'AAAAAA0',
-            ProcStatus:51,
-            DocID:'93097399-FF56-4C5E-849A-0851575B37E3',
-            UX:200,UY:200,LX:300,LY:400,Width:100,Height:200,
-            IsEng:false,
-            IsError:false,
-            NewResult:'',
+            AreaID: 'G04Item',
+            TxDTime: '20221020-172452-463',
+            RawData: 'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
+            ResultData: '1          家樂福           525          500         78                           89, 000',
+            ProcStatus: 10,
+            DocID: '93097399-FF56-4C5E-849A-0851575B37E3',
+            UX: 0, UY: 0, LX: 50, LY: 50, Width: 50, Height: 50,
+            IsEng: false,
+            NewResult: 'ewqe',
+          },
+
+          ],
         },
         {
-          AreaID:'G104Item',
-          TxDTime:'20221020-172452-463',
-          RawData:'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
-          ResultData:'AAAAAA0',
-          ProcStatus:51,
-          DocID:'93097399-FF56-4C5E-849A-0851575B37E3',
-          UX:300,UY:300,LX:400,LY:500,Width:100,Height:200,
-          IsEng:false,
-          IsError:false,
-          NewResult:'',
-      }
-            ],
-        }
-      ]};
-  
+          PageNum: 2,
+          ImageData: 'https://learn.microsoft.com/zh-tw/visualstudio/get-started/visual-basic/media/vs-2019/vb-create-new-project-search-winforms-filtered.png?view=vs-2022',
+          ResultSet: [{
+            AreaID: 'G101Item',
+            TxDTime: '20221020-172452-463',
+            RawData: 'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
+            ResultData: '1          家樂福           525          500         78                           89, 000',
+            ProcStatus: 10,
+            DocID: '93097399-FF56-4C5E-849A-0851575B37E3',
+            UX: 0, UY: 0, LX: 50, LY: 50, Width: 50, Height: 50,
+            IsEng: true,
+            NewResult: 'AAA',
+          },
+          {
+            AreaID: 'G102Item',
+            TxDTime: '20221020-172452-463',
+            RawData: 'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
+            ResultData: 'AAAAAA0',
+            ProcStatus: 10,
+            DocID: '93097399-FF56-4C5E-849A-0851575B37E3',
+            UX: 0, UY: 0, LX: 100, LY: 200, Width: 100, Height: 200,
+            IsEng: false,
+            NewResult: '',
+          },
+          {
+            AreaID: 'G103Item',
+            TxDTime: '20221020-172452-463',
+            RawData: 'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
+            ResultData: 'AAAAAA0',
+            ProcStatus: 51,
+            DocID: '93097399-FF56-4C5E-849A-0851575B37E3',
+            UX: 200, UY: 200, LX: 300, LY: 400, Width: 100, Height: 200,
+            IsEng: false,
+            NewResult: '',
+          },
+          {
+            AreaID: 'G104Item',
+            TxDTime: '20221020-172452-463',
+            RawData: 'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
+            ResultData: 'AAAAAA0',
+            ProcStatus: 10,
+            DocID: '93097399-FF56-4C5E-849A-0851575B37E3',
+            UX: 300, UY: 300, LX: 400, LY: 500, Width: 100, Height: 200,
+            IsEng: true,
+            NewResult: '',
+          }
+          ],
+        },
+      ]
+    };
+
 
     //const result=  await axios.post(url,bodyData);
     //return result.data;
@@ -439,19 +433,19 @@ const apiSettings = {
   },
   //儲存辨識結果修改項
   saveResults: async (annotations) => {
-      const url = `${BASE_URL}/SaveResults`;
-      const bodyData = { szSpec: JSON.stringify(annotations) };
-      console.log(`SaveResults:::` + bodyData);
-      const response = await axios.post(url, bodyData)
-      // .then(res =>{
-      //   if (res.includes('OCR_ANNOTATION_ERR')){
-      //     alert(`SaveAnnotations:::${res}`);
-      //     return null;
-      //   }
-      // })
-  
-      return response;
-    },
+    const url = `${BASE_URL}/SaveResults`;
+    const bodyData = { szSpec: JSON.stringify(annotations) };
+    console.log(`SaveResults:::` + bodyData);
+    const response = await axios.post(url, bodyData)
+    // .then(res =>{
+    //   if (res.includes('OCR_ANNOTATION_ERR')){
+    //     alert(`SaveAnnotations:::${res}`);
+    //     return null;
+    //   }
+    // })
+
+    return response;
+  },
 };
 
 export default apiSettings;

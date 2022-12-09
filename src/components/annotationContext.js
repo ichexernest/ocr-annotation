@@ -114,7 +114,7 @@ const reducer = (state, action) => {
                 // }
                 newState.PageSet[action.activePageId].SpecTitleSet.push(action.newAnnotation);
             }
-            console.log(`REDUCER DONE add_new_annotation : ${JSON.stringify(state.PageSet[action.activePageId].SpecAreaSet)}`);
+            console.log(`REDUCER DONE add_new_annotation : ${JSON.stringify(newState.PageSet[action.activePageId].SpecAreaSet)}`);
             return newState;
 
         case "add_edit_annotation":
@@ -132,7 +132,7 @@ const reducer = (state, action) => {
                 let foundIndex = newState.PageSet[action.activePageId].SpecTitleSet.findIndex(x => x.TempID === action.annotation.TempID);
                 newState.PageSet[action.activePageId].SpecTitleSet[foundIndex] = action.annotation;
             }
-            console.log(`REDUCER DONE add_new_annotation : ${JSON.stringify(state.PageSet[action.activePageId].SpecAreaSet)}`);
+            console.log(`REDUCER DONE add_new_annotation : ${JSON.stringify(newState.PageSet[action.activePageId].SpecAreaSet)}`);
             return newState;
 
         default:

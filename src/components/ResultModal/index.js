@@ -8,13 +8,13 @@ import Form from 'react-bootstrap/Form';
 import { useAPI } from "../apiContext";
 import API from '../../API';
 
-const ResultModal = ({ show, setShow, activeTarget }) => {
+const ResultModal = ({ show, setShow, activeTarget, activePageIndex }) => {
     const { setDispatch } = useAPI();
 
     let submitData = {
         NewResult: '',
         IsEng: false,
-        IsError: false,
+        ProcStatus: 10,
     };
     const [inputs, setInputs] = useState({
         NewResult: '',
@@ -22,11 +22,13 @@ const ResultModal = ({ show, setShow, activeTarget }) => {
         IsError: false,
     });
 
+    console.log(`activeTarget:::: ` + JSON.stringify(activeTarget));
+
     useEffect(() => {
         setInputs(activeTarget !== null && activeTarget !== undefined ? {
             NewResult: activeTarget.NewResult,
             IsEng: activeTarget.IsEng,
-            IsError: activeTarget.IsError,
+            IsError: activeTarget.ProcStatus===51?true:false,
         } : {
             NewResult: '',
             IsEng: false,
@@ -56,16 +58,17 @@ const ResultModal = ({ show, setShow, activeTarget }) => {
 
 
     const handleCheck = (e) => {
-        e.preventDefault()
-        submitData = inputs;
-
-        if (submitData.Title !== '') {
-            alert(`標記為錯誤`);
+        e.preventDefault();
+        if (inputs.NewResult !== '' && !inputs.IsError) {
+            alert(`若要輸入修正內容請將項目標記為錯誤`);
             return;
         }
-        //submitData.AreaID = "manualID";
-
-        setDispatch({ type: 'update_results', result: submitData, activeTarget: activeTarget })
+        submitData.NewResult = inputs.NewResult;
+        submitData.IsEng = inputs.IsEng;
+        submitData.ProcStatus = inputs.IsError === true ? 51 : 20;
+        const updateTarget = { ...activeTarget, ...submitData };
+        console.log(`updateTarget:::: ` + JSON.stringify(updateTarget));
+        setDispatch({ type: 'update_results', activeTarget: updateTarget, activePageIndex: activePageIndex })
         setShow(false);
         setInputs({
             NewResult: '',
@@ -86,7 +89,7 @@ const ResultModal = ({ show, setShow, activeTarget }) => {
                             id="IsEng"
                             label="是否為英數字"
                             onChange={handleTextChange}
-                            defaultChecked={activeTarget !== null && activeTarget !== undefined ? activeTarget.IsEng : ""}
+                            defaultChecked={activeTarget !== null && activeTarget !== undefined ? activeTarget.IsEng : false}
                         />
                     </Form.Group>
                     <Form.Group className="mb-3">
@@ -94,7 +97,7 @@ const ResultModal = ({ show, setShow, activeTarget }) => {
                             id="IsError"
                             label="是否辨識錯誤"
                             onChange={handleTextChange}
-                            defaultChecked={activeTarget !== null && activeTarget !== undefined ? activeTarget.IsError : ""}
+                            defaultChecked={activeTarget == null || activeTarget == undefined ?  false : activeTarget.ProcStatus===51?true:false}
                         />
                     </Form.Group>
                     <FloatingLabel
@@ -102,7 +105,7 @@ const ResultModal = ({ show, setShow, activeTarget }) => {
                         label="修正結果"
                         className="mb-3"
                         onChange={handleTextChange}>
-                        <Form.Control type="text" as="textarea" placeholder="type title" defaultValue={activeTarget !== null && activeTarget !== undefined ? activeTarget.NewResult : ""} />
+                        <Form.Control type="text" as="textarea" rows={5} placeholder="type title" defaultValue={activeTarget !== null && activeTarget !== undefined ? activeTarget.NewResult : ""} />
                     </FloatingLabel>
                 </Offcanvas.Body>
                 <div className='d-flex justify-content-end'>

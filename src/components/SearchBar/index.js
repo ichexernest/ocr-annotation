@@ -28,14 +28,14 @@ const SearchBar = ({ fetchCase, sDate, eDate, initSDate, initEDate}) => {
     return (
         <div className="d-flex justify-content-end align-items-center my-3">
                 <Form.Control
-                    type='date'
+                    type='month'
                     placeholder={`Start Date`}
                     value={inputSDate}
                     onChange={(e) => setInputSDate(e.target.value)}
                 />
             <span className="mx-2">至</span>
                 <Form.Control
-                    type='date'
+                    type='month'
                     placeholder={`End Date`}
                     value={inputEDate}
                     onChange={(e) => setInputEDate(e.target.value)}

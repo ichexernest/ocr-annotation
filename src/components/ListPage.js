@@ -9,8 +9,8 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 
 import API from '../API';
 const Wrapper = styled.div`
-max-height: 92vh;
-height: 92vh;
+max-height: 100vh;
+height: 100vh;
 width: 100vw;
 overflow-y:auto;
 `;
@@ -32,7 +32,6 @@ const ListPage = () => {
     const tranDateToString = (begin) => {
         let date = new Date();
 
-        let day = date.getDate();
         let month = date.getMonth() + 1;
         let year;
 
@@ -41,27 +40,27 @@ const ListPage = () => {
         else
             year = date.getFullYear();
         if (month < 10) month = "0" + month;
-        if (day < 10) day = "0" + day;
 
-        return year + "-" + month + "-" + day;
+
+        return year + "-" + month;
     };
     const initEDate = tranDateToString(false);
     const initSDate = tranDateToString(true);
     const [data, setData] = useState(null);
     const [sDate, setSDate] = useState(initSDate);
     const [eDate, setEDate] = useState(initEDate);
-    const filter = (collection, predicate) => {
-        var result = [];
-        var length = collection.length;
+    // const filter = (collection, predicate) => {
+    //     var result = [];
+    //     var length = collection.length;
 
-        for (var j = 0; j < length; j++) {
-            if (predicate(collection[j]) === true) {
-                result.push(collection[j]);
-            }
-        }
+    //     for (var j = 0; j < length; j++) {
+    //         if (predicate(collection[j]) === true) {
+    //             result.push(collection[j]);
+    //         }
+    //     }
 
-        return result;
-    }
+    //     return result;
+    // }
     const fetchProcList = useCallback(async (searchTermS, searchTermE) => {
         try {
             let szSCreateDTime = searchTermS ? searchTermS.replaceAll('-', '') : '';

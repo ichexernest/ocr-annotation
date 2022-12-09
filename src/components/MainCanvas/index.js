@@ -186,7 +186,7 @@ const MainCanvas = ({ activePageId, annoSwitch }) => {
                                         <span>區域說明: {item.AreaDesc}</span>
                                         <span>標籤名稱: {item.Title}</span>
                                         {item.type === "title" && <span>標籤內容: {item.TitleContent}</span>}
-                                        <span>預處理: {item.PreProcOp === "procnt001" ? "正常":"有設置"}</span>
+                                        <span>預處理: {item.PreProcOp === "" ? "無": item.PreProcOp === "procnt001" ? "正常" :"有設置"}</span>
                                         <span>是否為單行: {item.IsOneLine === true ? "是" : "否"}</span>
                                         <span>是否為英數字: {item.IsEng === true ? "是" : "否"}</span>
                                         <span>字數: {item.WordCount}</span>

@@ -19,8 +19,8 @@ const DetailCanvas = ({ targetIndex, pageIndex }) => {
         imgSrc.style = loaded ? {} : { display: 'none' };
         imgSrc.src = pageBase.ImageData;
         imgSrc.onload = () => {
-            canvasSrcObj.width = pageBase.ResultSet[targetIndex].Width;
-            canvasSrcObj.height = pageBase.ResultSet[targetIndex].Height;
+            canvasSrcObj.width = imgSrc.width;
+            canvasSrcObj.height = imgSrc.height;
             canvasSrcCtx.drawImage(
                 imgSrc,
                 pageBase.ResultSet[targetIndex].UX,

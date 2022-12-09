@@ -126,8 +126,8 @@ const ControlBar = ({ activePageId }) => {
     };
 
     return (
-        <div className="d-flex align-items-center justify-content-between border-bottom">
-            <h3>{`${pages.ProcID} 頁數:${pages.PageSet[activePageId].PageNum}`}</h3>
+        <div className="d-flex align-items-center justify-content-start border-bottom">
+            <h3>{`${pages.ProcID} `}</h3>
             <Button className='mx-1 btn-dark' onClick={() => handleSave()}>
                 {saveSpinner ? <Spinner
                     as="span"
