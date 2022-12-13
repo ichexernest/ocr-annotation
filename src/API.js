@@ -1,10 +1,10 @@
 import axios from "axios";
 //import { Buffer } from 'buffer';
 //const BASE_URL = process.env.REACT_APP_BASE_URL;
-//const PATH_URL = 'https://localhost:44375/';
-//const BASE_URL = 'https://localhost:44375/OCR_Annotation.asmx';
-const PATH_URL = 'http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/';
-const BASE_URL = 'http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/OCR_Annotation.asmx';
+const PATH_URL = 'https://localhost:44375/';
+const BASE_URL = 'https://localhost:44375/OCR_Annotation.asmx';
+//const PATH_URL = 'http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/';
+//const BASE_URL = 'http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/OCR_Annotation.asmx';
 
 const apiSettings = {
   //取得spec辨識規格列表
@@ -288,39 +288,50 @@ const apiSettings = {
     return result;
   },
   //取得辨識單號列表
-  getProc: async (p_szSCrateDTime, p_szECrateDTime) => {
-    const url = `${BASE_URL}/FindProc`;
+  getProcList: async (p_szSearchTerm) => {
+    const url = `https://localhost:44375/OCR_Annotation.asmx/FindProcList`;
+    const searchTerm = p_szSearchTerm.split('-');
     const bodyData = {
-      'p_szSCreateDTime': p_szSCrateDTime,
-      'p_szECreateDTime': p_szECrateDTime
+      'p_szYear': searchTerm[0],
+      'p_szMonth': searchTerm[1],
     };
-    //const result=  await axios.post(url,bodyData);
-    //return result.data;
-    let data1 = [
-      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, },
-      { "ProcID": 2, "SpecID": "Spec01", "TitleID": "title001", "TxDTime": "20210924093816035", "ResultData": "台塑購物網_福委會商品券訂購單", "DocID": "Docid000001", "ProcStatus": 20, }
-    ];
-    return data1;
+    const response=  await axios.post(url,bodyData);
+
+    console.log(`FindProcList` + JSON.stringify(response))
+    const result = response.data.d
+    return result;
+    // //let data1 = [
+    //   { ProcID: "P20221020-164539-328", SpecID: "S221007002", TitleID: "A01Anchor", ResultData: "台塑購物網_福委會商品券訂購單", RpaAPID: "OCR.Voucher",InsertDTime:"20221020-164536",ProcSource:"eMail",ProcSourceDetail:"shochiou@yahoo.com.tw",ProcSourceDetail2:"shochiou",ResultSpecID:"S221007002", ProcStatus: 20},
+    //   { ProcID: "P20221020-164539-328", SpecID: "S221007002", TitleID: "A01Anchor", ResultData: "台塑購物網_福委會商品券訂購單", RpaAPID: "OCR.Voucher",InsertDTime:"20221020-164536",ProcSource:"eMail",ProcSourceDetail:"shochiou@yahoo.com.tw",ProcSourceDetail2:"shochiou",ResultSpecID:"S221007002", ProcStatus: 20},
+    //   { ProcID: "P20221020-164539-328", SpecID: "S221007002", TitleID: "A01Anchor", ResultData: "台塑購物網_福委會商品券訂購單", RpaAPID: "OCR.Voucher",InsertDTime:"20221020-164536",ProcSource:"eMail",ProcSourceDetail:"shochiou@yahoo.com.tw",ProcSourceDetail2:"shochiou",ResultSpecID:"S221007002", ProcStatus: 10},
+    //   { ProcID: "P20221020-164539-328", SpecID: "S221007002", TitleID: "A01Anchor", ResultData: "台塑購物網_福委會商品券訂購單", RpaAPID: "OCR.Voucher",InsertDTime:"20221020-164536",ProcSource:"eMail",ProcSourceDetail:"shochiou@yahoo.com.tw",ProcSourceDetail2:"shochiou",ResultSpecID:"S221007002", ProcStatus: 51},
+    //   { ProcID: "P20221020-164539-328", SpecID: "S221007002", TitleID: "A01Anchor", ResultData: "台塑購物網_福委會商品券訂購單", RpaAPID: "OCR.Voucher",InsertDTime:"20221020-164536",ProcSource:"eMail",ProcSourceDetail:"shochiou@yahoo.com.tw",ProcSourceDetail2:"shochiou",ResultSpecID:"S221007002", ProcStatus: 20},
+    //   { ProcID: "P20221020-164539-328", SpecID: "S221007002", TitleID: "A01Anchor", ResultData: "台塑購物網_福委會商品券訂購單", RpaAPID: "OCR.Voucher",InsertDTime:"20221020-164536",ProcSource:"eMail",ProcSourceDetail:"shochiou@yahoo.com.tw",ProcSourceDetail2:"shochiou",ResultSpecID:"S221007002", ProcStatus: 20},
+    //   { ProcID: "P20221020-164539-328", SpecID: "S221007002", TitleID: "A01Anchor", ResultData: "台塑購物網_福委會商品券訂購單", RpaAPID: "OCR.Voucher",InsertDTime:"20221020-164536",ProcSource:"eMail",ProcSourceDetail:"shochiou@yahoo.com.tw",ProcSourceDetail2:"shochiou",ResultSpecID:"S221007002", ProcStatus: 20},
+    //   { ProcID: "P20221020-164539-328", SpecID: "S221007002", TitleID: "A01Anchor", ResultData: "台塑購物網_福委會商品券訂購單", RpaAPID: "OCR.Voucher",InsertDTime:"20221020-164536",ProcSource:"eMail",ProcSourceDetail:"shochiou@yahoo.com.tw",ProcSourceDetail2:"shochiou",ResultSpecID:"S221007002", ProcStatus: 20},
+    //   { ProcID: "P20221020-164539-328", SpecID: "S221007002", TitleID: "A01Anchor", ResultData: "台塑購物網_福委會商品券訂購單", RpaAPID: "OCR.Voucher",InsertDTime:"20221020-164536",ProcSource:"eMail",ProcSourceDetail:"shochiou@yahoo.com.tw",ProcSourceDetail2:"shochiou",ResultSpecID:"S221007002", ProcStatus: 20},
+    //   { ProcID: "P20221020-164539-328", SpecID: "S221007002", TitleID: "A01Anchor", ResultData: "台塑購物網_福委會商品券訂購單", RpaAPID: "OCR.Voucher",InsertDTime:"20221020-164536",ProcSource:"eMail",ProcSourceDetail:"shochiou@yahoo.com.tw",ProcSourceDetail2:"shochiou",ResultSpecID:"S221007002", ProcStatus: 20},
+    //   { ProcID: "P20221020-164539-328", SpecID: "S221007002", TitleID: "A01Anchor", ResultData: "台塑購物網_福委會商品券訂購單", RpaAPID: "OCR.Voucher",InsertDTime:"20221020-164536",ProcSource:"eMail",ProcSourceDetail:"shochiou@yahoo.com.tw",ProcSourceDetail2:"shochiou",ResultSpecID:"S221007002", ProcStatus: 20},
+    //   { ProcID: "P20221020-164539-328", SpecID: "S221007002", TitleID: "A01Anchor", ResultData: "台塑購物網_福委會商品券訂購單", RpaAPID: "OCR.Voucher",InsertDTime:"20221020-164536",ProcSource:"eMail",ProcSourceDetail:"shochiou@yahoo.com.tw",ProcSourceDetail2:"shochiou",ResultSpecID:"S221007002", ProcStatus: 20},
+    //   { ProcID: "P20221020-164539-328", SpecID: "S221007002", TitleID: "A01Anchor", ResultData: "台塑購物網_福委會商品券訂購單", RpaAPID: "OCR.Voucher",InsertDTime:"20221020-164536",ProcSource:"eMail",ProcSourceDetail:"shochiou@yahoo.com.tw",ProcSourceDetail2:"shochiou",ResultSpecID:"S221007002", ProcStatus: 20},
+    //   { ProcID: "P20221020-164539-328", SpecID: "S221007002", TitleID: "A01Anchor", ResultData: "台塑購物網_福委會商品券訂購單", RpaAPID: "OCR.Voucher",InsertDTime:"20221020-164536",ProcSource:"eMail",ProcSourceDetail:"shochiou@yahoo.com.tw",ProcSourceDetail2:"shochiou",ResultSpecID:"S221007002", ProcStatus: 20},
+    //   { ProcID: "P20221020-164539-328", SpecID: "S221007002", TitleID: "A01Anchor", ResultData: "台塑購物網_福委會商品券訂購單", RpaAPID: "OCR.Voucher",InsertDTime:"20221020-164536",ProcSource:"eMail",ProcSourceDetail:"shochiou@yahoo.com.tw",ProcSourceDetail2:"shochiou",ResultSpecID:"S221007002", ProcStatus: 20},
+    //   { ProcID: "P20221020-164539-328", SpecID: "S221007002", TitleID: "A01Anchor", ResultData: "台塑購物網_福委會商品券訂購單", RpaAPID: "OCR.Voucher",InsertDTime:"20221020-164536",ProcSource:"eMail",ProcSourceDetail:"shochiou@yahoo.com.tw",ProcSourceDetail2:"shochiou",ResultSpecID:"S221007002", ProcStatus: 20},
+    // //];
+    //return data1;
 
   },
   //取得辨識結果
-  getResultPageSet: async (ProcID) => {
-    const url = `${BASE_URL}/GetResultPageSet`;
+  getResultPageSet: async (ProcID,dateRange) => {
+
+    const url = `https://localhost:44375/OCR_Annotation.asmx/GetResultPageSet`;
+    const searchTerm = dateRange.split('-');
     const bodyData = {
       'p_szProcID': ProcID,
+      'p_szYear': searchTerm[0],
+      'p_szMonth': searchTerm[1],
     };
+    const response=  await axios.post(url,bodyData);
     const data = {
       ProcID: 'PPPProcID001',
       PageSet: [
@@ -329,7 +340,6 @@ const apiSettings = {
           ImageData: 'https://learn.microsoft.com/zh-tw/visualstudio/get-started/visual-basic/media/vs-2019/vb-create-new-project-search-winforms-filtered.png?view=vs-2022',
           ResultSet: [{
             AreaID: 'G01Item',
-            TxDTime: '20221020-172452-463',
             RawData: 'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
             ResultData: '1          家樂福           525          500         78                           89, 000',
             ProcStatus: 10,
@@ -340,7 +350,6 @@ const apiSettings = {
           },
           {
             AreaID: 'G02Item',
-            TxDTime: '20221020-172452-463',
             RawData: 'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
             ResultData: '1          家樂福           525          500         78                           89, 000',
             ProcStatus: 10,
@@ -351,7 +360,6 @@ const apiSettings = {
           },
           {
             AreaID: 'G03Item',
-            TxDTime: '20221020-172452-463',
             RawData: 'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
             ResultData: '1          家樂福           525          500         78                           89, 000',
             ProcStatus: 51,
@@ -362,7 +370,6 @@ const apiSettings = {
           },
           {
             AreaID: 'G04Item',
-            TxDTime: '20221020-172452-463',
             RawData: 'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
             ResultData: '1          家樂福           525          500         78                           89, 000',
             ProcStatus: 10,
@@ -379,7 +386,6 @@ const apiSettings = {
           ImageData: 'https://learn.microsoft.com/zh-tw/visualstudio/get-started/visual-basic/media/vs-2019/vb-create-new-project-search-winforms-filtered.png?view=vs-2022',
           ResultSet: [{
             AreaID: 'G101Item',
-            TxDTime: '20221020-172452-463',
             RawData: 'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
             ResultData: '1          家樂福           525          500         78                           89, 000',
             ProcStatus: 10,
@@ -390,18 +396,21 @@ const apiSettings = {
           },
           {
             AreaID: 'G102Item',
-            TxDTime: '20221020-172452-463',
             RawData: 'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
             ResultData: 'AAAAAA0',
             ProcStatus: 10,
             DocID: '93097399-FF56-4C5E-849A-0851575B37E3',
-            UX: 0, UY: 0, LX: 100, LY: 200, Width: 100, Height: 200,
+            UX: 0, 
+            UY: 0, 
+            LX: 100, 
+            LY: 200, 
+            Width: 100, 
+            Height: 200,
             IsEng: false,
             NewResult: '',
           },
           {
             AreaID: 'G103Item',
-            TxDTime: '20221020-172452-463',
             RawData: 'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
             ResultData: 'AAAAAA0',
             ProcStatus: 51,
@@ -412,7 +421,6 @@ const apiSettings = {
           },
           {
             AreaID: 'G104Item',
-            TxDTime: '20221020-172452-463',
             RawData: 'https://learn.microsoft.com/zh-tw/visualstudio/ide/media/vs-2022/create-new-project-filters.png?view=vs-2022',
             ResultData: 'AAAAAA0',
             ProcStatus: 10,
@@ -426,10 +434,8 @@ const apiSettings = {
       ]
     };
 
-
-    //const result=  await axios.post(url,bodyData);
-    //return result.data;
-    return data;
+    const result = response.data.d
+    return result;
   },
   //儲存辨識結果修改項
   saveResults: async (annotations) => {

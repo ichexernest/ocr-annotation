@@ -12,8 +12,6 @@ import Spinner from 'react-bootstrap/Spinner';
 
 import API from "./../API";
 
-
-
 //import testImg from '../img/t1.png';
 
 const Wrapper = styled(Container)`
@@ -93,7 +91,7 @@ const Sidebar = ({ setActivePageId, activePageId }) => {
                         });
                         return (
                             <li key={item.PageNum} className={liClasses} onClick={() => handleSelectTarget(index)} >
-                                <img src={item.ImageData} alt={item.PageNum} />
+                                <img src={`https://localhost:44375/HandleImage.ashx?`+item.FileContent} alt={item.PageNum} />
                                 頁數: {item.PageNum}
                             </li>)
                     })}

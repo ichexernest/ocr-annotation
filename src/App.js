@@ -34,7 +34,7 @@ function App() {
       element:<ListPage />,
     },
     {
-      path: "/:ProcID",
+      path: "/:ProcID/:dateRange",
       element:<ResultPage />,
     },
   ],);

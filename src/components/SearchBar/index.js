@@ -3,45 +3,28 @@ import React, { useState } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSync } from '@fortawesome/free-solid-svg-icons'
 
-const SearchBar = ({ fetchCase, sDate, eDate, initSDate, initEDate}) => {
+const SearchBar = ({ fetchProcList, dateRange}) => {
 
-    const [inputSDate, setInputSDate] = useState(sDate);
-    const [inputEDate, setInputEDate] = useState(eDate);
+    const [inputDate, setInputDate] = useState(dateRange);
     const handleClickEvent = () => {
-        if (inputSDate > inputEDate || inputSDate === inputEDate) {
-            alert(`wrong range!!!!try again!!!!${inputSDate} to ${inputEDate}`);
+        if(inputDate==="" ||inputDate===null){
+            alert(`請輸入時間範圍`);
             return;
         }
-        console.log(`search date range ${inputSDate} to ${inputEDate}.`);
-        fetchCase(inputSDate, inputEDate);
-    };
-    const handleRefreshEvent = () => {
-        console.log(`${initSDate} --------------${initEDate}`)
-        setInputSDate(initSDate)
-        setInputEDate(initEDate)
-        fetchCase(initSDate,initEDate);
+        fetchProcList(inputDate);
     };
 
+
     return (
-        <div className="d-flex justify-content-end align-items-center my-3">
+        <div className="d-flex justify-content-start align-items-center">
                 <Form.Control
                     type='month'
                     placeholder={`Start Date`}
-                    value={inputSDate}
-                    onChange={(e) => setInputSDate(e.target.value)}
+                    value={inputDate}
+                    onChange={(e) => setInputDate(e.target.value)}
                 />
-            <span className="mx-2">至</span>
-                <Form.Control
-                    type='month'
-                    placeholder={`End Date`}
-                    value={inputEDate}
-                    onChange={(e) => setInputEDate(e.target.value)}
-                />
-            <Button className="mx-1 text-nowrap btn-dark" onClick={handleClickEvent}>搜尋</Button>
-            <Button className="mx-1 btn-dark" onClick={handleRefreshEvent}><FontAwesomeIcon className="icon" icon={faSync} /></Button>
+            <Button className="mx-2 text-nowrap btn-dark" onClick={handleClickEvent}>搜尋</Button>
         </div>
     )
 }

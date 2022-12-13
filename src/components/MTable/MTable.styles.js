@@ -5,4 +5,8 @@ flex-direction:column;
 padding: 0;
 }
 `
+export const Nodata = styled.div`
+width:100%;
+}
+`
 

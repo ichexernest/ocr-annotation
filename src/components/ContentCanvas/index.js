@@ -18,7 +18,7 @@ const ContentCanvas = ({ targetIndex, pageIndex }) => {
         const canvasObj = canvasRef.current;
         const ctx = canvasObj.getContext('2d');
         const img = new Image();
-        img.src = pageBase.ImageData;
+        img.src = `https://localhost:44375/HandleImage.ashx?`+pageBase.FileContent;
         img.onload = () => {
             //setLoad(false);
             canvasObj.height = img.height;

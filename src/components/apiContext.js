@@ -5,6 +5,15 @@ import ModalCard from "./ModalCard";
 const CaseContext = createContext();
 const initialState = {
     ProcID: '',
+    SpecID:'',
+    TitleID:'',
+    ResultData:'',
+    RpaAPID:'',
+    ProcSource:'',
+    ProcSourceDetail:'',
+    ProcSourceDetail2:'',
+    ResultSpecID:'',
+    ProcStatus:'',
     PageSet: [
         {
             PageNum: 1,
@@ -17,7 +26,7 @@ const initialState = {
                 ProcStatus: 10,
                 DocID: '',
                 UX: 0, UY: 0, LX: 0, LY: 0, Width: 0, Height: 0,
-                IsEng: true,
+                IsEng: false,
                 NewResult: '',
             }
             ],
@@ -42,7 +51,7 @@ const reducer = (state, action) => {
     }
 }
 export const CaseContextProvider = ({ children }) => {
-    const { ProcID } = useParams();
+    const { ProcID, dateRange} = useParams();
     const navigate = useNavigate();
     const [state, dispatch] = useReducer(reducer, initialState);
     const [show, setShow] = useState(false);
@@ -51,17 +60,22 @@ export const CaseContextProvider = ({ children }) => {
     const fetchPageSet = useCallback(async () => {
         try {
             console.log(`here gets ProcID: ${ProcID}`);
-            const response = await API.getResultPageSet(ProcID);
-            if (response.length === 0 || response === null) {
-                alert("error: no result data");
-                back();
-            } else if (response.PageSet[0].ResultSet.length === 0) {
-                alert("error: no page set data");
-                back();
-            } else {
-                console.log(`PassSets ${JSON.stringify(response.PageSet[0].PassSets)}`)
-                dispatch({ type: 'fetch_success', OCR_PreProcResult: response })
-            }
+            await API.getResultPageSet(ProcID,dateRange)
+            .then(res => {
+                const resData = JSON.parse(res);
+                //const resData = res;
+                if (resData.length === 0 || resData === null) {
+                    alert("error: no result data");
+                    back();
+                } else if (resData.PageSet[0].ResultSet.length === 0) {
+                    alert("error: no page set data");
+                    back();
+                } else {
+                    console.log(`PassSets ${JSON.stringify(resData.PageSet[0].PassSets)}`)
+                    dispatch({ type: 'fetch_success', OCR_PreProcResult: resData })
+                }
+            })
+
         } catch (error) {
             alert(error);
             back();
