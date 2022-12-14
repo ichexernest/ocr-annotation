@@ -37,8 +37,8 @@ const reducer = (state, action) => {
     let newState = Object.assign({}, state);
     switch (action.type) {
         case 'fetch_success':
-            console.log(`REDUCER FETCH_SUCCESS : ${action.OCR_PreProcResult}`);
-            newState = action.OCR_PreProcResult;
+            console.log(`REDUCER FETCH_SUCCESS : ${action.OCR_ProcResult}`);
+            newState = action.OCR_ProcResult;
             return newState;
         case 'update_results':
             console.log(`REDUCER UPDATE_RESULTS :${action.activeTarget}+${action.activePageIndex}`);
@@ -72,7 +72,7 @@ export const CaseContextProvider = ({ children }) => {
                     back();
                 } else {
                     console.log(`PassSets ${JSON.stringify(resData.PageSet[0].PassSets)}`)
-                    dispatch({ type: 'fetch_success', OCR_PreProcResult: resData })
+                    dispatch({ type: 'fetch_success', OCR_ProcResult: resData })
                 }
             })
 

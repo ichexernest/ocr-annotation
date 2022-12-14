@@ -228,7 +228,8 @@ const Sidebar = ({ setActivePageId, activePageId }) => {
                         });
                         return (
                             <li key={item.PageNum} className={liClasses} onClick={() => handleSelectTarget(index)} >
-                                <img src={`https://localhost:44375/HandleImage.ashx?`+item.FileContent} alt={item.PageNum} />
+                                {/* <img src={`https://localhost:44375/HandleImage.ashx?`+item.FileContent} alt={item.PageNum} /> */}
+                                <img src={`http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/HandleImage.ashx?`+item.FileContent} alt={item.PageNum} />
                                 頁數: {item.PageNum}
                             </li>)
                     })}

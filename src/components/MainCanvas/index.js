@@ -132,7 +132,8 @@ const MainCanvas = ({ activePageId, annoSwitch }) => {
                                 <Layer>
                                     <ImageFromUrl
                                         setCanvasMeasures={setCanvasMeasures}
-                                        imageUrl={`https://localhost:44375/HandleImage.ashx?`+annotation.PageSet[activePageId].FileContent}
+                                        // imageUrl={`https://localhost:44375/HandleImage.ashx?`+annotation.PageSet[activePageId].FileContent}
+                                        imageUrl={`http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/HandleImage.ashx?`+annotation.PageSet[activePageId].FileContent}
                                         onMouseDown={() => {
                                             // deselect when clicked on empty area
                                             selectAnnotation(null);

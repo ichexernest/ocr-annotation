@@ -17,24 +17,15 @@ const DetailCanvas = ({ targetIndex, pageIndex }) => {
         const canvasSrcCtx = canvasSrcObj.getContext('2d');
         const imgSrc = new Image();
         imgSrc.style = loaded ? {} : { display: 'none' };
-        console.log(`RRRAAAAWWW::::`+pageBase.ResultSet[targetIndex].RawData)
-        imgSrc.src = `https://localhost:44375/HandleImage.ashx?`+pageBase.FileContent;
+        imgSrc.src = `http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/HandleImage.ashx?`+pageBase.ResultSet[targetIndex].RawData;
+        // imgSrc.src = `https://localhost:44375/HandleImage.ashx?`+pageBase.ResultSet[targetIndex].RawData;
+
         imgSrc.onload = () => {
             canvasSrcObj.width = imgSrc.width;
             canvasSrcObj.height = imgSrc.height;
-            canvasSrcCtx.drawImage(
-                imgSrc,
-                pageBase.ResultSet[targetIndex].UX,
-                pageBase.ResultSet[targetIndex].UY,
-                pageBase.ResultSet[targetIndex].Width,
-                pageBase.ResultSet[targetIndex].Height,
-                0, 0,
-                pageBase.ResultSet[targetIndex].Width,
-                pageBase.ResultSet[targetIndex].Height
-            );
-            count--;
+            canvasSrcCtx.drawImage(imgSrc, 0, 0);;
+            setLoaded(true);
         }
-        if (count === 0) setLoaded(true);
     }, [targetIndex, loaded, pageBase]);
     
     useEffect(() => { drawCanvaDetail() }, [drawCanvaDetail]);

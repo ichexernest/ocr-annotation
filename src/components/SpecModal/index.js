@@ -89,10 +89,6 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem,setShowFullLoa
             alert(`未填寫規格名稱`);
             return;
         }
-        if (submitData.SpecDesc === '') {
-            alert(`未填寫規格說明`);
-            return;
-        }
 
         if (editSpecItem !== null && editSpecItem !== undefined) {
             const editedItem = { ...editSpecItem, ...submitData };
@@ -184,7 +180,7 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem,setShowFullLoa
                         <Form.Select aria-label="Floating label select example" defaultValue={editSpecItem !== null && editSpecItem !== undefined ? editSpecItem.RpaAPID : ""} disabled={editSpecItem !== null && editSpecItem !== undefined ? true:false}>
                             <option disabled hidden value="">請選擇...</option>
                             {options !== [] && options.map((item, index) => (
-                                <option key={item.RpaAPID} value={item.RpaAPID}>{item.RpaAPName}</option>
+                                <option key={item.RpaAPID} value={item.RpaAPID}>{item.RpaAPName}({item.RpaAPID})</option>
                             ))}
                         </Form.Select>
                     </FloatingLabel>
@@ -198,7 +194,7 @@ const SpecModal = ({ show, setShow, setActivePageId, editSpecItem,setShowFullLoa
                     </FloatingLabel>
                     <FloatingLabel
                         controlId="SpecDesc"
-                        label="規格說明*"
+                        label="規格說明"
                         className="mb-3"
                         onChange={handleTextChange}>
                         <Form.Control type="text" placeholder="type SpecDesc" defaultValue={editSpecItem !== null && editSpecItem !== undefined ? editSpecItem.SpecDesc : ""} />

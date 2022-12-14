@@ -1,4 +1,4 @@
-import React,{ useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Wrapper, Canvas, Loading } from './ContentCanvas.styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
@@ -11,31 +11,45 @@ const ContentCanvas = ({ targetIndex, pageIndex }) => {
     const canvasRef = useRef(null);
     const { pages } = useAPI();
     const pageBase = pages.PageSet[pageIndex];
-
     const [loaded, setLoaded] = useState(false);
     const drawCanva = useCallback(() => {
         //let count = 1;
         const canvasObj = canvasRef.current;
         const ctx = canvasObj.getContext('2d');
+        const ctx2 = canvasObj.getContext('2d');
         const img = new Image();
-        img.src = `https://localhost:44375/HandleImage.ashx?`+pageBase.FileContent;
+        img.src = `http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/HandleImage.ashx?` + pageBase.FileContent;
+        // img.src = `https://localhost:44375/HandleImage.ashx?` + pageBase.FileContent;
+
         img.onload = () => {
             //setLoad(false);
             canvasObj.height = img.height;
             canvasObj.width = img.width;
             ctx.drawImage(img, 0, 0);
-                ctx.lineWidth = 3;
-                ctx.strokeStyle = "red";
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = "red";
+            ctx.strokeRect(
+                pageBase.ResultSet[targetIndex].UX,
+                pageBase.ResultSet[targetIndex].UY,
+                pageBase.ResultSet[targetIndex].width,
+                pageBase.ResultSet[targetIndex].height);
+            pageBase.ResultSet.forEach((element,index) => {
+                ctx2.lineWidth = 3;
+                
+                ctx2.strokeStyle = index === targetIndex ? "lime": "red";
                 ctx.strokeRect(
-                    pageBase.ResultSet[targetIndex].UX,
-                    pageBase.ResultSet[targetIndex].UY,
-                    pageBase.ResultSet[targetIndex].Width,
-                    pageBase.ResultSet[targetIndex].Height);
-                //count--;
-            
+                    element.UX,
+                    element.UY,
+                    element.width,
+                    element.height);
+                
+            });
+
+            //count--;
+
             setLoaded(true);
         }
-    },[targetIndex,pageBase]);
+    }, [targetIndex, pageBase]);
     useEffect(() => { drawCanva() }, [drawCanva]);
     return (
         <Wrapper>
@@ -44,7 +58,7 @@ const ContentCanvas = ({ targetIndex, pageIndex }) => {
                 boundaryRatioHorizontal={0.9}
                 enableBoundingBox>
                 <Loading hasLoad={loaded}>
-                <FontAwesomeIcon className="icon" icon={faSpinner} size="4x" spin />
+                    <FontAwesomeIcon className="icon" icon={faSpinner} size="4x" spin />
                 </Loading>
                 <Canvas ref={canvasRef} />
             </PanZoom>

@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from "react";
 
-import Button from 'react-bootstrap/Button';
-
 import classNames from 'classnames';
 import { Wrapper, Grid, ContentList } from './ContentArea.styles';
 import ContentCanvas from '../ContentCanvas';
 import DetailCanvas from '../DetailCanvas';
 import DetailInfo from '../DetailInfo';
 import { useAPI } from "../apiContext";
+import { useRecord } from "../editRecordContext";
 
 const ContentArea = ({ activePageId }) => {
     const [activeTargetId, setActiveTargetId] = useState(0); //active ocr area
     const { pages } = useAPI();
+    const { record } = useRecord();
+
 
     useEffect(() => {
         setActiveTargetId(0)
+        console.log(`RRRECORD:::: `+record);
     }, [activePageId])
 
     return (

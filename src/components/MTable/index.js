@@ -180,7 +180,7 @@ const MTable = ({ data ,dateRange}) => {
         accessor: 'ProcSourceDetail',
       },
       {
-        Header: '來源資料2',
+        Header: 'AttachFName',
         accessor: 'ProcSourceDetail2',
       },
       {

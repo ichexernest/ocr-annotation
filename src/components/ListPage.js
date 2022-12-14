@@ -27,9 +27,25 @@ height:92vh;
 `;
 
 const ListPage = () => {
-    const [data, setData] = useState(null);
-    const [dateRange, setDateRange] = useState("");
+    const tranDateToString = (begin) => {
+        let date = new Date();
 
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year;
+
+        if (begin)
+            year = date.getFullYear() - 1;
+        else
+            year = date.getFullYear();
+        if (month < 10) month = "0" + month;
+        if (day < 10) day = "0" + day;
+
+        return year + "-" + month;
+    };
+    const initDate = tranDateToString(false);
+    const [data, setData] = useState(null);
+    const [dateRange, setDateRange] = useState(initDate);
     const fetchProcList = async (searchTerm) => {
         try {
             console.log(`here get range ${searchTerm}`)

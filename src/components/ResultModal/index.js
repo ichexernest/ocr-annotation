@@ -6,12 +6,15 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 
 import { useAPI } from "../apiContext";
+import { useRecord } from "../editRecordContext";
 import API from '../../API';
 
 const ResultModal = ({ show, setShow, activeTarget, activePageIndex }) => {
     const { setDispatch } = useAPI();
+    const { setRecordDispatch } = useRecord();
 
     let submitData = {
+        AreaID:'',
         NewResult: '',
         IsEng: false,
         ProcStatus: 10,
@@ -22,7 +25,7 @@ const ResultModal = ({ show, setShow, activeTarget, activePageIndex }) => {
         IsError: false,
     });
 
-    console.log(`activeTarget:::: ` + JSON.stringify(activeTarget));
+    //console.log(`activeTarget:::: ` + JSON.stringify(activeTarget));
 
     useEffect(() => {
         setInputs(activeTarget !== null && activeTarget !== undefined ? {
@@ -66,9 +69,11 @@ const ResultModal = ({ show, setShow, activeTarget, activePageIndex }) => {
         submitData.NewResult = inputs.NewResult;
         submitData.IsEng = inputs.IsEng;
         submitData.ProcStatus = inputs.IsError === true ? 51 : 20;
+        submitData.AreaID =activeTarget.AreaID;
         const updateTarget = { ...activeTarget, ...submitData };
         console.log(`updateTarget:::: ` + JSON.stringify(updateTarget));
         setDispatch({ type: 'update_results', activeTarget: updateTarget, activePageIndex: activePageIndex })
+        setRecordDispatch({ type: 'update_record', submitData: submitData})
         setShow(false);
         setInputs({
             NewResult: '',

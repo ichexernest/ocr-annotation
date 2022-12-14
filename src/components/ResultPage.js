@@ -3,6 +3,8 @@ import React, { useState, createContext } from "react";
 import classNames from 'classnames';
 import ContentArea from "./ContentArea";
 import { CaseContextProvider, useAPI } from "./apiContext";
+import { RecordContextProvider, useRecord } from "./editRecordContext";
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -53,23 +55,24 @@ li{
 }
 `;
 
-export const CaseContext = createContext({});
 const ResultPage = () => {
     const [activePageId, setActivePageId] = useState(0); //active ocr area
 
     return (
         <CaseContextProvider>
-            <Wrapper fluid>
-                <Row>
-                    <ControlBar activePageId={activePageId} />
-                    <Col sm={2} className="side border-end">
-                        <Sidebar activePageId={activePageId} setActivePageId={setActivePageId} />
-                    </Col>
-                    <Col sm={10} className="main">
-                        <ContentArea activePageId={activePageId} />
-                    </Col>
-                </Row>
-            </Wrapper>
+            <RecordContextProvider>
+                <Wrapper fluid>
+                    <Row>
+                        <ControlBar />
+                        <Col sm={2} className="side border-end">
+                            <Sidebar activePageId={activePageId} setActivePageId={setActivePageId} />
+                        </Col>
+                        <Col sm={10} className="main">
+                            <ContentArea activePageId={activePageId} />
+                        </Col>
+                    </Row>
+                </Wrapper>
+            </RecordContextProvider>
         </CaseContextProvider>
     );
 }
@@ -91,7 +94,8 @@ const Sidebar = ({ setActivePageId, activePageId }) => {
                         });
                         return (
                             <li key={item.PageNum} className={liClasses} onClick={() => handleSelectTarget(index)} >
-                                <img src={`https://localhost:44375/HandleImage.ashx?`+item.FileContent} alt={item.PageNum} />
+                                {/* <img src={`https://localhost:44375/HandleImage.ashx?` + item.FileContent} alt={item.PageNum} /> */}
+                                <img src={`http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/HandleImage.ashx?` + item.FileContent} alt={item.PageNum} />
                                 頁數: {item.PageNum}
                             </li>)
                     })}
@@ -100,9 +104,11 @@ const Sidebar = ({ setActivePageId, activePageId }) => {
     );
 }
 
-const ControlBar = ({ activePageId }) => {
+const ControlBar = () => {
     const { pages, setDispatch } = useAPI();
+    const { record, setRecordDispatch } = useRecord();
     const [saveSpinner, setSaveSpinner] = useState(false);
+    const { ProcID, dateRange } = useParams();
 
     const handleSave = () => {
         fetchSaveAllResults();
@@ -111,11 +117,14 @@ const ControlBar = ({ activePageId }) => {
     const fetchSaveAllResults = async () => {
         try {
             setSaveSpinner(true);
-            await API.saveResults(pages)
-                .then(res => API.getResultPageSet(pages.ProcID))
-                .then(res => setDispatch({ type: "fetch_success", OCR_SpecSet: JSON.parse(res) }))
+            await API.saveResults(ProcID, dateRange, record)
+                .then(res => API.getResultPageSet(ProcID, dateRange))
+                .then(res => {
+                    setDispatch({ type: "fetch_success", OCR_ProcResult: JSON.parse(res) })
+                    setRecordDispatch({ type: "reset_record" })
+                })
             setSaveSpinner(false);
-            
+
         } catch (error) {
             console.log(error);
             setSaveSpinner(false);
