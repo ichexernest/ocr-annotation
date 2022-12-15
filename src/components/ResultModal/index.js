@@ -6,7 +6,7 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 
 import { useAPI } from "../apiContext";
-import { useRecord } from "../editRecordContext";
+import { useRecord } from "../EditRecordContext";
 import API from '../../API';
 
 const ResultModal = ({ show, setShow, activeTarget, activePageIndex }) => {

@@ -6,12 +6,11 @@ const CaseContext = createContext();
 const initialState = {
     ProcID: '',
     SpecID:'',
-    TitleID:'',
-    ResultData:'',
+    SpecName:'',
     RpaAPID:'',
     ProcSource:'',
     ProcSourceDetail:'',
-    ProcSourceDetail2:'',
+    AttachFName:'',
     ResultSpecID:'',
     ProcStatus:'',
     PageSet: [

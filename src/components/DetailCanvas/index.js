@@ -17,8 +17,8 @@ const DetailCanvas = ({ targetIndex, pageIndex }) => {
         const canvasSrcCtx = canvasSrcObj.getContext('2d');
         const imgSrc = new Image();
         imgSrc.style = loaded ? {} : { display: 'none' };
-        imgSrc.src = `http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/HandleImage.ashx?`+pageBase.ResultSet[targetIndex].RawData;
-        // imgSrc.src = `https://localhost:44375/HandleImage.ashx?`+pageBase.ResultSet[targetIndex].RawData;
+        // imgSrc.src = `http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/HandleImage.ashx?`+pageBase.ResultSet[targetIndex].RawData;
+        imgSrc.src = `https://localhost:44375/HandleImage.ashx?`+pageBase.ResultSet[targetIndex].RawData;
 
         imgSrc.onload = () => {
             canvasSrcObj.width = imgSrc.width;

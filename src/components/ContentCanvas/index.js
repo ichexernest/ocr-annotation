@@ -18,8 +18,8 @@ const ContentCanvas = ({ targetIndex, pageIndex }) => {
         const ctx = canvasObj.getContext('2d');
         const ctx2 = canvasObj.getContext('2d');
         const img = new Image();
-        img.src = `http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/HandleImage.ashx?` + pageBase.FileContent;
-        // img.src = `https://localhost:44375/HandleImage.ashx?` + pageBase.FileContent;
+        // img.src = `http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/HandleImage.ashx?` + pageBase.FileContent;
+        img.src = `https://localhost:44375/HandleImage.ashx?` + pageBase.FileContent;
 
         img.onload = () => {
             //setLoad(false);

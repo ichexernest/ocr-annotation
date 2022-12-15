@@ -152,16 +152,12 @@ const MTable = ({ data ,dateRange}) => {
         accessor: 'ProcID',
       },
       {
-        Header: '規格',
+        Header: '規格ID',
         accessor: 'SpecID',
       },
       {
-        Header: '標簽',
-        accessor: 'TitleID',
-      },
-      {
-        Header: '標簽名稱辨識',
-        accessor: 'ResultData',
+        Header: '規格名稱',
+        accessor: 'SpecName',
       },
       {
         Header: 'RpaAPID',
@@ -181,7 +177,7 @@ const MTable = ({ data ,dateRange}) => {
       },
       {
         Header: 'AttachFName',
-        accessor: 'ProcSourceDetail2',
+        accessor: 'AttachFName',
       },
       {
         Header: '辨識狀態',

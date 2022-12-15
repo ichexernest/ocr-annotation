@@ -6,7 +6,7 @@ import ContentCanvas from '../ContentCanvas';
 import DetailCanvas from '../DetailCanvas';
 import DetailInfo from '../DetailInfo';
 import { useAPI } from "../apiContext";
-import { useRecord } from "../editRecordContext";
+import { useRecord } from "../EditRecordContext";
 
 const ContentArea = ({ activePageId }) => {
     const [activeTargetId, setActiveTargetId] = useState(0); //active ocr area
