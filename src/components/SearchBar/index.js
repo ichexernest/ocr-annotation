@@ -1,14 +1,29 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 //import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
+import Offcanvas from 'react-bootstrap/Offcanvas';
+import { useDBSwitch } from "../DbSwitchContext";
+
 
 const SearchBar = ({ fetchProcList, dateRange, sDate, eDate }) => {
     const [inputSDate, setInputSDate] = useState(sDate);
     const [inputEDate, setInputEDate] = useState(eDate);
     const [inputDate, setInputDate] = useState(dateRange);
+    const [show, setShow] = useState(false);
+
+    const { dbType, setSwitchDispatch} = useDBSwitch();
+
+    const [dbSwitch, setDbSwitch] = useState(false);
+    console.log("curr db"+dbType.dbType)
+
+    useEffect(() => {
+        setDbSwitch(dbType.dbType === 1?true:false)
+    }, []);
+
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
     const handleClickEvent = () => {
         if (inputDate === "" || inputDate === null) {
             alert(`請輸入時間範圍`);
@@ -26,6 +41,17 @@ const SearchBar = ({ fetchProcList, dateRange, sDate, eDate }) => {
         //fetchProcList(inputSDate, inputEDate);
     };
 
+    const handleSwitch = (event) => {
+        let name, value;
+        name = event.target.id;
+        value = event.target.checked;
+        setDbSwitch(value)
+    }
+    const save = ()=>{
+        setSwitchDispatch({ type: 'switch_type', switch:dbSwitch})
+    }
+
+
 
 
     return (
@@ -37,11 +63,9 @@ const SearchBar = ({ fetchProcList, dateRange, sDate, eDate }) => {
                 onChange={(e) => setInputDate(e.target.value)}
             />
             <Button className="mx-2 text-nowrap btn-dark" onClick={handleClickEvent}>搜尋</Button>
-            <DropdownButton id="dropdown-basic-button" title="Dropdown button">
-                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-            </DropdownButton>
+            <Button className="mx-2 text-nowrap btn-dark" onClick={handleShow}>
+                setting
+            </Button>
             {/* <Form.Control
                     type='date'
                     placeholder={`Start Date`}
@@ -55,6 +79,24 @@ const SearchBar = ({ fetchProcList, dateRange, sDate, eDate }) => {
                     onChange={(e) => setInputEDate(e.target.value)}
                 />
                             <Button onClick={handleClickEventR}>搜尋</Button> */}
+            <Offcanvas show={show} onHide={handleClose} placement={"end"}>
+                <Offcanvas.Header closeButton>
+                    <Offcanvas.Title>Offcanvas</Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body>
+                    <div className="m-3">
+                        <h3> dev environment test setting </h3>
+                        <Form.Check
+                            type="switch"
+                            id="custom-switch"
+                            label="Result query switch to OCRStore"
+                            onChange={handleSwitch}
+                            defaultChecked={dbSwitch}
+                        />
+                        <Button onClick={save}>save</Button>
+                    </div>
+                </Offcanvas.Body>
+            </Offcanvas>
         </div>
     )
 }
