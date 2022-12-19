@@ -2,6 +2,8 @@ import React, { useContext, useEffect, createContext, useReducer, useState, useC
 import { useNavigate, useParams } from 'react-router-dom';
 import API from '../API';
 import ModalCard from "./ModalCard";
+import { useDBSwitch } from "./DbSwitchContext";
+
 const CaseContext = createContext();
 const initialState = {
     ProcID: '',
@@ -19,6 +21,7 @@ const initialState = {
             ImageData: '',
             ResultSet: [{
                 AreaID: '',
+                AreaName: '',
                 TxDTime: '',
                 RawData: '',
                 ResultData: '',
@@ -50,6 +53,8 @@ const reducer = (state, action) => {
     }
 }
 export const CaseContextProvider = ({ children }) => {
+    //const { dbType } = useDBSwitch();
+
     const { ProcID, dateRange} = useParams();
     const navigate = useNavigate();
     const [state, dispatch] = useReducer(reducer, initialState);
@@ -58,6 +63,8 @@ export const CaseContextProvider = ({ children }) => {
 
     const fetchPageSet = useCallback(async () => {
         try {
+            //alert(`fetchPageSet::`+dbType.dbType);
+
             console.log(`here gets ProcID: ${ProcID}`);
             await API.getResultPageSet(ProcID,dateRange)
             .then(res => {
@@ -79,14 +86,14 @@ export const CaseContextProvider = ({ children }) => {
             alert(error);
             back();
         }
-    }, []);
+    }, [ProcID, navigate,dateRange]);
 
     const back = () => {
         navigate(-1);
     };
     useEffect(() => {
         fetchPageSet();
-    }, [ProcID, navigate]);
+    }, [ProcID, navigate,fetchPageSet]);
 
     return (
         <CaseContext.Provider value={{ pages: state, setDispatch: dispatch }}>

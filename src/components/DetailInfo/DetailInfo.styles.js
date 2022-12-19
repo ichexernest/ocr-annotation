@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const ContentList = styled.div`
 overflow-y: auto;
 width:350px;
-height:265px;
+height:350px;
 overflow-wrap: break-word;
 `;
 export const EditNav = styled.div`

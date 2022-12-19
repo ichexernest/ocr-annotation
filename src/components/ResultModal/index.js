@@ -14,7 +14,7 @@ const ResultModal = ({ show, setShow, activeTarget, activePageIndex }) => {
     const { setRecordDispatch } = useRecord();
 
     let submitData = {
-        AreaID:'',
+        AreaID: '',
         NewResult: '',
         IsEng: false,
         ProcStatus: 10,
@@ -31,7 +31,7 @@ const ResultModal = ({ show, setShow, activeTarget, activePageIndex }) => {
         setInputs(activeTarget !== null && activeTarget !== undefined ? {
             NewResult: activeTarget.NewResult,
             IsEng: activeTarget.IsEng,
-            IsError: activeTarget.ProcStatus===51?true:false,
+            IsError: activeTarget.ProcStatus === 51 ? true : false,
         } : {
             NewResult: '',
             IsEng: false,
@@ -69,11 +69,11 @@ const ResultModal = ({ show, setShow, activeTarget, activePageIndex }) => {
         submitData.NewResult = inputs.NewResult;
         submitData.IsEng = inputs.IsEng;
         submitData.ProcStatus = inputs.IsError === true ? 51 : 20;
-        submitData.AreaID =activeTarget.AreaID;
+        submitData.AreaID = activeTarget.AreaID;
         const updateTarget = { ...activeTarget, ...submitData };
         console.log(`updateTarget:::: ` + JSON.stringify(updateTarget));
         setDispatch({ type: 'update_results', activeTarget: updateTarget, activePageIndex: activePageIndex })
-        setRecordDispatch({ type: 'update_record', submitData: submitData})
+        setRecordDispatch({ type: 'update_record', submitData: submitData })
         setShow(false);
         setInputs({
             NewResult: '',
@@ -89,6 +89,12 @@ const ResultModal = ({ show, setShow, activeTarget, activePageIndex }) => {
             </Offcanvas.Header>
             <Form onSubmit={handleCheck} className="overflow-auto pb-3">
                 <Offcanvas.Body className="border-top">
+                    <FloatingLabel
+                        controlId="NewResult"
+                        label="原辨識結果"
+                        className="mb-3">
+                        <Form.Control type="text" as="textarea" rows={8} cols={10} readOnly disabled defaultValue={activeTarget !== null && activeTarget !== undefined ? activeTarget.ResultData : ""} />
+                    </FloatingLabel> 
                     <Form.Group className="mb-3">
                         <Form.Check
                             id="IsEng"
@@ -102,7 +108,7 @@ const ResultModal = ({ show, setShow, activeTarget, activePageIndex }) => {
                             id="IsError"
                             label="是否辨識錯誤"
                             onChange={handleTextChange}
-                            defaultChecked={activeTarget == null || activeTarget == undefined ?  false : activeTarget.ProcStatus===51?true:false}
+                            defaultChecked={activeTarget == null || activeTarget == undefined ? false : activeTarget.ProcStatus === 51 ? true : false}
                         />
                     </Form.Group>
                     <FloatingLabel
@@ -110,7 +116,7 @@ const ResultModal = ({ show, setShow, activeTarget, activePageIndex }) => {
                         label="修正結果"
                         className="mb-3"
                         onChange={handleTextChange}>
-                        <Form.Control type="text" as="textarea" rows={5} placeholder="type title" defaultValue={activeTarget !== null && activeTarget !== undefined ? activeTarget.NewResult : ""} />
+                        <Form.Control type="text" as="textarea" rows={5} placeholder="type" defaultValue={activeTarget !== null && activeTarget !== undefined ? activeTarget.NewResult : ""} />
                     </FloatingLabel>
                 </Offcanvas.Body>
                 <div className='d-flex justify-content-end'>

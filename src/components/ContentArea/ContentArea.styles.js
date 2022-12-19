@@ -9,8 +9,8 @@ flex: 5;
 `;
 export const Grid = styled.div`
 width: 100%;
-max-height: 50%;
-min-height: 50%;
+max-height: ${props => props.isMain ? "40%" : "60%"};
+min-height: ${props => props.isMain ? "40%" : "60%"};
 display: flex;
 flex-direction: row;
 flex: 1;

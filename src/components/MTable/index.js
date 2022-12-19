@@ -12,8 +12,9 @@ import { faSearch, faAngleRight, faAngleLeft, faAngleDoubleRight, faAngleDoubleL
 import { Wrapper, Nodata } from './MTable.styles'
 import { Link } from "react-router-dom";
 
-const DetailLink = ({ ProcID, dateRange }) => {
+const DetailLink = ({ ProcID, InsertDTime }) => {
   // Loop through the array and create a badge-like component instead of a comma-separated string
+  const dateRange = `${InsertDTime.slice(0,4)}-${InsertDTime.slice(4,6)}`
   return (
     <Link to={`/${ProcID}/${dateRange}`}>
       <Button className="mx-1 btn-dark" size="sm">
@@ -185,7 +186,7 @@ const MTable = ({ data ,dateRange}) => {
       },
       {
         Header: '比對結果查詢',
-        Cell: ({ cell }) => <DetailLink ProcID={cell.row.values.ProcID} dateRange={dateRange} />,
+        Cell: ({ cell }) => <DetailLink ProcID={cell.row.values.ProcID} InsertDTime={cell.row.values.InsertDTime} />,
       },
     ],
     []

@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 //import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -6,19 +6,19 @@ import Offcanvas from 'react-bootstrap/Offcanvas';
 import { useDBSwitch } from "../DbSwitchContext";
 
 
-const SearchBar = ({ fetchProcList, dateRange, sDate, eDate }) => {
+const SearchBar = ({ fetchProcList, fetchProcListR, dateRange, sDate, eDate }) => {
     const [inputSDate, setInputSDate] = useState(sDate);
     const [inputEDate, setInputEDate] = useState(eDate);
     const [inputDate, setInputDate] = useState(dateRange);
     const [show, setShow] = useState(false);
+    const [timeQuerySwitch, setTimeQuerySwitch] = useState(true);
 
-    const { dbType, setSwitchDispatch} = useDBSwitch();
+    const { dbType, setSwitchDispatch } = useDBSwitch();
 
     const [dbSwitch, setDbSwitch] = useState(false);
-    console.log("curr db"+dbType.dbType)
 
     useEffect(() => {
-        setDbSwitch(dbType.dbType === 1?true:false)
+        setDbSwitch(dbType.dbType === 1 ? true : false)
     }, []);
 
 
@@ -38,7 +38,7 @@ const SearchBar = ({ fetchProcList, dateRange, sDate, eDate }) => {
             return;
         }
         console.log(`search date range ${inputSDate} to ${inputEDate}.`);
-        //fetchProcList(inputSDate, inputEDate);
+        fetchProcListR(inputSDate, inputEDate);
     };
 
     const handleSwitch = (event) => {
@@ -47,8 +47,11 @@ const SearchBar = ({ fetchProcList, dateRange, sDate, eDate }) => {
         value = event.target.checked;
         setDbSwitch(value)
     }
-    const save = ()=>{
-        setSwitchDispatch({ type: 'switch_type', switch:dbSwitch})
+    const handleQuerySwitch = () => {
+        setTimeQuerySwitch(!timeQuerySwitch);
+    }
+    const save = () => {
+        setSwitchDispatch({ type: 'switch_type', switch: dbSwitch })
     }
 
 
@@ -56,36 +59,46 @@ const SearchBar = ({ fetchProcList, dateRange, sDate, eDate }) => {
 
     return (
         <div className="d-flex justify-content-start align-items-center">
-            <Form.Control
-                type='month'
-                placeholder={`Start Date`}
-                value={inputDate}
-                onChange={(e) => setInputDate(e.target.value)}
-            />
-            <Button className="mx-2 text-nowrap btn-dark" onClick={handleClickEvent}>搜尋</Button>
-            <Button className="mx-2 text-nowrap btn-dark" onClick={handleShow}>
+            {timeQuerySwitch ?
+                <>
+                    <Form.Control
+                        type='month'
+                        placeholder={`Start Date`}
+                        value={inputDate}
+                        onChange={(e) => setInputDate(e.target.value)}
+                    />
+                    <Button className="mx-2 text-nowrap btn-dark" onClick={handleClickEvent}>搜尋</Button>
+                </>
+                :
+                <>
+                    <Form.Control
+                        type='date'
+                        placeholder={`Start Date`}
+                        value={inputSDate}
+                        onChange={(e) => setInputSDate(e.target.value)}
+                    />
+                    <span className="mx-2">to</span>
+                    <Form.Control
+                        type='date'
+                        placeholder={`End Date`}
+                        value={inputEDate}
+                        onChange={(e) => setInputEDate(e.target.value)}
+                    />
+                    <Button className="mx-2 text-nowrap btn-dark" onClick={handleClickEventR}>搜尋</Button>
+                </>
+            }
+            <Button className="mx-2 text-nowrap btn-light" onClick={handleQuerySwitch}>{timeQuerySwitch ? "月份查詢" : "日期查詢"}</Button>
+            {/* 
+            <Button className="mx-2 text-nowrap btn-warning" onClick={handleShow}>
                 setting
-            </Button>
-            {/* <Form.Control
-                    type='date'
-                    placeholder={`Start Date`}
-                    value={inputSDate}
-                    onChange={(e) => setInputSDate(e.target.value)}
-                />
-                                <Form.Control
-                    type='date'
-                    placeholder={`End Date`}
-                    value={inputEDate}
-                    onChange={(e) => setInputEDate(e.target.value)}
-                />
-                            <Button onClick={handleClickEventR}>搜尋</Button> */}
+            </Button> */}
             <Offcanvas show={show} onHide={handleClose} placement={"end"}>
                 <Offcanvas.Header closeButton>
-                    <Offcanvas.Title>Offcanvas</Offcanvas.Title>
+                    <Offcanvas.Title>dev environment test setting </Offcanvas.Title>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
                     <div className="m-3">
-                        <h3> dev environment test setting </h3>
+                        <span>目前結果查詢連線db: {dbType.dbType === 1 ? "OCRStore" : "workflow"}</span>
                         <Form.Check
                             type="switch"
                             id="custom-switch"

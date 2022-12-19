@@ -83,7 +83,7 @@ const ResultList = ({ setActiveTargetId, activeTargetId, pageIndex }) => {
                                 key={item.AreaID}
                                 className={liClasses}
                                 onClick={() => handleSelectTarget(index)}
-                                title={`areaID:${item.AreaID}`}>{item.AreaID}</li>
+                                title={`areaID:${item.AreaID}`}>{item.AreaName}</li>
                         )
                     })}
                 </ul>

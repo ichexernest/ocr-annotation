@@ -20,6 +20,7 @@ import MainCanvas from "../components/MainCanvas";
 import { useAPI } from "./AnnotationContext";
 import API from "./../API";
 
+const PATH_URL = process.env.REACT_APP_PATH_URL;
 
 const Wrapper = styled(Container)`
 background-color:#FFF;
@@ -214,7 +215,6 @@ const AnnotationPage = () => {
 
 const Sidebar = ({ setActivePageId, activePageId }) => {
     const { annotation } = useAPI();
-
     const handleSelectTarget = (i) => {
         setActivePageId(i);
     }
@@ -228,8 +228,7 @@ const Sidebar = ({ setActivePageId, activePageId }) => {
                         });
                         return (
                             <li key={item.PageNum} className={liClasses} onClick={() => handleSelectTarget(index)} >
-                                <img src={`https://localhost:44375/HandleImage.ashx?`+item.FileContent} alt={item.PageNum} />
-                                {/* <img src={`http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/HandleImage.ashx?`+item.FileContent} alt={item.PageNum} /> */}
+                                <img src={`${PATH_URL}/HandleImage.ashx?`+item.FileContent} alt={item.PageNum} />
                                 頁數: {item.PageNum}
                             </li>)
                     })}

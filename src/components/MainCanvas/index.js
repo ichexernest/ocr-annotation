@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { Stage, Layer } from 'react-konva';
 import { PanZoom } from 'react-easy-panzoom';
@@ -17,6 +17,8 @@ import AnnoInfoModal from '../AnnoInfoModal';
 import { useAPI } from "../AnnotationContext";
 
 import { WorkArea } from './MainCanvas.styles';
+
+const PATH_URL = process.env.REACT_APP_PATH_URL;
 
 const MainCanvas = ({ activePageId, annoSwitch }) => {
 
@@ -132,8 +134,7 @@ const MainCanvas = ({ activePageId, annoSwitch }) => {
                                 <Layer>
                                     <ImageFromUrl
                                         setCanvasMeasures={setCanvasMeasures}
-                                        imageUrl={`https://localhost:44375/HandleImage.ashx?`+annotation.PageSet[activePageId].FileContent}
-                                        // imageUrl={`http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/HandleImage.ashx?`+annotation.PageSet[activePageId].FileContent}
+                                        imageUrl={`${PATH_URL}/HandleImage.ashx?`+annotation.PageSet[activePageId].FileContent}
                                         onMouseDown={() => {
                                             // deselect when clicked on empty area
                                             selectAnnotation(null);

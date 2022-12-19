@@ -6,6 +6,7 @@ import { useAPI } from "../apiContext";
 import { PanZoom } from 'react-easy-panzoom'
 
 //import testImg from '../img/t1.png';
+const PATH_URL = process.env.REACT_APP_PATH_URL;
 
 const ContentCanvas = ({ targetIndex, pageIndex }) => {
     const canvasRef = useRef(null);
@@ -18,8 +19,7 @@ const ContentCanvas = ({ targetIndex, pageIndex }) => {
         const ctx = canvasObj.getContext('2d');
         const ctx2 = canvasObj.getContext('2d');
         const img = new Image();
-        // img.src = `http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/HandleImage.ashx?` + pageBase.FileContent;
-        img.src = `https://localhost:44375/HandleImage.ashx?` + pageBase.FileContent;
+        img.src = `${PATH_URL}/HandleImage.ashx?` + pageBase.FileContent;
 
         img.onload = () => {
             //setLoad(false);

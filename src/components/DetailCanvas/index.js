@@ -3,6 +3,7 @@ import { Wrapper, Canvas } from './DetailCanvas.styles';
 import { useAPI } from "../apiContext";
 import { PanZoom } from 'react-easy-panzoom';
 
+const PATH_URL = process.env.REACT_APP_PATH_URL;
 //import testImg from '../../img/t1.png';
 
 const DetailCanvas = ({ targetIndex, pageIndex }) => {
@@ -11,19 +12,16 @@ const DetailCanvas = ({ targetIndex, pageIndex }) => {
     const pageBase = pages.PageSet[pageIndex];
     const [loaded, setLoaded] = useState(false);
     const drawCanvaDetail = useCallback(() => {
-        let count = 2;
         //source canvas area
         const canvasSrcObj = canvasSrc.current;
         const canvasSrcCtx = canvasSrcObj.getContext('2d');
         const imgSrc = new Image();
         imgSrc.style = loaded ? {} : { display: 'none' };
-        // imgSrc.src = `http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/HandleImage.ashx?`+pageBase.ResultSet[targetIndex].RawData;
-        imgSrc.src = `https://localhost:44375/HandleImage.ashx?`+pageBase.ResultSet[targetIndex].RawData;
+        imgSrc.src = `${PATH_URL}/HandleImage.ashx?`+pageBase.ResultSet[targetIndex].RawData;
 
         imgSrc.onload = () => {
             canvasSrcObj.width = imgSrc.width;
-            canvasSrcObj.height = imgSrc.height;
-            canvasSrcCtx.drawImage(imgSrc, 0, 0);;
+            canvasSrcCtx.drawImage(imgSrc, 0, 0);
             setLoaded(true);
         }
     }, [targetIndex, loaded, pageBase]);
@@ -31,7 +29,7 @@ const DetailCanvas = ({ targetIndex, pageIndex }) => {
     useEffect(() => { drawCanvaDetail() }, [drawCanvaDetail]);
 
     return (
-        <Wrapper>
+        <Wrapper className="border-top">
                 <PanZoom
                     boundaryRatioVertical={0.9}
                     boundaryRatioHorizontal={0.9}

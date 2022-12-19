@@ -1,10 +1,12 @@
 import styled from "styled-components";
-import React, { useState, createContext } from "react";
+import React, { useState } from "react";
 import classNames from 'classnames';
 import ContentArea from "./ContentArea";
 import { CaseContextProvider, useAPI } from "./apiContext";
 import { RecordContextProvider, useRecord } from "./EditRecordContext";
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+//import { useDBSwitch } from "./DbSwitchContext";
+
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -15,6 +17,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import API from "./../API";
 
 //import testImg from '../img/t1.png';
+const PATH_URL = process.env.REACT_APP_PATH_URL;
 
 const Wrapper = styled(Container)`
 background-color:#FFF;
@@ -94,8 +97,7 @@ const Sidebar = ({ setActivePageId, activePageId }) => {
                         });
                         return (
                             <li key={item.PageNum} className={liClasses} onClick={() => handleSelectTarget(index)} >
-                                <img src={`https://localhost:44375/HandleImage.ashx?` + item.FileContent} alt={item.PageNum} />
-                                {/* <img src={`http://10.3.228.224:8080/FPGProcessService/OCRAnnotation/HandleImage.ashx?` + item.FileContent} alt={item.PageNum} /> */}
+                                <img src={`${PATH_URL}/HandleImage.ashx?` + item.FileContent} alt={item.PageNum} />
                                 頁數: {item.PageNum}
                             </li>)
                     })}
@@ -105,6 +107,7 @@ const Sidebar = ({ setActivePageId, activePageId }) => {
 }
 
 const ControlBar = () => {
+  //  const { dbType } = useDBSwitch();
     const { pages, setDispatch } = useAPI();
     const { record, setRecordDispatch } = useRecord();
     const [saveSpinner, setSaveSpinner] = useState(false);
@@ -116,6 +119,7 @@ const ControlBar = () => {
 
     const fetchSaveAllResults = async () => {
         try {
+            //alert(`fetchSaveAllResults::`+dbType.dbType);
             setSaveSpinner(true);
             await API.saveResults(ProcID, dateRange, record)
                 .then(res => API.getResultPageSet(ProcID, dateRange))
@@ -134,7 +138,7 @@ const ControlBar = () => {
 
     return (
         <div className="d-flex align-items-center justify-content-start border-bottom">
-            <h3>{`${pages.ProcID} `}</h3>
+            <h3>{`${pages.AttachFName} :${pages.ProcID} `}</h3>
             <Button className='mx-1 btn-dark' onClick={() => handleSave()}>
                 {saveSpinner ? <Spinner
                     as="span"
